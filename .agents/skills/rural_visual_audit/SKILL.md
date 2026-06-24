@@ -45,6 +45,7 @@ Use this skill after Codex UI returns implementation output. Hermes must verify 
 7. Inspect `dist/` when build runs: JS count, Maps scripts, third-party scripts and asset sizes.
 8. Review screenshots or use browser/Playwright when available.
 9. Report `READY` or `NOT READY` for manual user commit.
+10. If there is no blocker, immediately return the next recommended Grill-me from the visual roadmap.
 
 ## Visual Criteria
 
@@ -95,3 +96,4 @@ Ação recomendada para o usuário
 - [ ] Visual evidence was reviewed or requested.
 - [ ] No commit/push was performed.
 - [ ] Final answer clearly tells the user whether to commit manually.
+- [ ] If READY, the next Grill-me is included unless the user explicitly asked to stop.

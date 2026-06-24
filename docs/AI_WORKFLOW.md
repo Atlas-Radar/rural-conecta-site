@@ -75,6 +75,14 @@ Regras permanentes:
 - resultado da viabilidade continua simples: atende/não atende + WhatsApp;
 - Codex UI deve entregar relatório final para commit manual do usuário.
 
+Ao receber um output do Codex UI, Hermes deve sempre executar o ciclo de pós-handoff:
+
+1. auditar o resultado real no repositório;
+2. verificar arquivos alterados, validações, build, `dist` e `git status`;
+3. apontar `READY` ou `NOT READY`;
+4. não fazer commit/push;
+5. se não houver bloqueador, devolver o próximo Grill-me recomendado do roadmap visual.
+
 ## Ações remotas
 
 Push, merge, deploy, settings GitHub e criação de remoto exigem autorização explícita.

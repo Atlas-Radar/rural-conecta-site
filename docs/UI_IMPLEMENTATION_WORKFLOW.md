@@ -31,6 +31,7 @@ Este documento define o fluxo permanente para transformar o conceito visual da R
    - Hermes lê o diff/arquivos e roda validações disponíveis.
    - Quando houver UI, Hermes deve pedir/usar evidência visual: screenshots, Playwright, browser local ou saída verificável do Codex UI.
    - Hermes confere mobile-first, rede lenta, acessibilidade, performance e aderência visual.
+   - Se não houver bloqueador, Hermes já devolve o próximo Grill-me recomendado do roadmap visual.
 
 6. **Usuário faz commit e push manualmente**
    - Hermes e Codex não fazem commit/push por padrão.

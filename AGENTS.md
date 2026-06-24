@@ -80,6 +80,8 @@ Codex UI deve receber imagens de referência em tarefas visuais. As imagens orie
 
 Hermes e Codex não fazem commit/push por padrão. O relatório final deve dizer se está pronto para commit manual do usuário.
 
+Quando o usuário trouxer output do Codex UI, Hermes deve sempre auditar o resultado real antes de aprovar, verificar arquivos/validações/status, reportar READY ou NOT READY e, se não houver bloqueador, devolver o próximo Grill-me recomendado do roadmap visual.
+
 ## Comandos oficiais previstos
 
 - pnpm dev
