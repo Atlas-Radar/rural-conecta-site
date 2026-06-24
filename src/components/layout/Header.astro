@@ -1,0 +1,91 @@
+---
+import { createWhatsAppUrl } from "../../data/site";
+import Button from "../ui/Button.astro";
+
+const whatsappHref = createWhatsAppUrl();
+---
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a class="brand" href="/" aria-label="Rural Conecta - página inicial">
+      <span class="brand__mark" aria-hidden="true">RC</span>
+      <span class="brand__text">Rural Conecta</span>
+    </a>
+
+    <nav class="site-header__nav" aria-label="Principal">
+      <a href="#disponibilidade">Disponibilidade</a>
+      <a href="#como-funciona">Como funciona</a>
+    </nav>
+
+    <Button
+      href={whatsappHref}
+      variant="secondary"
+      size="small"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      WhatsApp
+    </Button>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    border-bottom: 1px solid rgba(181, 192, 184, 0.12);
+    background: rgba(2, 11, 12, 0.88);
+  }
+
+  .site-header__inner {
+    display: flex;
+    min-height: 4.5rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--color-text-primary);
+    font-weight: 900;
+    text-decoration: none;
+  }
+
+  .brand__mark {
+    display: grid;
+    width: 2.5rem;
+    height: 2.5rem;
+    place-items: center;
+    border: 1px solid var(--color-border-green);
+    border-radius: 999px;
+    color: var(--color-green-300);
+    font-size: 0.85rem;
+  }
+
+  .brand__text {
+    white-space: nowrap;
+  }
+
+  .site-header__nav {
+    display: none;
+  }
+
+  @media (min-width: 48rem) {
+    .site-header__nav {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      color: var(--color-text-muted);
+      font-size: 0.95rem;
+    }
+
+    .site-header__nav a {
+      text-decoration: none;
+    }
+
+    .site-header__nav a:hover {
+      color: var(--color-green-300);
+    }
+  }
+</style>

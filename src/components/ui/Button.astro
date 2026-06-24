@@ -1,0 +1,67 @@
+---
+export interface Props {
+  href: string;
+  variant?: "primary" | "secondary";
+  size?: "default" | "small";
+  target?: string;
+  rel?: string;
+}
+
+const {
+  href,
+  variant = "primary",
+  size = "default",
+  target,
+  rel,
+} = Astro.props;
+
+const className = `button button--${variant} button--${size}`;
+---
+
+<a class={className} href={href} target={target} rel={rel}><slot /></a>
+
+<style>
+  .button {
+    display: inline-flex;
+    min-height: 3rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    font-weight: 800;
+    line-height: 1;
+    padding: 0.95rem 1.25rem;
+    text-align: center;
+    text-decoration: none;
+    transition:
+      background-color 140ms ease,
+      border-color 140ms ease,
+      color 140ms ease;
+  }
+
+  .button--small {
+    min-height: 2.75rem;
+    padding: 0.8rem 1rem;
+  }
+
+  .button--primary {
+    border: 1px solid var(--color-green-500);
+    background: var(--color-green-500);
+    color: var(--color-background-950);
+  }
+
+  .button--primary:hover {
+    background: var(--color-green-400);
+    border-color: var(--color-green-400);
+  }
+
+  .button--secondary {
+    border: 1px solid var(--color-border-green);
+    background: rgba(2, 11, 12, 0.42);
+    color: var(--color-text-primary);
+  }
+
+  .button--secondary:hover {
+    border-color: var(--color-green-300);
+    color: var(--color-green-300);
+  }
+</style>

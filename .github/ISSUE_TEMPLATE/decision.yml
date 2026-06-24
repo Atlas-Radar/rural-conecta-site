@@ -1,0 +1,17 @@
+name: Decisão
+about: Registrar decisão pendente
+body:
+  - type: input
+    id: question
+    attributes:
+      label: Pergunta
+    validations:
+      required: true
+  - type: textarea
+    id: options
+    attributes:
+      label: Opções
+  - type: textarea
+    id: recommendation
+    attributes:
+      label: Recomendação

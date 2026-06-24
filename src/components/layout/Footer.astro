@@ -1,0 +1,53 @@
+---
+import { createWhatsAppUrl, site } from "../../data/site";
+
+const whatsappHref = createWhatsAppUrl();
+---
+
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <div>
+      <strong>{site.name}</strong>
+      <p>Internet rural com atendimento humano e regional.</p>
+    </div>
+
+    <a href={whatsappHref} target="_blank" rel="noopener noreferrer">
+      WhatsApp {site.whatsapp.display}
+    </a>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid rgba(181, 192, 184, 0.12);
+    background: var(--color-background-950);
+    color: var(--color-text-muted);
+    padding-block: 2rem;
+  }
+
+  .site-footer__inner {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .site-footer strong {
+    color: var(--color-text-primary);
+  }
+
+  .site-footer a {
+    color: var(--color-green-300);
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .site-footer a:hover {
+    text-decoration: underline;
+  }
+
+  @media (min-width: 48rem) {
+    .site-footer__inner {
+      grid-template-columns: 1fr auto;
+      align-items: center;
+    }
+  }
+</style>

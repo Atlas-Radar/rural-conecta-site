@@ -1,0 +1,29 @@
+{
+  "name": "rural-conecta-site",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.9.0",
+  "engines": {
+    "node": ">=24.16.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "format": "prettier --plugin prettier-plugin-astro --write \"package.json\" \"pnpm-workspace.yaml\" \"astro.config.mjs\" \"tsconfig.json\" \"src/**/*.{astro,css,ts}\" \"tests/**/*.ts\"",
+    "format:check": "prettier --plugin prettier-plugin-astro --check \"package.json\" \"pnpm-workspace.yaml\" \"astro.config.mjs\" \"tsconfig.json\" \"src/**/*.{astro,css,ts}\" \"tests/**/*.ts\"",
+    "check": "astro check",
+    "test": "vitest run --coverage",
+    "build": "astro build"
+  },
+  "dependencies": {
+    "astro": "^7.0.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "@vitest/coverage-v8": "^4.1.9",
+    "prettier": "^3.8.4",
+    "prettier-plugin-astro": "^0.14.1",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.9"
+  }
+}
