@@ -1,18 +1,65 @@
 :root {
   color-scheme: dark;
 
-  --color-background-950: #020b0c;
-  --color-background-900: #061514;
-  --color-surface-800: #0a211b;
-  --color-surface-700: #0d2a21;
-  --color-green-500: #63d43b;
-  --color-green-400: #7be653;
-  --color-green-300: #a1f27c;
+  --color-background-main: #020b0c;
+  --color-background-deep: #010708;
+  --color-background-soft: #061514;
+  --color-surface-dark: #0a211b;
+  --color-surface-elevated: #0f2c23;
+  --color-surface-glass: rgba(8, 27, 22, 0.72);
+  --color-section-light: #f3f6ed;
+  --color-section-light-muted: #e7efe3;
   --color-text-primary: #f5f7f3;
-  --color-text-muted: #b5c0b8;
-  --color-border-green: rgba(99, 212, 59, 0.35);
+  --color-text-secondary: #d7e0d8;
+  --color-text-muted: #a9b6ae;
+  --color-text-inverse: #04110d;
+  --color-primary: #63d43b;
+  --color-primary-hover: #7be653;
+  --color-primary-active: #4fbf31;
+  --color-green-soft: rgba(99, 212, 59, 0.12);
+  --color-green-soft-strong: rgba(99, 212, 59, 0.2);
+  --color-border-subtle: rgba(245, 247, 243, 0.1);
+  --color-border-strong: rgba(245, 247, 243, 0.18);
+  --color-border-green: rgba(99, 212, 59, 0.3);
+  --color-focus: #a1f27c;
   --color-warm-light: #d89b5f;
   --color-error: #f1786b;
+
+  --color-background-950: var(--color-background-main);
+  --color-background-900: var(--color-background-soft);
+  --color-surface-800: var(--color-surface-dark);
+  --color-surface-700: var(--color-surface-elevated);
+  --color-green-500: var(--color-primary);
+  --color-green-400: var(--color-primary-hover);
+  --color-green-300: var(--color-focus);
+
+  --gradient-page:
+    radial-gradient(
+      circle at 18% -8%,
+      rgba(99, 212, 59, 0.13),
+      transparent 17rem
+    ),
+    radial-gradient(
+      circle at 86% 10%,
+      rgba(216, 155, 95, 0.08),
+      transparent 19rem
+    ),
+    linear-gradient(
+      180deg,
+      var(--color-background-main) 0%,
+      var(--color-background-soft) 52%,
+      var(--color-background-deep) 100%
+    );
+  --gradient-section-dark: linear-gradient(
+    180deg,
+    rgba(10, 33, 27, 0.76),
+    rgba(6, 21, 20, 0.92)
+  );
+  --gradient-primary: linear-gradient(
+    180deg,
+    var(--color-primary-hover),
+    var(--color-primary)
+  );
 
   --font-sans:
     system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -25,11 +72,34 @@
   --space-xl: 2rem;
   --space-2xl: 3rem;
   --space-3xl: 4rem;
+  --space-4xl: 5rem;
 
   --radius-sm: 0.5rem;
   --radius-md: 1rem;
   --radius-lg: 1.25rem;
+  --radius-card: 1.25rem;
+  --radius-card-lg: 1.5rem;
+  --radius-control: 0.875rem;
+  --radius-button: 999px;
+  --radius-chip: 999px;
 
   --container-max: 72rem;
-  --shadow-soft: 0 1.5rem 3rem rgba(0, 0, 0, 0.28);
+  --container-padding: 1rem;
+  --container-padding-wide: 1.5rem;
+  --section-padding-mobile: var(--space-3xl);
+  --section-padding-desktop: 6rem;
+
+  --touch-target-min: 3rem;
+  --button-height: 3rem;
+  --button-height-large: 3.5rem;
+
+  --shadow-soft: 0 1.5rem 3rem rgba(0, 0, 0, 0.3);
+  --shadow-elevated: 0 1.25rem 2.75rem rgba(0, 0, 0, 0.34);
+  --shadow-glow:
+    0 0 0 1px rgba(99, 212, 59, 0.14), 0 0.85rem 2.25rem rgba(99, 212, 59, 0.13);
+  --shadow-focus: 0 0 0 0.25rem rgba(161, 242, 124, 0.18);
+
+  --transition-interactive:
+    background-color 160ms ease, border-color 160ms ease, color 160ms ease,
+    box-shadow 160ms ease, transform 160ms ease;
 }

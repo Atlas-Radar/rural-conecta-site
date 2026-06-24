@@ -1,17 +1,21 @@
 # Rural Conecta
 
 ## Missão
+
 Landing page mobile-first para provedora de internet rural, com consulta simples de disponibilidade e atendimento final por WhatsApp.
 
 ## Leia antes de editar
+
 - docs/PROJECT_CONTEXT.md
 - docs/ARCHITECTURE.md
 - docs/DESIGN_BRIEF.md
+- docs/UI_IMPLEMENTATION_WORKFLOW.md
 - docs/PERFORMANCE_BUDGET.md
 - docs/DECISIONS_PENDING.md
 - documentos específicos da área alterada
 
 ## Decisões confirmadas
+
 - Owner GitHub planejado: atlas-radar.
 - Repositório planejado: rural-conecta-site.
 - Projeto privado/proprietário; não adicionar licença aberta sem autorização.
@@ -21,6 +25,7 @@ Landing page mobile-first para provedora de internet rural, com consulta simples
 - Estratégia API direta versus Worker/BFF permanece pendente.
 
 ## Arquitetura
+
 - Astro estático.
 - TypeScript strict.
 - CSS nativo.
@@ -30,6 +35,7 @@ Landing page mobile-first para provedora de internet rural, com consulta simples
 - Worker apenas se necessário para secrets, CORS, cache, rate limit ou proteção da API.
 
 ## Regras não negociáveis
+
 - Mobile e rede lenta têm prioridade sobre desktop.
 - Não carregar Maps na abertura.
 - Não adicionar dependência sem justificar e pedir autorização.
@@ -40,6 +46,7 @@ Landing page mobile-first para provedora de internet rural, com consulta simples
 - Não fazer push, merge, deploy, alteração remota ou commit sem autorização explícita.
 
 ## Fluxo de trabalho
+
 1. Verificar branch, status e contexto.
 2. Definir escopo e arquivos.
 3. Fazer mudança pequena.
@@ -48,7 +55,33 @@ Landing page mobile-first para provedora de internet rural, com consulta simples
 6. Revisar diff.
 7. Informar riscos e próximos passos.
 
+## Fluxo visual permanente
+
+Para implementação visual da landing, seguir sempre:
+
+1. Hermes gera roadmap visual/técnico.
+2. Hermes faz Grill-me detalhado da etapa ou seção.
+3. Hermes transforma o Grill-me aprovado em prompt para Codex UI.
+4. Codex UI implementa usando imagens de referência anexadas.
+5. Hermes audita resultado real, validações e evidência visual.
+6. O usuário faz commit e push manualmente.
+
+Documentos e skills do fluxo:
+
+- docs/UI_IMPLEMENTATION_WORKFLOW.md
+- docs/GRILL_ME_TEMPLATE.md
+- docs/CODEX_UI_PROMPT_TEMPLATE.md
+- docs/INITIAL_UI_ROADMAP.md
+- .agents/skills/rural_ui_roadmap_grill/SKILL.md
+- .agents/skills/rural_codex_ui_prompt/SKILL.md
+- .agents/skills/rural_visual_audit/SKILL.md
+
+Codex UI deve receber imagens de referência em tarefas visuais. As imagens orientam direção visual, mas o site deve ser reconstruído em HTML semântico, CSS nativo e Astro Components; não transformar referências em imagens grandes do site.
+
+Hermes e Codex não fazem commit/push por padrão. O relatório final deve dizer se está pronto para commit manual do usuário.
+
 ## Comandos oficiais previstos
+
 - pnpm dev
 - pnpm format:check
 - pnpm check
@@ -57,4 +90,5 @@ Landing page mobile-first para provedora de internet rural, com consulta simples
 - pnpm test:e2e, quando existir fluxo E2E real
 
 ## Conclusão de tarefa
+
 Informar resumo, arquivos, validações, impacto mobile/performance, riscos, documentos alterados e git status final.
