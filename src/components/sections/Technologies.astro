@@ -1,0 +1,93 @@
+---
+import Button from "../ui/Button.astro";
+import { technologies } from "../../data/site";
+---
+
+<section
+  id="tecnologias"
+  class="section-band section-band--dark technologies"
+  aria-labelledby="tecnologias-title"
+>
+  <div class="container technologies__grid">
+    <div class="section-heading technologies__intro">
+      <p class="section-kicker">Tecnologias</p>
+      <h2 id="tecnologias-title" class="section-title">
+        Soluções rurais sem prometer antes da análise.
+      </h2>
+      <p class="section-lede">
+        Fibra, rádio e dedicado entram como alternativas comerciais. A consulta
+        pública não informa tecnologia provável nem detalhes de infraestrutura.
+      </p>
+      <div class="action-row">
+        <Button href="#disponibilidade">Consultar disponibilidade</Button>
+      </div>
+    </div>
+
+    <div class="technologies__cards" aria-label="Tecnologias oferecidas">
+      {
+        technologies.map((technology, index) => (
+          <article class="visual-card technology-card">
+            <span class="technology-card__mark" aria-hidden="true">
+              {index === 0 ? "Fibra" : index === 1 ? "Rádio" : "Link"}
+            </span>
+            <h3>{technology.title}</h3>
+            <p>{technology.description}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .technologies__grid {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .technologies__intro {
+    margin-bottom: 0;
+  }
+
+  .technologies__cards {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .technology-card {
+    display: grid;
+    gap: 0.7rem;
+  }
+
+  .technology-card__mark {
+    display: inline-grid;
+    width: fit-content;
+    min-height: 2.55rem;
+    place-items: center;
+    border: 1px solid var(--color-border-green);
+    border-radius: var(--radius-chip);
+    color: var(--color-green-300);
+    font-size: 0.78rem;
+    font-weight: 950;
+    padding-inline: 0.9rem;
+  }
+
+  .technology-card h3 {
+    font-size: 1.35rem;
+  }
+
+  .technology-card p {
+    color: var(--color-text-muted);
+  }
+
+  @media (min-width: 58rem) {
+    .technologies__grid {
+      grid-template-columns: minmax(0, 0.85fr) minmax(28rem, 1.15fr);
+      align-items: start;
+    }
+
+    .technologies__cards {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

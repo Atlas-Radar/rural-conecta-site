@@ -1,0 +1,162 @@
+---
+import Button from "../ui/Button.astro";
+import { createWhatsAppUrl, localServiceHighlights } from "../../data/site";
+
+const whatsappHref = createWhatsAppUrl(
+  "Olá! Quero falar com a equipe da Rural Conecta sobre atendimento na minha região.",
+);
+---
+
+<section
+  id="atendimento-local"
+  class="section-band section-band--light local-service"
+  aria-labelledby="atendimento-local-title"
+>
+  <div class="container local-service__grid">
+    <div class="local-service__media">
+      <picture>
+        <source
+          media="(max-width: 47.99rem)"
+          srcset="/images/hero/hero-tecnico-mobile.avif"
+          type="image/avif"
+        />
+        <source
+          media="(max-width: 47.99rem)"
+          srcset="/images/hero/hero-tecnico-mobile.webp"
+          type="image/webp"
+        />
+        <source
+          srcset="/images/hero/hero-tecnico-desktop.avif"
+          type="image/avif"
+        />
+        <source
+          srcset="/images/hero/hero-tecnico-desktop.webp"
+          type="image/webp"
+        />
+        <img
+          src="/images/hero/hero-tecnico-desktop.webp"
+          alt="Técnico em atendimento rural"
+          width="1280"
+          height="720"
+          loading="lazy"
+          decoding="async"
+        />
+      </picture>
+      <div class="local-service__badge" aria-hidden="true">
+        <strong>Atendimento local</strong>
+        <span>Humano, regional e direto pelo WhatsApp.</span>
+      </div>
+    </div>
+
+    <div class="local-service__copy section-heading section-heading--inverted">
+      <p class="section-kicker">Atendimento regional</p>
+      <h2 id="atendimento-local-title" class="section-title">
+        Aqui você fala com gente da região.
+      </h2>
+      <p class="section-lede">
+        A disponibilidade no campo depende de estrada, referência, relevo e
+        coordenada. Por isso, a conversa final continua com uma pessoa da
+        equipe.
+      </p>
+      <ul class="local-service__list">
+        {
+          localServiceHighlights.map((highlight) => (
+            <li>
+              <span aria-hidden="true" />
+              {highlight}
+            </li>
+          ))
+        }
+      </ul>
+      <div class="action-row">
+        <Button href={whatsappHref} target="_blank" rel="noopener noreferrer">
+          Falar no WhatsApp
+        </Button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .local-service__grid {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .local-service__media {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-card-lg);
+    background: var(--color-surface-dark);
+    box-shadow: 0 1.2rem 2.6rem rgba(4, 17, 13, 0.16);
+  }
+
+  .local-service__media::after {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 45%, rgba(2, 11, 12, 0.72));
+    content: "";
+  }
+
+  .local-service__media img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+
+  .local-service__badge {
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+    left: 1rem;
+    z-index: 1;
+    display: grid;
+    gap: 0.2rem;
+    border: 1px solid rgba(245, 247, 243, 0.18);
+    border-radius: var(--radius-card);
+    background: rgba(2, 11, 12, 0.76);
+    color: var(--color-text-primary);
+    padding: 0.95rem;
+  }
+
+  .local-service__badge span {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+  }
+
+  .local-service__list {
+    display: grid;
+    gap: 0.7rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .local-service__list li {
+    display: flex;
+    gap: 0.65rem;
+    align-items: center;
+    color: rgba(4, 17, 13, 0.76);
+    font-weight: 780;
+  }
+
+  .local-service__list span {
+    width: 0.65rem;
+    height: 0.65rem;
+    flex: 0 0 auto;
+    border-radius: 999px;
+    background: var(--color-primary);
+  }
+
+  @media (min-width: 58rem) {
+    .local-service__grid {
+      grid-template-columns: minmax(24rem, 0.9fr) minmax(0, 1.1fr);
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .local-service__media img {
+      aspect-ratio: 5 / 4;
+    }
+  }
+</style>

@@ -1,0 +1,140 @@
+---
+import Button from "../ui/Button.astro";
+import { planPreviews } from "../../data/site";
+---
+
+<section
+  id="planos"
+  class="section-band section-band--light plans-preview"
+  aria-labelledby="planos-title"
+>
+  <div class="container">
+    <div
+      class="section-heading section-heading--centered section-heading--inverted"
+    >
+      <p class="section-kicker">Planos e benefícios</p>
+      <h2 id="planos-title" class="section-title">
+        Opções comerciais em mock, prontas para edição.
+      </h2>
+      <p class="section-lede">
+        Sem preços, velocidades finais ou promessas definitivas nesta onda. Cada
+        card sinaliza que a condição depende da consulta.
+      </p>
+    </div>
+
+    <div class="plans-preview__cards" aria-label="Planos em demonstração">
+      {
+        planPreviews.map((plan) => (
+          <article class="plan-card">
+            <p class="plan-card__tag">Mock comercial</p>
+            <h3>{plan.name}</h3>
+            <p class="plan-card__audience">{plan.audience}</p>
+            <dl class="plan-card__facts">
+              <div>
+                <dt>Velocidade</dt>
+                <dd>{plan.speed}</dd>
+              </div>
+              <div>
+                <dt>Valor</dt>
+                <dd>{plan.price}</dd>
+              </div>
+            </dl>
+            <ul>
+              {plan.features.map((feature) => (
+                <li>{feature}</li>
+              ))}
+            </ul>
+            <Button href="#disponibilidade" variant="secondary">
+              Consultar disponibilidade
+            </Button>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .plans-preview__cards {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .plan-card {
+    display: grid;
+    gap: 0.95rem;
+    border: 1px solid rgba(4, 17, 13, 0.14);
+    border-radius: var(--radius-card-lg);
+    background: #ffffff;
+    color: var(--color-text-inverse);
+    padding: clamp(1.15rem, 4vw, 1.55rem);
+    box-shadow: 0 1rem 2.2rem rgba(4, 17, 13, 0.08);
+  }
+
+  .plan-card__tag {
+    width: fit-content;
+    border-radius: var(--radius-chip);
+    background: rgba(99, 212, 59, 0.16);
+    color: #245719;
+    font-size: 0.76rem;
+    font-weight: 950;
+    padding: 0.3rem 0.7rem;
+    text-transform: uppercase;
+  }
+
+  .plan-card h3 {
+    font-size: clamp(1.35rem, 6vw, 1.75rem);
+    line-height: 1.12;
+  }
+
+  .plan-card__audience {
+    color: rgba(4, 17, 13, 0.68);
+    font-weight: 750;
+  }
+
+  .plan-card__facts {
+    display: grid;
+    gap: 0.65rem;
+    margin: 0;
+  }
+
+  .plan-card__facts div {
+    border: 1px solid rgba(4, 17, 13, 0.12);
+    border-radius: var(--radius-card);
+    background: #f5f8f1;
+    padding: 0.75rem;
+  }
+
+  .plan-card dt {
+    color: rgba(4, 17, 13, 0.58);
+    font-size: 0.78rem;
+    font-weight: 850;
+    text-transform: uppercase;
+  }
+
+  .plan-card dd {
+    margin: 0;
+    font-weight: 950;
+  }
+
+  .plan-card ul {
+    display: grid;
+    gap: 0.45rem;
+    margin: 0;
+    padding-left: 1.1rem;
+    color: rgba(4, 17, 13, 0.74);
+  }
+
+  .plan-card :global(.button--secondary) {
+    border-color: rgba(4, 17, 13, 0.18);
+    background: var(--color-background-main);
+    color: var(--color-text-primary);
+  }
+
+  @media (min-width: 58rem) {
+    .plans-preview__cards {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-items: stretch;
+    }
+  }
+</style>

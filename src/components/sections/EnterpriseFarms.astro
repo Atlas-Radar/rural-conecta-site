@@ -1,0 +1,94 @@
+---
+import Button from "../ui/Button.astro";
+import { createWhatsAppUrl, enterpriseCards } from "../../data/site";
+
+const whatsappHref = createWhatsAppUrl(
+  "Olá! Quero conversar sobre internet para fazenda, empresa rural ou comunidade.",
+);
+---
+
+<section
+  id="empresas-fazendas"
+  class="section-band section-band--dark enterprise-farms"
+  aria-labelledby="empresas-fazendas-title"
+>
+  <div class="container">
+    <div class="section-heading section-heading--centered">
+      <p class="section-kicker">Empresas e fazendas</p>
+      <h2 id="empresas-fazendas-title" class="section-title">
+        Projetos rurais pedem conversa consultiva.
+      </h2>
+      <p class="section-lede">
+        Para operações maiores, a Rural Conecta avalia cenário, necessidade e
+        localização antes de prometer formato, capacidade ou condição comercial.
+      </p>
+    </div>
+
+    <div class="enterprise-farms__cards">
+      {
+        enterpriseCards.map((card) => (
+          <article class="visual-card enterprise-farms__card">
+            <h3>{card.title}</h3>
+            <p>{card.description}</p>
+          </article>
+        ))
+      }
+    </div>
+
+    <div class="enterprise-farms__cta visual-card">
+      <p>Tem uma operação rural com necessidade específica?</p>
+      <Button href={whatsappHref} target="_blank" rel="noopener noreferrer">
+        Falar com a equipe
+      </Button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .enterprise-farms__cards {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .enterprise-farms__card {
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .enterprise-farms__card h3 {
+    font-size: 1.25rem;
+  }
+
+  .enterprise-farms__card p {
+    color: var(--color-text-muted);
+  }
+
+  .enterprise-farms__cta {
+    display: grid;
+    gap: 1rem;
+    align-items: center;
+    margin-top: 1rem;
+  }
+
+  .enterprise-farms__cta p {
+    color: var(--color-text-secondary);
+    font-size: 1.08rem;
+    font-weight: 800;
+  }
+
+  @media (min-width: 48rem) {
+    .enterprise-farms__cards {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .enterprise-farms__cta {
+      grid-template-columns: 1fr auto;
+    }
+  }
+
+  @media (min-width: 70rem) {
+    .enterprise-farms__cards {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+</style>

@@ -1,0 +1,109 @@
+---
+import { howItWorksSteps } from "../../data/site";
+---
+
+<section
+  id="como-funciona"
+  class="section-band section-band--deep how-it-works"
+  aria-labelledby="como-funciona-title"
+>
+  <div class="container">
+    <div class="section-heading">
+      <p class="section-kicker">Como funciona</p>
+      <h2 id="como-funciona-title" class="section-title">
+        Três passos claros para sair da dúvida.
+      </h2>
+      <p class="section-lede">
+        O fluxo foi pensado para áreas rurais, onde a referência mais confiável
+        costuma ser o ponto exato da propriedade.
+      </p>
+    </div>
+
+    <ol class="how-it-works__steps">
+      {
+        howItWorksSteps.map((step, index) => (
+          <li class="visual-card how-it-works__step">
+            <span class="how-it-works__number" aria-hidden="true">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <h3>{step.title}</h3>
+            <p>{step.description}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .how-it-works__steps {
+    position: relative;
+    display: grid;
+    gap: 0.9rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .how-it-works__step {
+    position: relative;
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .how-it-works__step::after {
+    position: absolute;
+    top: 3rem;
+    bottom: -1rem;
+    left: 2rem;
+    width: 1px;
+    background: linear-gradient(var(--color-border-green), transparent);
+    content: "";
+  }
+
+  .how-it-works__step:last-child::after {
+    display: none;
+  }
+
+  .how-it-works__number {
+    display: grid;
+    width: 4rem;
+    height: 4rem;
+    place-items: center;
+    border: 1px solid var(--color-border-green);
+    border-radius: 1.25rem;
+    background: rgba(99, 212, 59, 0.1);
+    color: var(--color-green-300);
+    font-size: 1.25rem;
+    font-weight: 950;
+  }
+
+  .how-it-works h3 {
+    font-size: 1.25rem;
+    line-height: 1.2;
+  }
+
+  .how-it-works p:not(.section-lede):not(.section-kicker) {
+    color: var(--color-text-muted);
+  }
+
+  @media (min-width: 54rem) {
+    .how-it-works__steps {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .how-it-works__step::after {
+      top: 2.1rem;
+      right: -1.3rem;
+      bottom: auto;
+      left: auto;
+      width: 2.2rem;
+      height: 1px;
+      background: linear-gradient(
+        90deg,
+        var(--color-border-green),
+        transparent
+      );
+    }
+  }
+</style>

@@ -9,7 +9,9 @@ test.describe("Header mobile-first", () => {
     await page.goto("/");
 
     await expect(
-      page.getByRole("link", { name: "Rural Conecta - página inicial" }),
+      page
+        .locator(".site-header")
+        .getByRole("link", { name: "Rural Conecta - página inicial" }),
     ).toBeVisible();
 
     const menuToggle = page.getByText("Abrir menu de navegação");
@@ -66,7 +68,7 @@ test.describe("Header mobile-first", () => {
     ).toBeVisible();
     await expect(page.getByRole("link", { name: "Início" })).toBeVisible();
     await expect(
-      page.getByRole("link", { name: "Como funciona" }),
+      page.locator(".site-header").getByRole("link", { name: "Como funciona" }),
     ).toBeVisible();
     await expect(
       page.getByRole("link", { name: "Verificar disponibilidade" }).first(),

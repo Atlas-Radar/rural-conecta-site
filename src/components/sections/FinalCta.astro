@@ -1,0 +1,91 @@
+---
+import Button from "../ui/Button.astro";
+import { createWhatsAppUrl } from "../../data/site";
+
+const whatsappHref = createWhatsAppUrl(
+  "Olá! Quero conectar minha casa, fazenda ou empresa com a Rural Conecta.",
+);
+---
+
+<section
+  id="cta-final"
+  class="section-band final-cta"
+  aria-labelledby="cta-final-title"
+>
+  <div class="container final-cta__card">
+    <p class="section-kicker">Próximo passo</p>
+    <h2 id="cta-final-title">
+      Pronto para conectar sua casa, fazenda ou empresa?
+    </h2>
+    <p>
+      Marque sua localização, veja a disponibilidade quando a consulta funcional
+      entrar e continue a conversa com atendimento humano.
+    </p>
+    <div class="action-row final-cta__actions">
+      <Button href="#disponibilidade">Verificar disponibilidade</Button>
+      <Button
+        href={whatsappHref}
+        variant="secondary"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Falar no WhatsApp
+      </Button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .final-cta {
+    padding-block: 3rem;
+    background:
+      radial-gradient(
+        circle at 18% 30%,
+        rgba(99, 212, 59, 0.2),
+        transparent 18rem
+      ),
+      linear-gradient(
+        180deg,
+        var(--color-background-soft),
+        var(--color-background-main)
+      );
+  }
+
+  .final-cta__card {
+    display: grid;
+    gap: 1rem;
+    border: 1px solid var(--color-border-green);
+    border-radius: var(--radius-card-lg);
+    background: rgba(8, 27, 22, 0.72);
+    box-shadow: var(--shadow-glow);
+    padding: clamp(1.35rem, 5vw, 2.4rem);
+    text-align: left;
+  }
+
+  .final-cta h2 {
+    max-width: 13ch;
+    font-size: clamp(2.15rem, 10vw, 4.4rem);
+    line-height: 0.98;
+  }
+
+  .final-cta p:not(.section-kicker) {
+    max-width: 42rem;
+    color: var(--color-text-secondary);
+    font-size: 1.05rem;
+  }
+
+  @media (min-width: 48rem) {
+    .final-cta__card {
+      text-align: center;
+      justify-items: center;
+    }
+
+    .final-cta h2 {
+      max-width: 18ch;
+    }
+
+    .final-cta__actions {
+      justify-content: center;
+    }
+  }
+</style>

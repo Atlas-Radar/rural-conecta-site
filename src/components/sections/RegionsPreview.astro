@@ -1,0 +1,136 @@
+---
+import Button from "../ui/Button.astro";
+import { availabilityRegions } from "../../data/site";
+---
+
+<section
+  id="regioes"
+  class="section-band section-band--deep regions-preview"
+  aria-labelledby="regioes-title"
+>
+  <div class="container regions-preview__grid">
+    <div class="section-heading regions-preview__copy">
+      <p class="section-kicker">Regiões atendidas</p>
+      <h2 id="regioes-title" class="section-title">
+        Principais localidades para o mock da Onda 1.
+      </h2>
+      <p class="section-lede">
+        A lista abaixo é curta e revisável. A disponibilidade exata depende da
+        coordenada da propriedade e da validação de viabilidade.
+      </p>
+      <div class="regions-preview__notice">
+        Não há mapa técnico, rotas, torres, CTOs ou desenho de cobertura nesta
+        seção.
+      </div>
+      <div class="action-row">
+        <Button href="#disponibilidade">Verificar disponibilidade</Button>
+      </div>
+    </div>
+
+    <div class="visual-card regions-preview__panel">
+      <ul class="regions-preview__chips" aria-label="Localidades em destaque">
+        {availabilityRegions.map((region) => <li>{region}</li>)}
+      </ul>
+      <div class="regions-preview__diagram" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+        <strong>Coordenada</strong>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .regions-preview__grid {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .regions-preview__copy {
+    margin-bottom: 0;
+  }
+
+  .regions-preview__notice {
+    border-left: 3px solid var(--color-warm-light);
+    color: var(--color-text-secondary);
+    padding-left: 0.85rem;
+  }
+
+  .regions-preview__panel {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .regions-preview__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .regions-preview__chips li {
+    min-height: 2.55rem;
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-chip);
+    background: rgba(2, 11, 12, 0.34);
+    color: var(--color-text-secondary);
+    font-size: 0.92rem;
+    font-weight: 760;
+    padding: 0.55rem 0.8rem;
+  }
+
+  .regions-preview__diagram {
+    position: relative;
+    display: grid;
+    min-height: 13rem;
+    place-items: center;
+    overflow: hidden;
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-card);
+    background:
+      linear-gradient(90deg, rgba(245, 247, 243, 0.045) 1px, transparent 1px),
+      linear-gradient(0deg, rgba(245, 247, 243, 0.045) 1px, transparent 1px),
+      rgba(2, 11, 12, 0.24);
+    background-size: 2.4rem 2.4rem;
+  }
+
+  .regions-preview__diagram span {
+    position: absolute;
+    border: 1px solid rgba(99, 212, 59, 0.18);
+    border-radius: 999px;
+  }
+
+  .regions-preview__diagram span:nth-child(1) {
+    width: 5rem;
+    height: 5rem;
+  }
+
+  .regions-preview__diagram span:nth-child(2) {
+    width: 9rem;
+    height: 9rem;
+  }
+
+  .regions-preview__diagram span:nth-child(3) {
+    width: 13rem;
+    height: 13rem;
+  }
+
+  .regions-preview__diagram strong {
+    position: relative;
+    z-index: 1;
+    border-radius: var(--radius-chip);
+    background: var(--gradient-primary);
+    color: var(--color-text-inverse);
+    padding: 0.55rem 0.85rem;
+  }
+
+  @media (min-width: 58rem) {
+    .regions-preview__grid {
+      grid-template-columns: minmax(0, 0.84fr) minmax(30rem, 1.16fr);
+      align-items: center;
+    }
+  }
+</style>

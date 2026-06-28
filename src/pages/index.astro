@@ -1,12 +1,18 @@
 ---
+import AvailabilityPreview from "../components/sections/AvailabilityPreview.astro";
+import Benefits from "../components/sections/Benefits.astro";
+import EnterpriseFarms from "../components/sections/EnterpriseFarms.astro";
+import FaqSection from "../components/sections/FaqSection.astro";
+import FinalCta from "../components/sections/FinalCta.astro";
 import Hero from "../components/sections/Hero.astro";
-import Button from "../components/ui/Button.astro";
-import { createWhatsAppUrl, site } from "../data/site";
+import HowItWorks from "../components/sections/HowItWorks.astro";
+import LocalService from "../components/sections/LocalService.astro";
+import PlansPreview from "../components/sections/PlansPreview.astro";
+import RegionsPreview from "../components/sections/RegionsPreview.astro";
+import Technologies from "../components/sections/Technologies.astro";
+import TestimonialsPreview from "../components/sections/TestimonialsPreview.astro";
+import { site } from "../data/site";
 import BaseLayout from "../layouts/BaseLayout.astro";
-
-const whatsappHref = createWhatsAppUrl(
-  "Olá! Quero verificar a disponibilidade da Rural Conecta para minha propriedade.",
-);
 ---
 
 <BaseLayout
@@ -14,69 +20,15 @@ const whatsappHref = createWhatsAppUrl(
   description={site.description}
 >
   <Hero />
-
-  <section
-    id="disponibilidade"
-    class="section availability"
-    aria-labelledby="disponibilidade-title"
-  >
-    <div class="container availability__card">
-      <div class="availability__intro">
-        <p class="eyebrow">Consulta de viabilidade</p>
-        <h2 id="disponibilidade-title">Verifique a disponibilidade.</h2>
-        <p>
-          A consulta completa será ativada quando o contrato da API estiver
-          confirmado. Nesta base inicial, nenhum dado de localização é coletado
-          e nenhuma integração externa é chamada.
-        </p>
-      </div>
-
-      <div>
-        <ul class="availability__list" aria-label="Próximas etapas da consulta">
-          <li>Escolha da região com centro e zoom padrão.</li>
-          <li>Localização por GPS, busca, mapa ou coordenadas.</li>
-          <li>Resultado simples: atende ou não atende.</li>
-        </ul>
-        <p class="notice">
-          Enquanto a verificação automática não entra, o atendimento segue pelo
-          WhatsApp oficial da Rural Conecta.
-        </p>
-        <div class="availability__actions">
-          <Button href={whatsappHref} target="_blank" rel="noopener noreferrer">
-            Falar com atendimento
-          </Button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section
-    id="como-funciona"
-    class="section steps"
-    aria-labelledby="como-funciona-title"
-  >
-    <div class="container">
-      <div class="steps__header">
-        <p class="eyebrow">Como vai funcionar</p>
-        <h2 id="como-funciona-title">Um fluxo simples para áreas rurais.</h2>
-      </div>
-
-      <ol class="steps__list">
-        <li class="steps__item">
-          <h3>Escolha sua região</h3>
-          <p>
-            A lista virá da API própria quando o contrato real for definido.
-          </p>
-        </li>
-        <li class="steps__item">
-          <h3>Informe o ponto</h3>
-          <p>O mapa será carregado somente quando o visitante solicitar.</p>
-        </li>
-        <li class="steps__item">
-          <h3>Continue pelo WhatsApp</h3>
-          <p>A análise e contratação seguem com atendimento humano.</p>
-        </li>
-      </ol>
-    </div>
-  </section>
+  <AvailabilityPreview />
+  <HowItWorks />
+  <Technologies />
+  <PlansPreview />
+  <LocalService />
+  <Benefits />
+  <RegionsPreview />
+  <EnterpriseFarms />
+  <TestimonialsPreview />
+  <FaqSection />
+  <FinalCta />
 </BaseLayout>

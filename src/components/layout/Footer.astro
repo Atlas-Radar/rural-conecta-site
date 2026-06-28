@@ -1,19 +1,51 @@
 ---
-import { createWhatsAppUrl, site } from "../../data/site";
+import { createWhatsAppUrl, quickLinks, site } from "../../data/site";
 
 const whatsappHref = createWhatsAppUrl();
 ---
 
 <footer class="site-footer">
   <div class="container site-footer__inner">
-    <div>
-      <strong>{site.name}</strong>
-      <p>Internet rural com atendimento humano e regional.</p>
+    <div class="site-footer__brand">
+      <a
+        class="site-footer__logo"
+        href="/"
+        aria-label="Rural Conecta - página inicial"
+      >
+        <picture aria-hidden="true">
+          <source srcset="/brand/rural-conecta-mark.webp" type="image/webp" />
+          <img
+            src="/brand/rural-conecta-mark.png"
+            alt=""
+            width="192"
+            height="192"
+            loading="lazy"
+            decoding="async"
+          />
+        </picture>
+        <span>{site.name}</span>
+      </a>
+      <p>
+        Internet rural com atendimento humano e regional para casas, fazendas,
+        comunidades e empresas.
+      </p>
     </div>
 
-    <a href={whatsappHref} target="_blank" rel="noopener noreferrer">
-      WhatsApp {site.whatsapp.display}
-    </a>
+    <nav class="site-footer__nav" aria-label="Links rápidos">
+      <strong>Links rápidos</strong>
+      {quickLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+    </nav>
+
+    <div class="site-footer__contact">
+      <strong>Atendimento</strong>
+      <a href={whatsappHref} target="_blank" rel="noopener noreferrer">
+        WhatsApp {site.whatsapp.display}
+      </a>
+      <p id="privacidade">
+        Privacidade: a consulta visual desta onda não envia dados e não pede
+        cadastro.
+      </p>
+    </div>
   </div>
 </footer>
 
@@ -22,19 +54,44 @@ const whatsappHref = createWhatsAppUrl();
     border-top: 1px solid rgba(181, 192, 184, 0.12);
     background: var(--color-background-950);
     color: var(--color-text-muted);
-    padding-block: 2rem;
+    padding-block: 2.5rem;
   }
 
   .site-footer__inner {
     display: grid;
-    gap: 1rem;
+    gap: 1.5rem;
+  }
+
+  .site-footer__brand,
+  .site-footer__nav,
+  .site-footer__contact {
+    display: grid;
+    gap: 0.7rem;
+  }
+
+  .site-footer__logo {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    gap: 0.65rem;
+    color: var(--color-text-primary);
+    font-size: 1.15rem;
+    font-weight: 900;
+    text-decoration: none;
+  }
+
+  .site-footer__logo picture,
+  .site-footer__logo img {
+    width: 2.7rem;
+    height: 2.7rem;
   }
 
   .site-footer strong {
     color: var(--color-text-primary);
   }
 
-  .site-footer a {
+  .site-footer a:not(.site-footer__logo) {
+    width: fit-content;
     color: var(--color-green-300);
     font-weight: 800;
     text-decoration: none;
@@ -44,10 +101,17 @@ const whatsappHref = createWhatsAppUrl();
     text-decoration: underline;
   }
 
+  .site-footer p {
+    max-width: 28rem;
+  }
+
   @media (min-width: 48rem) {
     .site-footer__inner {
-      grid-template-columns: 1fr auto;
-      align-items: center;
+      grid-template-columns: minmax(0, 1.4fr) minmax(10rem, 0.6fr) minmax(
+          14rem,
+          0.8fr
+        );
+      align-items: start;
     }
   }
 </style>

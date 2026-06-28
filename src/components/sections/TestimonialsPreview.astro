@@ -1,0 +1,77 @@
+---
+import { testimonyPlaceholders } from "../../data/site";
+---
+
+<section
+  id="depoimentos"
+  class="section-band section-band--light testimonials-preview"
+  aria-labelledby="depoimentos-title"
+>
+  <div class="container">
+    <div class="section-heading section-heading--inverted">
+      <p class="section-kicker">Prova social</p>
+      <h2 id="depoimentos-title" class="section-title">
+        Relatos em validação, sem nomes fictícios.
+      </h2>
+      <p class="section-lede">
+        A Onda 1 não publica depoimentos como se fossem reais. Este bloco mostra
+        o espaço visual e o tipo de confiança que será preenchido depois.
+      </p>
+    </div>
+
+    <div class="testimonials-preview__cards" aria-label="Cards placeholder">
+      {
+        testimonyPlaceholders.map((item) => (
+          <article class="testimonial-card">
+            <span>Placeholder explícito</span>
+            <h3>{item.title}</h3>
+            <p>{item.description}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .testimonials-preview__cards {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .testimonial-card {
+    display: grid;
+    gap: 0.75rem;
+    border: 1px solid rgba(4, 17, 13, 0.12);
+    border-radius: var(--radius-card-lg);
+    background: #fff;
+    color: var(--color-text-inverse);
+    padding: clamp(1.1rem, 4vw, 1.5rem);
+    box-shadow: 0 1rem 2.2rem rgba(4, 17, 13, 0.07);
+  }
+
+  .testimonial-card span {
+    width: fit-content;
+    border-radius: var(--radius-chip);
+    background: rgba(4, 17, 13, 0.06);
+    color: rgba(4, 17, 13, 0.62);
+    font-size: 0.73rem;
+    font-weight: 950;
+    padding: 0.28rem 0.62rem;
+    text-transform: uppercase;
+  }
+
+  .testimonial-card h3 {
+    font-size: 1.25rem;
+  }
+
+  .testimonial-card p {
+    color: rgba(4, 17, 13, 0.72);
+  }
+
+  @media (min-width: 54rem) {
+    .testimonials-preview__cards {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

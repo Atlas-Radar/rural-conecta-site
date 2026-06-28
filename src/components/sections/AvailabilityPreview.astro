@@ -1,0 +1,308 @@
+---
+import {
+  availabilityRegions,
+  createWhatsAppUrl,
+  locationMethods,
+} from "../../data/site";
+
+const whatsappHref = createWhatsAppUrl(
+  "Olá! Quero verificar a disponibilidade da Rural Conecta e posso informar minha localização pelo WhatsApp.",
+);
+
+const iconLabels = {
+  gps: "GPS",
+  search: "Busca",
+  map: "Mapa",
+  pin: "Coord.",
+} as const;
+---
+
+<section
+  id="disponibilidade"
+  class="section-band section-band--dark availability-preview"
+  aria-labelledby="disponibilidade-title"
+>
+  <div class="container">
+    <div class="section-heading section-heading--centered">
+      <p class="section-kicker">Consulta visual mockada</p>
+      <h2 id="disponibilidade-title" class="section-title">
+        Verifique a disponibilidade na sua região.
+      </h2>
+      <p class="section-lede">
+        Selecione uma localidade principal e escolha como informar o ponto da
+        propriedade. Nesta onda, a tela é estática e não chama API, Maps ou
+        Places.
+      </p>
+    </div>
+
+    <div class="availability-preview__grid">
+      <div class="visual-card availability-preview__panel">
+        <label class="field-label" for="availability-region">
+          Escolha uma região
+        </label>
+        <select id="availability-region" class="field-control">
+          {
+            availabilityRegions.map((region) => (
+              <option value={region} selected={region === "Novo Barreiro"}>
+                {region}
+              </option>
+            ))
+          }
+        </select>
+
+        <div class="availability-preview__selected" aria-live="polite">
+          <span aria-hidden="true"></span>
+          <p>
+            Região em demonstração: <strong>Novo Barreiro</strong>. A lista
+            completa será revisada antes de virar conteúdo final.
+          </p>
+        </div>
+
+        <div
+          class="availability-preview__methods"
+          role="group"
+          aria-labelledby="location-methods-title"
+        >
+          <p id="location-methods-title" class="field-label">
+            Como deseja localizar sua propriedade?
+          </p>
+          {
+            locationMethods.map((method, index) => (
+              <button
+                class:list={[
+                  "method-card",
+                  index === 0 && "method-card--active",
+                ]}
+                type="button"
+                aria-pressed={index === 0 ? "true" : "false"}
+              >
+                <span class="method-card__icon" aria-hidden="true">
+                  {iconLabels[method.icon]}
+                </span>
+                <span>
+                  <strong>{method.title}</strong>
+                  <small>{method.description}</small>
+                </span>
+              </button>
+            ))
+          }
+        </div>
+
+        <div class="availability-preview__manual" aria-label="Campos mockados">
+          <label class="field-label" for="availability-search">
+            Buscar fazenda, estrada ou referência
+          </label>
+          <input
+            id="availability-search"
+            class="field-control"
+            type="search"
+            placeholder="Ex.: Fazenda Santa Rosa, estrada, comunidade"
+            autocomplete="off"
+          />
+
+          <div class="availability-preview__coordinates">
+            <label>
+              <span class="field-label">Latitude</span>
+              <input
+                class="field-control"
+                type="text"
+                inputmode="decimal"
+                placeholder="-17.000000"
+              />
+            </label>
+            <label>
+              <span class="field-label">Longitude</span>
+              <input
+                class="field-control"
+                type="text"
+                inputmode="decimal"
+                placeholder="-46.000000"
+              />
+            </label>
+          </div>
+        </div>
+
+        <button class="mock-submit" type="button">
+          Verificar disponibilidade
+        </button>
+        <p class="privacy-note">
+          Sem cadastro nesta etapa. Não pedimos nome, telefone, e-mail ou CPF. A
+          consulta real entra na Onda 2 com dados mínimos e resposta simples.
+        </p>
+      </div>
+
+      <aside
+        class="visual-card availability-preview__map"
+        aria-label="Prévia visual sem Google Maps"
+      >
+        <div class="mock-map" aria-hidden="true">
+          <span class="mock-map__line mock-map__line--one"></span>
+          <span class="mock-map__line mock-map__line--two"></span>
+          <span class="mock-map__pin"></span>
+          <span class="mock-map__ring"></span>
+        </div>
+        <div class="availability-preview__map-copy">
+          <p class="section-kicker">Mapa sob demanda</p>
+          <h3>Ponto da propriedade, não infraestrutura.</h3>
+          <p>
+            Esta prévia representa apenas a escolha do local. Não há torres,
+            rotas, CTOs, distância até equipamentos ou tecnologia provável.
+          </p>
+          <a href={whatsappHref} target="_blank" rel="noopener noreferrer">
+            Enviar localização pelo WhatsApp
+          </a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<style>
+  .availability-preview__grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .availability-preview__panel {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .availability-preview__selected {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    border: 1px solid var(--color-border-green);
+    border-radius: var(--radius-card);
+    background: var(--color-green-soft);
+    color: var(--color-text-secondary);
+    padding: 0.85rem;
+  }
+
+  .availability-preview__selected span {
+    width: 0.8rem;
+    height: 0.8rem;
+    flex: 0 0 auto;
+    margin-top: 0.42rem;
+    border-radius: 999px;
+    background: var(--color-green-300);
+    box-shadow: 0 0 0 0.35rem rgba(161, 242, 124, 0.12);
+  }
+
+  .availability-preview__methods {
+    display: grid;
+    gap: 0.72rem;
+  }
+
+  .method-card {
+    display: grid;
+    width: 100%;
+    min-height: 4.9rem;
+    grid-template-columns: auto 1fr;
+    gap: 0.75rem;
+    align-items: center;
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-card);
+    background: rgba(2, 11, 12, 0.36);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    padding: 0.85rem;
+    text-align: left;
+    transition: var(--transition-interactive);
+  }
+
+  .method-card:hover,
+  .method-card:focus-visible,
+  .method-card--active {
+    border-color: var(--color-border-green);
+    background: rgba(99, 212, 59, 0.09);
+  }
+
+  .method-card__icon {
+    display: grid;
+    min-width: 3.2rem;
+    min-height: 3.2rem;
+    place-items: center;
+    border: 1px solid var(--color-border-green);
+    border-radius: 1rem;
+    color: var(--color-green-300);
+    font-size: 0.72rem;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .method-card strong,
+  .method-card small {
+    display: block;
+  }
+
+  .method-card small {
+    color: var(--color-text-muted);
+    font-size: 0.88rem;
+    line-height: 1.35;
+    margin-top: 0.15rem;
+  }
+
+  .availability-preview__manual,
+  .availability-preview__coordinates {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .mock-submit {
+    min-height: var(--button-height-large);
+    border: 1px solid var(--color-primary-hover);
+    border-radius: 1.1rem;
+    background: var(--gradient-primary);
+    color: var(--color-text-inverse);
+    cursor: pointer;
+    font-weight: 900;
+    padding: 0.95rem 1.2rem;
+  }
+
+  .availability-preview__map {
+    display: grid;
+    min-height: 31rem;
+    overflow: hidden;
+    padding: 0;
+  }
+
+  .availability-preview__map-copy {
+    display: grid;
+    gap: 0.65rem;
+    padding: 1.25rem;
+  }
+
+  .availability-preview__map-copy h3 {
+    font-size: clamp(1.45rem, 7vw, 2.25rem);
+    line-height: 1.08;
+  }
+
+  .availability-preview__map-copy p:not(.section-kicker) {
+    color: var(--color-text-muted);
+  }
+
+  .availability-preview__map-copy a {
+    color: var(--color-green-300);
+    font-weight: 850;
+    text-decoration: none;
+  }
+
+  @media (min-width: 42rem) {
+    .availability-preview__coordinates {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 60rem) {
+    .availability-preview__grid {
+      grid-template-columns: minmax(0, 0.94fr) minmax(26rem, 1.06fr);
+      align-items: stretch;
+      gap: 1.25rem;
+    }
+
+    .availability-preview__map {
+      min-height: auto;
+    }
+  }
+</style>
