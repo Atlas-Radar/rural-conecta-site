@@ -1,4 +1,5 @@
 ---
+import Hero from "../components/sections/Hero.astro";
 import Button from "../components/ui/Button.astro";
 import { createWhatsAppUrl, site } from "../data/site";
 import BaseLayout from "../layouts/BaseLayout.astro";
@@ -12,28 +13,7 @@ const whatsappHref = createWhatsAppUrl(
   title={`${site.name} | Internet Rural`}
   description={site.description}
 >
-  <section class="hero">
-    <div class="container hero__content">
-      <p class="eyebrow">Conexão que move o campo</p>
-      <h1>Internet de verdade para quem vive no campo.</h1>
-      <p class="hero__lead">
-        Fibra, rádio e soluções dedicadas para levar conexão estável até sua
-        casa, fazenda, comunidade ou empresa na zona rural.
-      </p>
-      <div class="hero__actions" aria-label="Ações principais">
-        <Button href="#disponibilidade">Verificar disponibilidade</Button>
-        <Button
-          href={whatsappHref}
-          variant="secondary"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Falar no WhatsApp
-        </Button>
-      </div>
-      <p class="hero__meta">Atendimento local • Sem cadastro para consultar</p>
-    </div>
-  </section>
+  <Hero />
 
   <section
     id="disponibilidade"

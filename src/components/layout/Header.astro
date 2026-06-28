@@ -1,30 +1,14 @@
 ---
-import { createWhatsAppUrl } from "../../data/site";
-
-const whatsappHref = createWhatsAppUrl();
-
 const navLinks = [
   { label: "Início", href: "/", isCurrent: true },
   { label: "Disponibilidade", href: "#disponibilidade" },
   { label: "Como funciona", href: "#como-funciona" },
-  {
-    label: "Atendimento",
-    href: whatsappHref,
-    target: "_blank",
-    rel: "noopener noreferrer",
-  },
 ];
 
 const mobileLinks = [
   { label: "Início", href: "/" },
   { label: "Disponibilidade", href: "#disponibilidade" },
   { label: "Como funciona", href: "#como-funciona" },
-  {
-    label: "WhatsApp",
-    href: whatsappHref,
-    target: "_blank",
-    rel: "noopener noreferrer",
-  },
 ];
 ---
 
@@ -57,8 +41,6 @@ const mobileLinks = [
               link.isCurrent && "site-header__nav-link--current",
             ]}
             href={link.href}
-            target={link.target}
-            rel={link.rel}
             aria-current={link.isCurrent ? "page" : undefined}
           >
             {link.label}
@@ -84,38 +66,6 @@ const mobileLinks = [
         </svg>
         <span>Verificar disponibilidade</span>
       </a>
-      <a
-        class="header-button header-button--primary"
-        href={whatsappHref}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <svg
-          class="header-button__icon header-button__icon--whatsapp"
-          aria-hidden="true"
-          focusable="false"
-          viewBox="0 0 24 24"
-          width="18"
-          height="18"
-        >
-          <path d="M6.4 19.2 7.2 16A7.5 7.5 0 1 1 10 18.1l-3.6 1.1Z"></path>
-          <path
-            d="M9.3 8.6c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.7 1.5c.1.3.1.5-.1.7l-.4.5c.6 1 1.4 1.8 2.5 2.4l.5-.5c.2-.2.5-.2.7-.1l1.5.7c.3.1.4.3.4.6v.5c0 .3-.1.5-.4.7-.4.3-.9.4-1.5.3-3-.3-5.7-2.9-6-6 0-.6.1-1.1.4-1.5Z"
-          ></path>
-        </svg>
-        <span>WhatsApp</span>
-        <svg
-          class="header-button__icon header-button__icon--arrow"
-          aria-hidden="true"
-          focusable="false"
-          viewBox="0 0 24 24"
-          width="18"
-          height="18"
-        >
-          <path d="M5 12h14"></path>
-          <path d="m13 6 6 6-6 6"></path>
-        </svg>
-      </a>
     </div>
 
     <details class="mobile-menu">
@@ -137,12 +87,7 @@ const mobileLinks = [
       <nav class="mobile-menu__panel" aria-label="Principal">
         {
           mobileLinks.map((link) => (
-            <a
-              class="mobile-menu__link"
-              href={link.href}
-              target={link.target}
-              rel={link.rel}
-            >
+            <a class="mobile-menu__link" href={link.href}>
               {link.label}
             </a>
           ))
@@ -251,14 +196,6 @@ const mobileLinks = [
     stroke-width: 2.1;
   }
 
-  .header-button__icon--whatsapp {
-    stroke-width: 1.9;
-  }
-
-  .header-button__icon--arrow {
-    margin-inline-start: -0.1rem;
-  }
-
   .header-button--secondary {
     border: 1px solid var(--color-border-subtle);
     background: rgba(245, 247, 243, 0.03);
@@ -268,18 +205,6 @@ const mobileLinks = [
   .header-button--secondary:hover {
     border-color: var(--color-border-green);
     color: var(--color-green-300);
-  }
-
-  .header-button--primary {
-    border: 1px solid var(--color-primary);
-    background: var(--gradient-primary);
-    color: var(--color-text-inverse);
-    box-shadow: 0 0.8rem 1.8rem rgba(99, 212, 59, 0.14);
-  }
-
-  .header-button--primary:hover {
-    border-color: var(--color-primary-hover);
-    transform: translateY(-1px);
   }
 
   .mobile-menu {
@@ -445,10 +370,6 @@ const mobileLinks = [
     .mobile-menu__toggle,
     .site-header__nav-link {
       transition: none;
-    }
-
-    .header-button--primary:hover {
-      transform: none;
     }
   }
 </style>
