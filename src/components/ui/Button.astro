@@ -5,6 +5,7 @@ export interface Props {
   size?: "default" | "small";
   target?: string;
   rel?: string;
+  [key: string]: unknown;
 }
 
 const {
@@ -13,12 +14,15 @@ const {
   size = "default",
   target,
   rel,
+  ...attributes
 } = Astro.props;
 
 const className = `button button--${variant} button--${size}`;
 ---
 
-<a class={className} href={href} target={target} rel={rel}><slot /></a>
+<a class={className} href={href} target={target} rel={rel} {...attributes}
+  ><slot /></a
+>
 
 <style>
   .button {

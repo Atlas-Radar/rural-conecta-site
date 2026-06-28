@@ -24,7 +24,6 @@ async function routeRegions(
 
 const sectionHeadings = [
   /Internet de verdade para quem vive no campo\./,
-  /Faça uma pré-análise do ponto da propriedade\./,
   /Três passos claros para sair da dúvida\./,
   /A solução certa vem depois da análise local\./,
   /Categorias para cada rotina no campo\./,
@@ -52,8 +51,8 @@ async function mockRegions(page: Page): Promise<void> {
   });
 }
 
-test.describe("Landing Onda 3", () => {
-  test("renders the refined landing with safe commercial content", async ({
+test.describe("Landing Onda 4", () => {
+  test("renders the landing without visible availability section", async ({
     page,
   }) => {
     await mockRegions(page);
@@ -74,9 +73,17 @@ test.describe("Landing Onda 3", () => {
     await expect(
       page.locator("#regioes").getByText("Outras localidades pela API pública"),
     ).toBeVisible();
+
+    await expect(page.locator(".availability-preview__compact")).toHaveCount(0);
+    await expect(
+      page.getByRole("link", { name: "Abrir pré-análise" }),
+    ).toHaveCount(0);
+    await expect(
+      page.getByRole("dialog", { name: "Pré-análise de disponibilidade" }),
+    ).toBeHidden();
   });
 
-  test("keeps viability without personal data fields or Google integrations", async ({
+  test("keeps modal-only viability without personal data fields or Google integrations", async ({
     page,
   }) => {
     const forbiddenRequests: string[] = [];
@@ -95,25 +102,9 @@ test.describe("Landing Onda 3", () => {
     await mockRegions(page);
     await page.goto("/");
 
-    const availability = page.locator("#disponibilidade");
-    await expect(
-      availability.getByLabel("Possível região/localidade"),
-    ).toContainText("Novo Barreiro");
-    await expect(
-      availability.getByRole("button", { name: /Usar minha localização/ }),
-    ).toBeVisible();
-    await expect(
-      availability.getByRole("button", { name: /Buscar fazenda ou local/ }),
-    ).toBeVisible();
-    await expect(
-      availability.getByRole("button", { name: /Escolher no mapa/ }),
-    ).toBeVisible();
-    await expect(
-      availability.getByRole("button", { name: /Informar coordenadas/ }),
-    ).toBeVisible();
-    await expect(
-      availability.getByRole("button", { name: "Consultar pré-análise" }),
-    ).toBeDisabled();
+    await expect(page.locator("#disponibilidade")).toHaveCount(1);
+    await expect(page.locator(".availability-preview__compact")).toHaveCount(0);
+    await expect(page.locator("[data-availability-modal]")).toBeHidden();
 
     await expect(page.getByLabel(/^Nome$/i)).toHaveCount(0);
     await expect(page.getByLabel(/^Telefone$/i)).toHaveCount(0);
@@ -124,7 +115,7 @@ test.describe("Landing Onda 3", () => {
     expect(forbiddenRequests).toEqual([]);
   });
 
-  test("supports basic navigation and contextual WhatsApp CTAs", async ({
+  test("supports navigation, modal CTA and contextual WhatsApp CTAs", async ({
     page,
   }) => {
     await mockRegions(page);
@@ -134,7 +125,12 @@ test.describe("Landing Onda 3", () => {
       .locator(".site-hero")
       .getByRole("link", { name: "Verificar disponibilidade" })
       .click();
-    await expect(page).toHaveURL(/#disponibilidade$/);
+    const modal = page.getByRole("dialog", {
+      name: "Pré-análise de disponibilidade",
+    });
+    await expect(modal).toBeVisible();
+    await modal.getByRole("button", { name: "Fechar pré-análise" }).click();
+    await expect(modal).toBeHidden();
 
     await page.getByRole("link", { name: "FAQ" }).last().click();
     await expect(page).toHaveURL(/#faq$/);

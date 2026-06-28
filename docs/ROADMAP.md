@@ -46,14 +46,14 @@ Landing institucional completa, visualmente premium, mobile-first e ultraleve.
 
 Execução atualizada: em vez de microetapas por seção, seguir `docs/INITIAL_UI_ROADMAP.md` no modo acelerado. Primeiro construir um mock visual completo da landing com todas as seções principais; depois refinar visual, textos, dados reais, iconização, animações leves e integrações.
 
-Status em 2026-06-28: Ondas 1, 2 e 3 concluídas localmente. A landing já tem mock completo, pré-viabilidade funcional sem Maps, base local configurável para API Atlas e refino visual/copy comercial seguro. Próximo foco recomendado: Onda 4, refatorando a pré-análise para um modal fullscreen aberto somente por CTA, com localização leve, coordenadas DD/DMS e preparação técnica para mapa sob demanda.
+Status em 2026-06-28: Ondas 1, 2, 3 e 4 concluídas localmente. A landing já tem mock completo, pré-viabilidade funcional sem Maps, base local configurável para API Atlas, refino visual/copy comercial seguro e pré-análise modal-only aberta por CTAs, com campo único DD/DMS e geolocalização explícita. Próximo foco recomendado: Onda 5, adicionando Google Maps sob demanda e polimento visual sem perder Maps inicial 0 KB.
 
 Ondas atuais:
 
 1. **Concluída** — Mock visual completo da landing, incluindo hero premium com imagem otimizada, consulta visual, seções institucionais, regiões mockadas/seguras, FAQ, CTA final e rodapé.
 2. **Concluída** — Viabilidade funcional com API real sem Maps, usando `docs/LANDING_API_INTEGRATION.md`: regiões públicas, geolocalização/coordenadas, request de pré-viabilidade, estados de retorno, WhatsApp contextual e base local configurável via `PUBLIC_ATLAS_API_BASE_URL`.
 3. **Concluída** — Refino visual e conteúdo após avaliação da página inteira e da base funcional: disponibilidade menos densa, planos/regiões/FAQ/copy comercial segura e prova social sem depoimentos fictícios.
-4. **Pendente** — Modal fullscreen de pré-análise, localização sem Maps, coordenadas DD/DMS e preparação para mapa.
+4. **Concluída** — Modal fullscreen de pré-análise aberto somente por CTA, sem seção visível na página principal, localização sem Maps, campo único DD/DMS, geolocalização explícita e preparação visual para mapa.
 5. **Pendente** — Onda combinada Google Maps sob demanda + iconização/animações/polimento, sem perder o requisito de Maps inicial 0 KB.
 6. **Pendente** — Qualidade final e produção.
 

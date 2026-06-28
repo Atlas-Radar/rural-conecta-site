@@ -22,6 +22,16 @@ import {
 } from "../../src/lib/availability/whatsapp";
 
 describe("availability coordinates", () => {
+  function expectParsedCoordinates(
+    text: string,
+    expected: { latitude: number; longitude: number },
+  ): void {
+    const coordinates = parseManualCoordinates(text);
+    expect(coordinates).not.toBeNull();
+    expect(coordinates?.latitude).toBeCloseTo(expected.latitude, 6);
+    expect(coordinates?.longitude).toBeCloseTo(expected.longitude, 6);
+  }
+
   it("validates latitude and longitude ranges", () => {
     expect(isValidLatitude(-16.448694)).toBe(true);
     expect(isValidLatitude(-91)).toBe(false);
@@ -31,12 +41,8 @@ describe("availability coordinates", () => {
     expect(isValidLongitude(181)).toBe(false);
   });
 
-  it("parses manual coordinate fields and pasted coordinate pairs", () => {
+  it("keeps compatibility with separate manual coordinate fields", () => {
     expect(parseManualCoordinates("-16.448694", "-46.906306")).toEqual({
-      latitude: -16.448694,
-      longitude: -46.906306,
-    });
-    expect(parseManualCoordinates("-16.448694, -46.906306", "")).toEqual({
       latitude: -16.448694,
       longitude: -46.906306,
     });
@@ -44,10 +50,55 @@ describe("availability coordinates", () => {
       latitude: -16.448694,
       longitude: -46.906306,
     });
-    expect(parseManualCoordinates("-120", "-46.906306")).toBeNull();
+  });
+
+  it("parses required decimal degree formats from one field", () => {
+    const expected = { latitude: -16.448694, longitude: -46.906306 };
+
+    expectParsedCoordinates("-16.448694, -46.906306", expected);
+    expectParsedCoordinates("-16.448694 -46.906306", expected);
+    expectParsedCoordinates("lat: -16.448694, lng: -46.906306", expected);
+    expectParsedCoordinates(
+      "Latitude -16.448694 Longitude -46.906306",
+      expected,
+    );
+    expectParsedCoordinates("-16,448694; -46,906306", expected);
+    expectParsedCoordinates("-16,448694 -46,906306", expected);
+  });
+
+  it("parses required DMS formats from one field", () => {
+    expectParsedCoordinates("16°26'55.3\"S, 46°54'22.7\"W", {
+      latitude: -16.448694444444445,
+      longitude: -46.90630555555556,
+    });
+    expectParsedCoordinates("16°26'55\"S, 46°54'23\"O", {
+      latitude: -16.448611111111113,
+      longitude: -46.906388888888884,
+    });
+    expectParsedCoordinates("16 26 55 S, 46 54 23 W", {
+      latitude: -16.448611111111113,
+      longitude: -46.906388888888884,
+    });
+    expectParsedCoordinates("S 16 26 55, O 46 54 23", {
+      latitude: -16.448611111111113,
+      longitude: -46.906388888888884,
+    });
+    expectParsedCoordinates("16° 26' 55\" S, 46° 54' 23\" O", {
+      latitude: -16.448611111111113,
+      longitude: -46.906388888888884,
+    });
+  });
+
+  it("rejects invalid coordinate entries", () => {
+    expect(parseManualCoordinates("91, -46.906306")).toBeNull();
+    expect(parseManualCoordinates("-16.448694, -181")).toBeNull();
+    expect(parseManualCoordinates("texto sem coordenadas")).toBeNull();
+    expect(parseManualCoordinates("-16.448694")).toBeNull();
+    expect(parseManualCoordinates("16 60 55 S, 46 54 23 W")).toBeNull();
+    expect(parseManualCoordinates("16 26 60 S, 46 54 23 W")).toBeNull();
+    expect(parseManualCoordinates("+16 26 55 S, 46 54 23 W")).toBeNull();
   });
 });
-
 describe("availability API normalization", () => {
   it("normalizes regions and ignores sensitive or extra fields", () => {
     const regions = normalizeRegionsResponse({
@@ -64,6 +115,8 @@ describe("availability API normalization", () => {
         },
         { nome: "romilda", fontes: ["fibra"] },
         { nome: "15 DE NOVEMBRO", fontes: ["fibra"] },
+        { nome: "TORRE CENTRO", fontes: ["radio"] },
+        { nome: "Repetidora Interna", fontes: ["radio"] },
         { nome: "", fontes: ["radio"] },
       ],
     });
@@ -71,6 +124,8 @@ describe("availability API normalization", () => {
     expect(regions).toEqual([{ name: "15 DE NOVEMBRO" }, { name: "ROMILDA" }]);
     expect(JSON.stringify(regions)).not.toContain("internal-id");
     expect(JSON.stringify(regions)).not.toContain("CTO");
+    expect(JSON.stringify(regions)).not.toContain("TORRE");
+    expect(JSON.stringify(regions)).not.toContain("Repetidora");
     expect(JSON.stringify(regions)).not.toContain("distancia");
   });
 

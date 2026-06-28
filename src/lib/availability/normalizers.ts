@@ -55,6 +55,10 @@ function publicMessage(value: unknown, fallback: string): string {
   return message || fallback;
 }
 
+function isPublicSafeRegionName(name: string): boolean {
+  return !/\b(?:torre|torres|repetidor|repetidora|cto)\b/i.test(name);
+}
+
 export function normalizeRegionsResponse(data: unknown): AvailabilityRegion[] {
   if (!isRecord(data)) {
     return [];
@@ -76,7 +80,7 @@ export function normalizeRegionsResponse(data: unknown): AvailabilityRegion[] {
     const name = cleanText((item as RegionsApiItem).nome);
     const key = name.toLocaleLowerCase("pt-BR");
 
-    if (!name || seen.has(key)) {
+    if (!name || !isPublicSafeRegionName(name) || seen.has(key)) {
       continue;
     }
 

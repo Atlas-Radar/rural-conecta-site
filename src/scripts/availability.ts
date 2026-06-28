@@ -26,6 +26,15 @@ const GEOLOCATION_OPTIONS: PositionOptions = {
   maximumAge: 300000,
 };
 
+const FOCUSABLE_SELECTOR = [
+  "a[href]",
+  "button:not([disabled])",
+  "input:not([disabled])",
+  "select:not([disabled])",
+  "textarea:not([disabled])",
+  '[tabindex]:not([tabindex="-1"])',
+].join(",");
+
 function queryRequired<T extends Element>(
   root: ParentNode,
   selector: string,
@@ -109,25 +118,45 @@ async function loadRegions(
   }
 }
 
+function getFocusableElements(container: HTMLElement): HTMLElement[] {
+  return Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR))
+    .filter((element) => !element.hidden)
+    .filter((element) => element.getAttribute("aria-hidden") !== "true");
+}
+
 function updateSubmitState(
   button: HTMLButtonElement,
   coordinates: Coordinates | null,
   helper: HTMLElement,
+  rawCoordinates: string,
+  isSubmitting: boolean,
 ): void {
-  const valid = coordinates !== null;
-  button.disabled = !valid;
+  button.disabled = isSubmitting || coordinates === null;
 
-  if (!valid) {
-    setText(
-      helper,
-      "Use sua localização ou preencha latitude e longitude para consultar a pré-análise.",
-    );
-  } else {
-    setText(
-      helper,
-      `Coordenadas prontas para pré-análise: ${formatCoordinate(coordinates.latitude)}, ${formatCoordinate(coordinates.longitude)}.`,
-    );
+  if (isSubmitting) {
+    return;
   }
+
+  if (coordinates) {
+    setText(
+      helper,
+      `Coordenadas prontas: ${formatCoordinate(coordinates.latitude)}, ${formatCoordinate(coordinates.longitude)}.`,
+    );
+    return;
+  }
+
+  if (rawCoordinates.trim()) {
+    setText(
+      helper,
+      "Não reconhecemos coordenadas válidas. Use DD, DMS ou lat,lng no mesmo campo.",
+    );
+    return;
+  }
+
+  setText(
+    helper,
+    "Informe o ponto da propriedade. Use localização em tempo real ou coordenadas.",
+  );
 }
 
 function updateWhatsAppLink(
@@ -147,11 +176,30 @@ function updateWhatsAppLink(
   link.textContent = result.whatsappLabel;
 }
 
+function renderLoadingResult(
+  panel: HTMLElement,
+  title: HTMLElement,
+  message: HTMLElement,
+  link: HTMLAnchorElement,
+  editButton: HTMLButtonElement,
+): void {
+  panel.hidden = false;
+  panel.dataset.status = "loading";
+  link.hidden = true;
+  editButton.hidden = true;
+  setText(title, "Consultando pré-análise...");
+  setText(
+    message,
+    "Aguarde enquanto verificamos somente latitude e longitude.",
+  );
+}
+
 function renderResult(
   panel: HTMLElement,
   title: HTMLElement,
   message: HTMLElement,
   link: HTMLAnchorElement,
+  editButton: HTMLButtonElement,
   digits: string,
   regionName: string,
   result: NormalizedViabilityResult,
@@ -159,12 +207,30 @@ function renderResult(
 ): void {
   panel.hidden = false;
   panel.dataset.status = result.status;
+  link.hidden = false;
+  editButton.hidden = false;
   setText(title, result.title);
   setText(message, result.message);
   updateWhatsAppLink(link, digits, regionName, result, coordinates);
 }
 
+function getGeolocationErrorMessage(error: GeolocationPositionError): string {
+  if (error.code === 1) {
+    return "Permissão negada. Informe coordenadas ou continue pelo WhatsApp para avaliação manual.";
+  }
+
+  if (error.code === 3) {
+    return "A localização demorou para responder. Tente novamente, informe coordenadas ou siga pelo WhatsApp.";
+  }
+
+  return "Localização indisponível agora. Use coordenadas ou fale pelo WhatsApp.";
+}
+
 function initAvailability(root: HTMLElement): void {
+  const modal = queryRequired<HTMLDialogElement>(
+    root,
+    "[data-availability-modal]",
+  );
   const regionSelect = queryRequired<HTMLSelectElement>(
     root,
     "[data-availability-region]",
@@ -173,38 +239,23 @@ function initAvailability(root: HTMLElement): void {
     root,
     "[data-availability-region-status]",
   );
-  const latitudeInput = queryRequired<HTMLInputElement>(
+  const coordinatesInput = queryRequired<HTMLInputElement>(
     root,
-    "[data-availability-latitude]",
-  );
-  const longitudeInput = queryRequired<HTMLInputElement>(
-    root,
-    "[data-availability-longitude]",
+    "[data-availability-coordinates]",
   );
   const helper = queryRequired<HTMLElement>(root, "[data-availability-helper]");
   const submitButton = queryRequired<HTMLButtonElement>(
     root,
     "[data-availability-submit]",
   );
-  const geolocationButton = queryRequired<HTMLButtonElement>(
+  const submitLabel = queryRequired<HTMLElement>(submitButton, "span");
+  const realtimeButton = queryRequired<HTMLButtonElement>(
     root,
-    "[data-availability-method='gps']",
+    "[data-availability-realtime-location]",
   );
-  const searchButton = queryRequired<HTMLButtonElement>(
-    root,
-    "[data-availability-method='search']",
-  );
-  const mapButton = queryRequired<HTMLButtonElement>(
-    root,
-    "[data-availability-method='map']",
-  );
-  const coordinateButton = queryRequired<HTMLButtonElement>(
-    root,
-    "[data-availability-method='pin']",
-  );
-  const searchInput = queryRequired<HTMLInputElement>(
-    root,
-    "[data-availability-search]",
+  const realtimeLabel = queryRequired<HTMLElement>(
+    realtimeButton,
+    "[data-availability-realtime-label]",
   );
   const resultPanel = queryRequired<HTMLElement>(
     root,
@@ -222,48 +273,173 @@ function initAvailability(root: HTMLElement): void {
     root,
     "[data-availability-whatsapp]",
   );
-  const digits = root.dataset.whatsappDigits ?? "";
-  let coordinates: Coordinates | null = parseManualCoordinates(
-    latitudeInput.value,
-    longitudeInput.value,
+  const editButton = queryRequired<HTMLButtonElement>(
+    root,
+    "[data-availability-edit]",
   );
+  const digits = root.dataset.whatsappDigits ?? "";
+  const defaultRealtimeLabel =
+    realtimeLabel.textContent?.trim() ?? "Pegar localização em tempo real";
+  const defaultSubmitLabel =
+    submitLabel.textContent?.trim() ?? "Consultar pré-análise";
 
-  function syncCoordinatesFromInputs(): void {
-    const parsed = parseManualCoordinates(
-      latitudeInput.value,
-      longitudeInput.value,
+  let coordinates: Coordinates | null = parseManualCoordinates(
+    coordinatesInput.value,
+  );
+  let opener: HTMLElement | null = null;
+  let regionsLoaded = false;
+  let isSubmitting = false;
+
+  function syncCoordinatesFromInput(): void {
+    coordinates = parseManualCoordinates(coordinatesInput.value);
+    updateSubmitState(
+      submitButton,
+      coordinates,
+      helper,
+      coordinatesInput.value,
+      isSubmitting,
     );
-
-    if (parsed && !longitudeInput.value.trim()) {
-      latitudeInput.value = formatCoordinate(parsed.latitude);
-      longitudeInput.value = formatCoordinate(parsed.longitude);
-    }
-
-    coordinates = parsed;
-    updateSubmitState(submitButton, coordinates, helper);
   }
 
   function fillCoordinates(nextCoordinates: Coordinates): void {
-    latitudeInput.value = formatCoordinate(nextCoordinates.latitude);
-    longitudeInput.value = formatCoordinate(nextCoordinates.longitude);
+    coordinatesInput.value = `${formatCoordinate(nextCoordinates.latitude)}, ${formatCoordinate(nextCoordinates.longitude)}`;
     coordinates = nextCoordinates;
-    updateSubmitState(submitButton, coordinates, helper);
+    updateSubmitState(
+      submitButton,
+      coordinates,
+      helper,
+      coordinatesInput.value,
+      isSubmitting,
+    );
   }
 
-  latitudeInput.addEventListener("input", syncCoordinatesFromInputs);
-  longitudeInput.addEventListener("input", syncCoordinatesFromInputs);
+  function ensureRegionsLoaded(): void {
+    if (regionsLoaded) {
+      return;
+    }
 
-  geolocationButton.addEventListener("click", () => {
+    regionsLoaded = true;
+    void loadRegions(regionSelect, regionStatus);
+  }
+
+  function restoreFocus(): void {
+    if (opener?.isConnected) {
+      opener.focus({ preventScroll: true });
+    }
+    opener = null;
+  }
+
+  function afterClose(): void {
+    document.body.classList.remove("availability-modal-is-open");
+    restoreFocus();
+  }
+
+  function closeModal(): void {
+    if (!modal.open) {
+      return;
+    }
+
+    if (typeof modal.close === "function") {
+      modal.close();
+      return;
+    }
+
+    modal.removeAttribute("open");
+    afterClose();
+  }
+
+  function openModal(trigger: HTMLElement): void {
+    opener = trigger;
+
+    if (typeof modal.showModal === "function" && !modal.open) {
+      modal.showModal();
+    } else {
+      modal.setAttribute("open", "");
+    }
+
+    document.body.classList.add("availability-modal-is-open");
+    ensureRegionsLoaded();
+    window.setTimeout(() => modal.focus({ preventScroll: true }), 0);
+  }
+
+  function trapFocus(event: KeyboardEvent): void {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeModal();
+      return;
+    }
+
+    if (event.key !== "Tab") {
+      return;
+    }
+
+    const focusableElements = getFocusableElements(modal);
+    const first = focusableElements[0];
+    const last = focusableElements[focusableElements.length - 1];
+
+    if (!first || !last) {
+      event.preventDefault();
+      modal.focus({ preventScroll: true });
+      return;
+    }
+
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+      return;
+    }
+
+    if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) {
+      return;
+    }
+
+    const trigger = target.closest<HTMLElement>(
+      "[data-availability-modal-open]",
+    );
+    if (!trigger) {
+      return;
+    }
+
+    event.preventDefault();
+    trigger.closest("details")?.removeAttribute("open");
+    openModal(trigger);
+  });
+
+  for (const closeButton of root.querySelectorAll<HTMLButtonElement>(
+    "[data-availability-modal-close]",
+  )) {
+    closeButton.addEventListener("click", closeModal);
+  }
+
+  modal.addEventListener("close", afterClose);
+  modal.addEventListener("cancel", (event) => {
+    event.preventDefault();
+    closeModal();
+  });
+  modal.addEventListener("keydown", trapFocus);
+
+  coordinatesInput.addEventListener("input", syncCoordinatesFromInput);
+
+  realtimeButton.addEventListener("click", () => {
     if (!("geolocation" in navigator)) {
       setText(
         helper,
-        "Seu navegador não informou a localização. Você pode preencher coordenadas ou seguir pelo WhatsApp.",
+        "Seu navegador não informou localização. Informe coordenadas ou siga pelo WhatsApp.",
       );
       return;
     }
 
-    geolocationButton.disabled = true;
-    setText(helper, "Solicitando localização do navegador...");
+    realtimeButton.disabled = true;
+    setText(realtimeLabel, "Solicitando localização em tempo real...");
+    setText(helper, "Solicitando localização em tempo real...");
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -271,57 +447,77 @@ function initAvailability(root: HTMLElement): void {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
         });
-        setText(
-          helper,
-          "Localização recebida. Revise as coordenadas e consulte a pré-análise.",
-        );
-        geolocationButton.disabled = false;
+        setText(helper, "Localização recebida.");
+        setText(realtimeLabel, defaultRealtimeLabel);
+        realtimeButton.disabled = false;
       },
-      () => {
-        setText(
-          helper,
-          "Não foi possível acessar sua localização. Você pode informar coordenadas ou falar pelo WhatsApp.",
-        );
-        geolocationButton.disabled = false;
+      (error) => {
+        setText(helper, getGeolocationErrorMessage(error));
+        setText(realtimeLabel, defaultRealtimeLabel);
+        realtimeButton.disabled = false;
       },
       GEOLOCATION_OPTIONS,
     );
   });
 
-  searchButton.addEventListener("click", () => {
-    searchInput.focus();
-    setText(
-      helper,
-      "Nesta versão, a consulta automática por fazenda ou referência ainda precisa de coordenadas.",
-    );
-  });
+  for (const action of root.querySelectorAll<HTMLButtonElement>(
+    "[data-availability-action]",
+  )) {
+    action.addEventListener("click", () => {
+      const actionName = action.dataset.availabilityAction;
 
-  mapButton.addEventListener("click", () => {
-    setText(
-      helper,
-      "O mapa entra em uma próxima etapa. Por enquanto, use sua localização, coordenadas ou WhatsApp.",
-    );
-  });
+      if (actionName === "search") {
+        setText(
+          helper,
+          "Busca por fazenda ou local entra na próxima onda. Nesta etapa, confirme o ponto por coordenadas.",
+        );
+        return;
+      }
 
-  coordinateButton.addEventListener("click", () => {
-    latitudeInput.focus();
-    setText(
-      helper,
-      "Informe latitude e longitude em decimal. Você também pode colar o par no campo de latitude.",
-    );
+      if (actionName === "map") {
+        setText(
+          helper,
+          "Escolher no mapa entra na próxima onda. Nenhum Google Maps foi carregado agora.",
+        );
+        return;
+      }
+
+      coordinatesInput.focus();
+      setText(helper, "Informe DD ou DMS no campo de coordenadas.");
+    });
+  }
+
+  editButton.addEventListener("click", () => {
+    resultPanel.hidden = true;
+    coordinatesInput.focus();
+    setText(helper, "Edite as coordenadas e consulte outro ponto.");
   });
 
   submitButton.addEventListener("click", async () => {
-    syncCoordinatesFromInputs();
+    syncCoordinatesFromInput();
 
     if (!coordinates) {
-      updateSubmitState(submitButton, coordinates, helper);
+      updateSubmitState(
+        submitButton,
+        coordinates,
+        helper,
+        coordinatesInput.value,
+        isSubmitting,
+      );
       return;
     }
 
+    isSubmitting = true;
     submitButton.disabled = true;
-    submitButton.textContent = "Consultando pré-análise...";
+    setText(submitLabel, "Consultando pré-análise...");
     setText(helper, "Consultando pré-análise...");
+    renderLoadingResult(
+      resultPanel,
+      resultTitle,
+      resultMessage,
+      resultLink,
+      editButton,
+    );
 
     try {
       const response = await fetch(VIABILITY_ENDPOINT, {
@@ -341,6 +537,7 @@ function initAvailability(root: HTMLElement): void {
         resultTitle,
         resultMessage,
         resultLink,
+        editButton,
         digits,
         regionSelect.value,
         result,
@@ -354,6 +551,7 @@ function initAvailability(root: HTMLElement): void {
         resultTitle,
         resultMessage,
         resultLink,
+        editButton,
         digits,
         regionSelect.value,
         result,
@@ -361,13 +559,26 @@ function initAvailability(root: HTMLElement): void {
       );
       setText(helper, result.message);
     } finally {
-      submitButton.textContent = "Consultar pré-análise";
-      updateSubmitState(submitButton, coordinates, helper);
+      isSubmitting = false;
+      setText(submitLabel, defaultSubmitLabel);
+      updateSubmitState(
+        submitButton,
+        coordinates,
+        helper,
+        coordinatesInput.value,
+        isSubmitting,
+      );
+      resultPanel.scrollIntoView({ block: "nearest" });
     }
   });
 
-  void loadRegions(regionSelect, regionStatus);
-  updateSubmitState(submitButton, coordinates, helper);
+  updateSubmitState(
+    submitButton,
+    coordinates,
+    helper,
+    coordinatesInput.value,
+    isSubmitting,
+  );
 }
 
 for (const root of document.querySelectorAll<HTMLElement>(

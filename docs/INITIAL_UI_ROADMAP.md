@@ -184,12 +184,14 @@ O objetivo é sair rapidamente de uma base parcial para uma página inteira nave
 
 ## Onda 4 — Modal fullscreen de pré-análise e localização sem Maps
 
+**Status:** concluída localmente em 2026-06-28. A pré-análise ficou modal-only: não há mais seção/chamada visível de disponibilidade na página principal; CTAs externos abrem o modal.
+
 **Objetivo:** refatorar a pré-análise para um modal fullscreen aberto somente após CTA, completando métodos de localização leves antes do Google Maps completo.
 
 **Escopo:**
 
 - Abrir a pré-análise somente após clique em CTAs como “Verificar disponibilidade”, “Fazer pré-análise” ou equivalentes.
-- Remover a seção/formulário longo da página principal e substituí-la por chamada compacta que abre o modal.
+- Remover a seção/formulário longo da página principal; manter apenas o modal aberto por CTAs externos.
 - Modal fullscreen mobile-first, com foco preso, Escape/fechar, scroll travado no fundo e acessibilidade de diálogo.
 - Conteúdo do modal idealmente visível em uma única tela mobile, reduzindo textos e passo-a-passo excessivos.
 - Geolocalização em tempo real com botão explícito “Pegar localização em tempo real”.
