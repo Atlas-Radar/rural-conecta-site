@@ -82,8 +82,10 @@ Use este template antes de gerar qualquer prompt de implementação para Codex U
 ## 9. Validações esperadas
 
 - `corepack pnpm format:check`
+- `corepack pnpm lint`
 - `corepack pnpm check`
-- `corepack pnpm test`
+- `corepack pnpm test` — testes unitários obrigatórios
+- `corepack pnpm test:e2e` — quando houver navegação, menu, CTA, responsividade ou interação visual
 - `corepack pnpm build`
 - Screenshot mobile:
 - Screenshot desktop:

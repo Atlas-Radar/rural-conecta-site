@@ -21,6 +21,7 @@ Este documento define o fluxo permanente para transformar o conceito visual da R
    - O prompt deve ser pronto para colar no Codex UI.
    - O prompt deve citar AGENTS.md, docs relevantes e skills do projeto.
    - O prompt deve exigir uso das imagens anexadas como referência visual, não como assets grandes do site.
+   - O prompt deve listar os comandos de validação, sempre incluindo `corepack pnpm test` como testes unitários obrigatórios.
 
 4. **Codex UI implementa**
    - Codex UI usa as imagens de referência anexadas para direção visual.
@@ -114,5 +115,6 @@ Commit sugerido para o usuário, sem executar commit
 - Não adiciona assets grandes sem justificativa.
 - Não carrega Maps, API real ou scripts de terceiros sem autorização específica.
 - Mantém WhatsApp acessível.
-- Passa em `corepack pnpm format:check`, `corepack pnpm check`, `corepack pnpm test` e `corepack pnpm build`, quando o escopo envolver código.
+- Passa em `corepack pnpm format:check`, `corepack pnpm lint`, `corepack pnpm check`, `corepack pnpm test` e `corepack pnpm build`, quando o escopo envolver código.
+- `corepack pnpm test` é obrigatório nos prompts e relatórios do Codex porque cobre os testes unitários.
 - Atualiza e passa `corepack pnpm test:e2e` quando a etapa alterar comportamento visual navegável, menu, CTA ou responsividade.

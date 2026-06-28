@@ -40,7 +40,7 @@ Use this skill after the user approves a Grill-me. It turns the approved answers
 6. List explicit non-goals.
 7. Repeat project constraints.
 8. Define acceptance criteria.
-9. Define validations.
+9. Define validations, always including unit tests.
 10. Require final report for manual user commit.
 
 Use `docs/CODEX_UI_PROMPT_TEMPLATE.md` as the canonical base.
@@ -87,11 +87,25 @@ Git status final
 Mensagem de commit sugerida para o usuário
 ```
 
+## Mandatory Validation Commands
+
+Every Codex UI prompt must include these commands in the validation section:
+
+- `corepack pnpm format:check`
+- `corepack pnpm lint`
+- `corepack pnpm check`
+- `corepack pnpm test` — mandatory unit tests; never omit, even for visual slices.
+- `corepack pnpm build`
+
+When the slice changes navigation, menu, CTA, responsiveness or visual interaction, also require:
+
+- `corepack pnpm test:e2e`
+
 ## Verification Checklist
 
 - [ ] Prompt is one slice only.
 - [ ] Prompt mentions the reference images.
 - [ ] Prompt includes forbidden dependencies and integrations.
-- [ ] Prompt requires validation commands.
+- [ ] Prompt requires validation commands, including `corepack pnpm test` for unit tests.
 - [ ] Prompt forbids commit/push.
 - [ ] Prompt asks Codex UI for evidence Hermes can audit.

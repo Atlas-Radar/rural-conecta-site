@@ -78,9 +78,13 @@ Critérios de aceite:
 
 Validações obrigatórias:
 - corepack pnpm format:check
+- corepack pnpm lint
 - corepack pnpm check
-- corepack pnpm test
+- corepack pnpm test # testes unitários obrigatórios
+- corepack pnpm test:e2e # obrigatório quando a etapa alterar navegação, menu, CTA, responsividade ou interação visual
 - corepack pnpm build
+
+O comando `corepack pnpm test` nunca deve ser omitido do relatório: ele roda os testes unitários do projeto e deve aparecer mesmo quando a etapa for majoritariamente visual.
 
 Se a tarefa for visual, entregue evidências:
 - screenshot mobile 390 px;

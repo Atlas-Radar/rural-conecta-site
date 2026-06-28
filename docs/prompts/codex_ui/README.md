@@ -29,3 +29,4 @@ Use nomes curtos e ordenáveis:
 - Não incluir secrets.
 - Não transformar prompt em autorização de commit/push.
 - Cada prompt deve conter escopo, fora de escopo, arquivos prováveis, validações e relatório final obrigatório.
+- Todo prompt deve listar `corepack pnpm test` como comando obrigatório de testes unitários, mesmo em slices visuais.
