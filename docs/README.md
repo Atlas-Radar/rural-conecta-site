@@ -13,7 +13,7 @@ Estado técnico atual:
 - build final sem JavaScript inicial, sem Google Maps, sem scripts de terceiros e sem imagens;
 - `dist/index.html` tem aproximadamente 4.8 KB e o CSS gerado aproximadamente 6.4 KB.
 
-Ainda não há Git inicializado, commit, remoto, CI, GitHub settings, Cloudflare ou Superpowers.
+Git local/remoto e Playwright local já foram configurados. CI/GitHub workflows, GitHub settings/rulesets, Cloudflare e Superpowers ficam para etapas futuras autorizadas.
 
 Use `ROADMAP.md` para status de fases e `DECISIONS_PENDING.md` para decisões abertas antes da implementação técnica.
 

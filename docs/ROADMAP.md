@@ -21,12 +21,13 @@ Concluído nesta etapa:
 - Validações passaram via `corepack pnpm`: `format:check`, `check`, `test` e `build`.
 - Build estático final gerou `dist/index.html` com aproximadamente 4.8 KB e CSS com aproximadamente 6.4 KB, sem JavaScript inicial, sem Google Maps, sem scripts de terceiros e sem imagens.
 - Repositório Git já inicializado em `main`, com upstream `origin/main`.
-- CI básica criada em `.github/workflows/ci.yml` para `pull_request` e `push` em `main`.
+- Playwright local configurado para TDD visual e auditoria responsiva.
 
 Ainda não executado por decisão de escopo:
 
 - commit;
 - push desta etapa;
+- CI/GitHub workflows;
 - GitHub settings/rulesets;
 - Cloudflare;
 - Superpowers.
@@ -37,7 +38,7 @@ API real, regiões center+zoom, marca, WhatsApp, privacidade e deploy.
 
 ## Fase 1 — Fundação
 
-Parcialmente concluída: contexto, documentação, skills, templates de governança, scaffold Astro static-first, qualidade local básica, build estático, Git local/remoto e CI básica estão criados. Ainda faltam commit/push desta etapa e GitHub settings/rulesets.
+Parcialmente concluída: contexto, documentação, skills, templates de governança, scaffold Astro static-first, qualidade local básica, build estático, Git local/remoto e Playwright local estão criados. CI/GitHub workflows ficam para pré-produção; ainda faltam GitHub settings/rulesets.
 
 ## Fase 2 — Landing estática mobile-first
 

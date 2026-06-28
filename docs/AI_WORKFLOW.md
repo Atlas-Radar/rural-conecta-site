@@ -13,8 +13,9 @@ Estado local atual:
 - build final estático sem JavaScript inicial, sem Google Maps, sem scripts de terceiros e sem imagens;
 - `dist/index.html` tem aproximadamente 4.8 KB e o CSS gerado aproximadamente 6.4 KB;
 - Git já foi inicializado em `main`, com upstream `origin/main`;
-- CI básica criada em `.github/workflows/ci.yml`;
-- sem push desta etapa, GitHub settings/rulesets, Cloudflare ou Superpowers.
+- Playwright local configurado para TDD visual e auditoria responsiva;
+- CI/GitHub workflows ficam para fase de pré-produção;
+- sem GitHub settings/rulesets, Cloudflare ou Superpowers.
 
 Próximos agentes podem atuar sobre a base Astro existente, mantendo escopo pequeno. O trabalho pode ocorrer direto em `main` enquanto o dev interino autorizar, mas push, merge, deploy e settings remotos continuam exigindo autorização explícita.
 
