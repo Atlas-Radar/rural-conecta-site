@@ -182,21 +182,27 @@ O objetivo é sair rapidamente de uma base parcial para uma página inteira nave
 - Melhorias no footer.
 - Dados comerciais reais de regiões, planos e depoimentos quando forem enviados.
 
-## Onda 4 — Localização sem Maps e preparação para Maps
+## Onda 4 — Modal fullscreen de pré-análise e localização sem Maps
 
-**Objetivo:** completar métodos de localização leves antes do Google Maps completo.
+**Objetivo:** refatorar a pré-análise para um modal fullscreen aberto somente após CTA, completando métodos de localização leves antes do Google Maps completo.
 
 **Escopo:**
 
-- Geolocalização em duas etapas.
-- Entrada manual de coordenadas.
-- Estado de ponto selecionado.
+- Abrir a pré-análise somente após clique em CTAs como “Verificar disponibilidade”, “Fazer pré-análise” ou equivalentes.
+- Remover a seção/formulário longo da página principal e substituí-la por chamada compacta que abre o modal.
+- Modal fullscreen mobile-first, com foco preso, Escape/fechar, scroll travado no fundo e acessibilidade de diálogo.
+- Conteúdo do modal idealmente visível em uma única tela mobile, reduzindo textos e passo-a-passo excessivos.
+- Geolocalização em tempo real com botão explícito “Pegar localização em tempo real”.
+- Entrada manual de coordenadas em DD e DMS, com conversão automática.
+- Aceitar latitude e longitude em DD no mesmo campo/label quando separadas por vírgula.
+- Estado de ponto selecionado dentro do modal.
+- Resultado final também dentro do modal, não abaixo da seção.
 - Fallback WhatsApp.
-- Preparar contrato visual para abrir mapa sob demanda.
+- Preparar contrato visual e estado para abrir mapa sob demanda na próxima onda.
 
-## Onda 5 — Google Maps sob demanda
+## Onda 5 — Google Maps sob demanda + iconização/animações/polimento
 
-**Objetivo:** adicionar mapa somente após ação explícita do usuário.
+**Objetivo:** adicionar mapa somente após ação explícita do usuário e aplicar iconização, microinterações e polimento visual sem pesar a página.
 
 **Escopo:**
 
@@ -205,29 +211,19 @@ O objetivo é sair rapidamente de uma base parcial para uma página inteira nave
 - Marcador/toque/arraste.
 - Confirmar ponto.
 - Fallback para Maps lento ou indisponível.
+- Ícones SVG inline consistentes para modal, métodos, CTAs, cards e estados.
+- Microinterações leves para abrir/fechar modal, seleção de método, resultado e CTAs.
+- Animações CSS discretas com `prefers-reduced-motion` obrigatório.
+- Ajustes finos de foco/hover/active e detalhes visuais.
 
 **Critérios:**
 
 - Maps inicial continua 0 KB.
 - Nada de torres, CTOs, rotas ou cobertura técnica pública.
 - O mapa serve apenas para escolher ponto; a API decide disponibilidade.
+- Sem bibliotecas de animação, pacotes grandes de ícones, efeitos permanentes pesados ou scripts de terceiros fora do Maps sob demanda aprovado.
 
-## Onda 6 — Animações, iconização avançada e polimento
-
-**Objetivo:** adicionar qualidade visual final sem pesar a página.
-
-**Escopo:**
-
-- Ícones SVG melhores e consistentes.
-- Microinterações leves.
-- Animações CSS discretas.
-- `prefers-reduced-motion` obrigatório.
-- Ajustes finos de foco/hover/active.
-- Melhorias de detalhes visuais.
-
-**Fora de escopo por padrão:** bibliotecas de animação, pacotes grandes de ícones, efeitos permanentes pesados.
-
-## Onda 7 — Qualidade final e produção
+## Onda 6 — Qualidade final e produção
 
 **Objetivo:** preparar o site para publicação.
 
