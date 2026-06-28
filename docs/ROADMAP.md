@@ -48,7 +48,7 @@ Execução atualizada: em vez de microetapas por seção, seguir `docs/INITIAL_U
 
 Ondas atuais:
 
-1. Mock visual completo da landing, incluindo hero premium com imagem otimizada, consulta visual sem integração, seções institucionais, FAQ, CTA final e rodapé.
+1. Mock visual completo da landing, incluindo hero premium com imagem otimizada, consulta visual sem integração, seções institucionais, regiões mockadas a partir de `docs/REGIONS_REFERENCE.md`, FAQ, CTA final e rodapé.
 2. Viabilidade funcional com API real, usando os dados/endpoints confirmados pelo projeto.
 3. Refino visual e conteúdo após avaliação da página inteira e da base funcional.
 4. Localização sem Maps e preparação para mapa.

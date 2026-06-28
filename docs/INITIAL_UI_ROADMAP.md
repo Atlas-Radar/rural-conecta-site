@@ -86,6 +86,7 @@ O objetivo é sair rapidamente de uma base parcial para uma página inteira nave
   - chips/cards;
   - disponibilidade exata depende da coordenada;
   - sem mapa técnico.
+  - usar seleção curta/mockada das principais localidades em `docs/REGIONS_REFERENCE.md`; a lista completa entra nos refinamentos.
 - Empresas e fazendas:
   - abordagem consultiva;
   - sem SLA/IP/preços não confirmados.
@@ -109,6 +110,8 @@ O objetivo é sair rapidamente de uma base parcial para uma página inteira nave
 - `src/styles/tokens.css`, apenas ajustes pequenos;
 - assets otimizados em `src/assets/` ou `public/`;
 - testes em `tests/e2e/` e `tests/unit/` quando aplicável.
+- `docs/REGIONS_REFERENCE.md` como referência de localidades para mocks e refinamentos.
+- `docs/UI_REFERENCE_IMAGES.md` como índice das imagens desktop/mobile da Onda 1.
 
 **Referências aprovadas para o hero:**
 
