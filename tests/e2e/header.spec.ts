@@ -1,13 +1,29 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Page, type Route } from "@playwright/test";
 
-const atlasApiBaseUrl = (
+const configuredAtlasApiBaseUrl = (
   (globalThis as { process?: { env?: Record<string, string | undefined> } })
     .process?.env?.PUBLIC_ATLAS_API_BASE_URL ?? "https://atlassoftware.ia.br"
 ).replace(/\/+$/, "");
-const regionsUrl = `${atlasApiBaseUrl}/api/public/regioes`;
+const defaultAtlasApiBaseUrl = "https://atlassoftware.ia.br";
+const regionUrlPatterns = Array.from(
+  new Set([
+    `${configuredAtlasApiBaseUrl}/api/public/regioes`,
+    `${defaultAtlasApiBaseUrl}/api/public/regioes`,
+    "**/api/public/regioes",
+  ]),
+);
+
+async function routeRegions(
+  page: Page,
+  handler: (route: Route) => Promise<void>,
+): Promise<void> {
+  for (const pattern of regionUrlPatterns) {
+    await page.route(pattern, handler);
+  }
+}
 
 async function mockRegions(page: Page): Promise<void> {
-  await page.route(regionsUrl, async (route) => {
+  await routeRegions(page, async (route) => {
     await route.fulfill({
       contentType: "application/json",
       body: JSON.stringify({

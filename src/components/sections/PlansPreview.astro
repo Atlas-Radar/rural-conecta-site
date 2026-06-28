@@ -12,23 +12,33 @@ import { planPreviews } from "../../data/site";
     <div
       class="section-heading section-heading--centered section-heading--inverted"
     >
-      <p class="section-kicker">Planos e benefícios</p>
+      <p class="section-kicker">Planos sob consulta</p>
       <h2 id="planos-title" class="section-title">
-        Opções comerciais em mock, prontas para edição.
+        Categorias para cada rotina no campo.
       </h2>
       <p class="section-lede">
-        Sem preços, velocidades finais ou promessas definitivas nesta onda. Cada
-        card sinaliza que a condição depende da consulta.
+        Sem preço ou velocidade inventados. A melhor recomendação depende da
+        pré-análise do ponto e da avaliação manual da equipe.
       </p>
     </div>
 
-    <div class="plans-preview__cards" aria-label="Planos em demonstração">
+    <p class="plans-preview__note">
+      Use os cards como guia inicial: casa rural, sítio/fazenda ou empresa
+      produtiva. A condição comercial é confirmada no atendimento.
+    </p>
+
+    <div
+      class="plans-preview__cards"
+      aria-label="Categorias de planos sob consulta"
+    >
       {
         planPreviews.map((plan) => (
           <article class="plan-card">
-            <p class="plan-card__tag">Mock comercial</p>
-            <h3>{plan.name}</h3>
-            <p class="plan-card__audience">{plan.audience}</p>
+            <div class="plan-card__header">
+              <p class="plan-card__tag">Sob consulta</p>
+              <h3>{plan.name}</h3>
+              <p class="plan-card__audience">{plan.audience}</p>
+            </div>
             <dl class="plan-card__facts">
               <div>
                 <dt>Velocidade</dt>
@@ -45,7 +55,7 @@ import { planPreviews } from "../../data/site";
               ))}
             </ul>
             <Button href="#disponibilidade" variant="secondary">
-              Consultar disponibilidade
+              Fazer pré-análise
             </Button>
           </article>
         ))
@@ -55,20 +65,39 @@ import { planPreviews } from "../../data/site";
 </section>
 
 <style>
+  .plans-preview__note {
+    max-width: 42rem;
+    margin: -0.35rem auto 1rem;
+    color: rgba(4, 17, 13, 0.7);
+    font-weight: 720;
+    text-align: center;
+  }
+
   .plans-preview__cards {
-    display: grid;
-    gap: 1rem;
+    display: flex;
+    gap: 0.9rem;
+    margin-inline: calc(var(--container-padding) * -1);
+    overflow-x: auto;
+    padding: 0 var(--container-padding) 0.35rem;
+    scroll-snap-type: x mandatory;
   }
 
   .plan-card {
     display: grid;
+    min-width: min(20.5rem, 86vw);
     gap: 0.95rem;
     border: 1px solid rgba(4, 17, 13, 0.14);
     border-radius: var(--radius-card-lg);
     background: #ffffff;
     color: var(--color-text-inverse);
     padding: clamp(1.15rem, 4vw, 1.55rem);
+    scroll-snap-align: start;
     box-shadow: 0 1rem 2.2rem rgba(4, 17, 13, 0.08);
+  }
+
+  .plan-card__header {
+    display: grid;
+    gap: 0.5rem;
   }
 
   .plan-card__tag {
@@ -83,13 +112,13 @@ import { planPreviews } from "../../data/site";
   }
 
   .plan-card h3 {
-    font-size: clamp(1.35rem, 6vw, 1.75rem);
-    line-height: 1.12;
+    font-size: clamp(1.45rem, 6vw, 1.85rem);
+    line-height: 1.08;
   }
 
   .plan-card__audience {
     color: rgba(4, 17, 13, 0.68);
-    font-weight: 750;
+    font-weight: 760;
   }
 
   .plan-card__facts {
@@ -133,8 +162,15 @@ import { planPreviews } from "../../data/site";
 
   @media (min-width: 58rem) {
     .plans-preview__cards {
+      display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      align-items: stretch;
+      margin-inline: 0;
+      overflow: visible;
+      padding: 0;
+    }
+
+    .plan-card {
+      min-width: 0;
     }
   }
 </style>

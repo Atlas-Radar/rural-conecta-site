@@ -1,14 +1,39 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Page, type Route } from "@playwright/test";
 
-const atlasApiBaseUrl = (
+const configuredAtlasApiBaseUrl = (
   (globalThis as { process?: { env?: Record<string, string | undefined> } })
     .process?.env?.PUBLIC_ATLAS_API_BASE_URL ?? "https://atlassoftware.ia.br"
 ).replace(/\/+$/, "");
-const regionsUrl = `${atlasApiBaseUrl}/api/public/regioes`;
-const viabilityUrl = `${atlasApiBaseUrl}/api/public/viabilidade-basica`;
+const defaultAtlasApiBaseUrl = "https://atlassoftware.ia.br";
+const apiUrlPatterns = {
+  regions: Array.from(
+    new Set([
+      `${configuredAtlasApiBaseUrl}/api/public/regioes`,
+      `${defaultAtlasApiBaseUrl}/api/public/regioes`,
+      "**/api/public/regioes",
+    ]),
+  ),
+  viability: Array.from(
+    new Set([
+      `${configuredAtlasApiBaseUrl}/api/public/viabilidade-basica`,
+      `${defaultAtlasApiBaseUrl}/api/public/viabilidade-basica`,
+      "**/api/public/viabilidade-basica",
+    ]),
+  ),
+};
+
+async function routeApi(
+  page: Page,
+  patterns: string[],
+  handler: (route: Route) => Promise<void>,
+): Promise<void> {
+  for (const pattern of patterns) {
+    await page.route(pattern, handler);
+  }
+}
 
 async function mockRegions(page: Page): Promise<void> {
-  await page.route(regionsUrl, async (route) => {
+  await routeApi(page, apiUrlPatterns.regions, async (route) => {
     await route.fulfill({
       contentType: "application/json",
       body: JSON.stringify({
@@ -23,6 +48,12 @@ async function mockRegions(page: Page): Promise<void> {
   });
 }
 
+async function mockViability(
+  page: Page,
+  handler: (route: Route) => Promise<void>,
+): Promise<void> {
+  await routeApi(page, apiUrlPatterns.viability, handler);
+}
 async function fillValidCoordinates(page: Page): Promise<void> {
   const availability = page.locator("#disponibilidade");
   await availability.getByLabel("Latitude").fill("-16.448694");
@@ -56,7 +87,7 @@ test.describe("Disponibilidade Onda 2", () => {
     await mockRegions(page);
 
     let postedPayload: unknown = null;
-    await page.route(viabilityUrl, async (route) => {
+    await mockViability(page, async (route) => {
       postedPayload = route.request().postDataJSON();
       await route.fulfill({
         contentType: "application/json",
@@ -95,7 +126,7 @@ test.describe("Disponibilidade Onda 2", () => {
     page,
   }) => {
     await mockRegions(page);
-    await page.route(viabilityUrl, async (route) => {
+    await mockViability(page, async (route) => {
       await route.fulfill({
         contentType: "application/json",
         body: JSON.stringify({
@@ -138,7 +169,7 @@ test.describe("Disponibilidade Onda 2", () => {
 
   test("resultado negativo oferece avaliação manual", async ({ page }) => {
     await mockRegions(page);
-    await page.route(viabilityUrl, async (route) => {
+    await mockViability(page, async (route) => {
       await route.fulfill({
         contentType: "application/json",
         body: JSON.stringify({
@@ -169,7 +200,7 @@ test.describe("Disponibilidade Onda 2", () => {
 
   test("erro 429 mostra mensagem de limite", async ({ page }) => {
     await mockRegions(page);
-    await page.route(viabilityUrl, async (route) => {
+    await mockViability(page, async (route) => {
       await route.fulfill({
         status: 429,
         contentType: "application/json",
@@ -191,7 +222,7 @@ test.describe("Disponibilidade Onda 2", () => {
 
   test("erro 503 mostra fallback para atendimento manual", async ({ page }) => {
     await mockRegions(page);
-    await page.route(viabilityUrl, async (route) => {
+    await mockViability(page, async (route) => {
       await route.fulfill({
         status: 503,
         contentType: "application/json",
@@ -218,7 +249,7 @@ test.describe("Disponibilidade Onda 2", () => {
     await mockRegions(page);
 
     let postCount = 0;
-    await page.route(viabilityUrl, async (route) => {
+    await mockViability(page, async (route) => {
       postCount += 1;
       await route.fulfill({
         contentType: "application/json",

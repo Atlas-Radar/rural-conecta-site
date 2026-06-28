@@ -1,6 +1,8 @@
 ---
 import Button from "../ui/Button.astro";
 import { availabilityRegions } from "../../data/site";
+
+const highlightedRegions = availabilityRegions.slice(0, 8);
 ---
 
 <section
@@ -10,32 +12,40 @@ import { availabilityRegions } from "../../data/site";
 >
   <div class="container regions-preview__grid">
     <div class="section-heading regions-preview__copy">
-      <p class="section-kicker">Regiões atendidas</p>
+      <p class="section-kicker">Regiões e localidades</p>
       <h2 id="regioes-title" class="section-title">
-        Principais localidades para o mock da Onda 1.
+        A lista ajuda a começar; a coordenada confirma o ponto.
       </h2>
       <p class="section-lede">
-        A lista abaixo é curta e revisável. A disponibilidade exata depende da
-        coordenada da propriedade e da validação de viabilidade.
+        A API pública informa possíveis localidades para orientar o visitante.
+        Isso não é promessa final de cobertura: a confirmação depende da
+        coordenada da propriedade e da avaliação manual.
       </p>
       <div class="regions-preview__notice">
-        Não há mapa técnico, rotas, torres, CTOs ou desenho de cobertura nesta
-        seção.
+        Não exibimos dados técnicos de rede, rotas ou desenho de cobertura
+        pública.
       </div>
       <div class="action-row">
-        <Button href="#disponibilidade">Verificar disponibilidade</Button>
+        <Button href="#disponibilidade">Consultar pré-análise</Button>
       </div>
     </div>
 
     <div class="visual-card regions-preview__panel">
+      <div class="regions-preview__panel-header">
+        <p class="section-kicker">Localidades em destaque</p>
+        <p>Use como orientação inicial. A lista completa vem da consulta.</p>
+      </div>
       <ul class="regions-preview__chips" aria-label="Localidades em destaque">
-        {availabilityRegions.map((region) => <li>{region}</li>)}
+        {highlightedRegions.map((region) => <li>{region}</li>)}
+        <li class="regions-preview__chip-muted">
+          Outras localidades pela API pública
+        </li>
       </ul>
       <div class="regions-preview__diagram" aria-hidden="true">
         <span></span>
         <span></span>
         <span></span>
-        <strong>Coordenada</strong>
+        <strong>Ponto informado</strong>
       </div>
     </div>
   </div>
@@ -62,6 +72,15 @@ import { availabilityRegions } from "../../data/site";
     gap: 1rem;
   }
 
+  .regions-preview__panel-header {
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .regions-preview__panel-header p:not(.section-kicker) {
+    color: var(--color-text-muted);
+  }
+
   .regions-preview__chips {
     display: flex;
     flex-wrap: wrap;
@@ -80,6 +99,11 @@ import { availabilityRegions } from "../../data/site";
     font-size: 0.92rem;
     font-weight: 760;
     padding: 0.55rem 0.8rem;
+  }
+
+  .regions-preview__chips .regions-preview__chip-muted {
+    border-color: rgba(216, 155, 95, 0.35);
+    color: var(--color-text-muted);
   }
 
   .regions-preview__diagram {

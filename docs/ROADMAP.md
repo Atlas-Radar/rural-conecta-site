@@ -46,15 +46,17 @@ Landing institucional completa, visualmente premium, mobile-first e ultraleve.
 
 Execução atualizada: em vez de microetapas por seção, seguir `docs/INITIAL_UI_ROADMAP.md` no modo acelerado. Primeiro construir um mock visual completo da landing com todas as seções principais; depois refinar visual, textos, dados reais, iconização, animações leves e integrações.
 
+Status em 2026-06-28: Ondas 1, 2 e 3 concluídas localmente. A landing já tem mock completo, pré-viabilidade funcional sem Maps, base local configurável para API Atlas e refino visual/copy comercial seguro. Próximo foco recomendado: Onda 4, completando localização sem Maps e preparando a experiência para abrir mapa sob demanda.
+
 Ondas atuais:
 
-1. Mock visual completo da landing, incluindo hero premium com imagem otimizada, consulta visual sem integração, seções institucionais, regiões mockadas a partir de `docs/REGIONS_REFERENCE.md`, FAQ, CTA final e rodapé.
-2. Viabilidade funcional com API real sem Maps, usando `docs/LANDING_API_INTEGRATION.md`: regiões públicas, geolocalização/coordenadas, request de pré-viabilidade, estados de retorno e WhatsApp contextual.
-3. Refino visual e conteúdo após avaliação da página inteira e da base funcional.
-4. Localização sem Maps e preparação para mapa.
-5. Google Maps sob demanda.
-6. Animações, iconização avançada e polimento.
-7. Qualidade final e produção.
+1. **Concluída** — Mock visual completo da landing, incluindo hero premium com imagem otimizada, consulta visual, seções institucionais, regiões mockadas/seguras, FAQ, CTA final e rodapé.
+2. **Concluída** — Viabilidade funcional com API real sem Maps, usando `docs/LANDING_API_INTEGRATION.md`: regiões públicas, geolocalização/coordenadas, request de pré-viabilidade, estados de retorno, WhatsApp contextual e base local configurável via `PUBLIC_ATLAS_API_BASE_URL`.
+3. **Concluída** — Refino visual e conteúdo após avaliação da página inteira e da base funcional: disponibilidade menos densa, planos/regiões/FAQ/copy comercial segura e prova social sem depoimentos fictícios.
+4. **Pendente** — Localização sem Maps e preparação para mapa.
+5. **Pendente** — Google Maps sob demanda.
+6. **Pendente** — Animações, iconização avançada e polimento.
+7. **Pendente** — Qualidade final e produção.
 
 Prompts podem ser mais longos e usar subagentes/execuções paralelas para assets, performance, testes e auditoria, desde que respeitem os limites do projeto e não façam commit/push sem autorização.
 

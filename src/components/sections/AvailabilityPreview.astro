@@ -7,6 +7,13 @@ const iconLabels = {
   map: "Mapa",
   pin: "Coord.",
 } as const;
+
+const routeSteps = [
+  "Escolha a possível região/localidade",
+  "Informe o ponto da propriedade",
+  "Consulte a pré-análise",
+  "Continue pelo WhatsApp",
+] as const;
 ---
 
 <section
@@ -18,14 +25,25 @@ const iconLabels = {
     <div class="section-heading section-heading--centered">
       <p class="section-kicker">Pré-análise de disponibilidade</p>
       <h2 id="disponibilidade-title" class="section-title">
-        Verifique a disponibilidade na sua região.
+        Faça uma pré-análise do ponto da propriedade.
       </h2>
       <p class="section-lede">
-        Selecione uma possível localidade e informe o ponto da propriedade. A
-        consulta usa coordenadas, não exige cadastro e não garante a instalação
-        final sem confirmação da equipe.
+        Escolha uma possível região/localidade e informe coordenadas do local. A
+        resposta mostra apenas um indício de viabilidade; a confirmação final
+        continua com avaliação manual da equipe.
       </p>
     </div>
+
+    <ol class="availability-preview__path" aria-label="Caminho da consulta">
+      {
+        routeSteps.map((step, index) => (
+          <li>
+            <span aria-hidden="true">{index + 1}</span>
+            {step}
+          </li>
+        ))
+      }
+    </ol>
 
     <div
       class="availability-preview__grid"
@@ -33,106 +51,131 @@ const iconLabels = {
       data-whatsapp-digits={site.whatsapp.digits}
     >
       <div class="visual-card availability-preview__panel">
-        <label class="field-label" for="availability-region">
-          Possível região/localidade
-        </label>
-        <select
-          id="availability-region"
-          class="field-control"
-          data-availability-region
-        >
-          {
-            availabilityRegions.map((region) => (
-              <option value={region} selected={region === "Novo Barreiro"}>
-                {region}
-              </option>
-            ))
-          }
-        </select>
-
-        <div
-          class="availability-preview__selected"
-          aria-live="polite"
-          data-availability-region-status
-        >
-          <span aria-hidden="true"></span>
-          <p>Carregando possíveis regiões...</p>
+        <div class="availability-preview__panel-header">
+          <p class="section-kicker">Consulta sem cadastro</p>
+          <h3>Comece pela região e pelo ponto</h3>
+          <p>
+            No celular, use sua localização. Se preferir, informe latitude e
+            longitude em decimal.
+          </p>
         </div>
 
         <div
-          class="availability-preview__methods"
+          class="availability-preview__block availability-preview__block--region"
+        >
+          <label class="field-label" for="availability-region">
+            Possível região/localidade
+          </label>
+          <select
+            id="availability-region"
+            class="field-control"
+            data-availability-region
+          >
+            {
+              availabilityRegions.map((region) => (
+                <option value={region} selected={region === "Novo Barreiro"}>
+                  {region}
+                </option>
+              ))
+            }
+          </select>
+
+          <div
+            class="availability-preview__selected"
+            aria-live="polite"
+            data-availability-region-status
+          >
+            <span aria-hidden="true"></span>
+            <p>Carregando possíveis regiões...</p>
+          </div>
+        </div>
+
+        <div
+          class="availability-preview__block availability-preview__block--methods"
           role="group"
           aria-labelledby="location-methods-title"
         >
           <p id="location-methods-title" class="field-label">
             Como deseja localizar sua propriedade?
           </p>
-          {
-            locationMethods.map((method, index) => (
-              <button
-                class:list={[
-                  "method-card",
-                  index === 0 && "method-card--active",
-                ]}
-                type="button"
-                aria-pressed={index === 0 ? "true" : "false"}
-                data-availability-method={method.icon}
-              >
-                <span class="method-card__icon" aria-hidden="true">
-                  {iconLabels[method.icon]}
-                </span>
-                <span>
-                  <strong>{method.title}</strong>
-                  <small>{method.description}</small>
-                </span>
-              </button>
-            ))
-          }
+          <div class="availability-preview__methods">
+            {
+              locationMethods.map((method, index) => (
+                <button
+                  class:list={[
+                    "method-card",
+                    index === 0 && "method-card--active",
+                  ]}
+                  type="button"
+                  aria-pressed={index === 0 ? "true" : "false"}
+                  data-availability-method={method.icon}
+                >
+                  <span class="method-card__icon" aria-hidden="true">
+                    {iconLabels[method.icon]}
+                  </span>
+                  <span>
+                    <strong>{method.title}</strong>
+                    <small>{method.description}</small>
+                  </span>
+                </button>
+              ))
+            }
+          </div>
         </div>
 
         <div
           class="availability-preview__manual"
-          aria-label="Campos de coordenadas"
+          aria-label="Alternativas de localização sem mapa"
         >
-          <label class="field-label" for="availability-search">
-            Buscar fazenda, estrada ou referência
-          </label>
-          <input
-            id="availability-search"
-            class="field-control"
-            type="search"
-            placeholder="Ex.: Fazenda Santa Rosa, estrada ou comunidade"
-            autocomplete="off"
-            data-availability-search
-          />
-          <p class="field-hint">
-            Nesta versão, a busca por fazenda ou referência é apenas apoio. A
-            consulta automática precisa de latitude e longitude.
-          </p>
+          <div class="availability-preview__search-box">
+            <label class="field-label" for="availability-search">
+              Buscar fazenda, estrada ou referência
+            </label>
+            <input
+              id="availability-search"
+              class="field-control"
+              type="search"
+              placeholder="Ex.: Fazenda Santa Rosa, estrada ou comunidade"
+              autocomplete="off"
+              data-availability-search
+            />
+            <p class="field-hint">
+              A busca por local ainda é apoio visual. Para enviar a pré-análise
+              automática, informe latitude e longitude.
+            </p>
+          </div>
 
-          <div class="availability-preview__coordinates">
-            <label>
-              <span class="field-label">Latitude</span>
-              <input
-                class="field-control"
-                type="text"
-                inputmode="decimal"
-                placeholder="-16.448694"
-                autocomplete="off"
-                data-availability-latitude
-              />
-            </label>
-            <label>
-              <span class="field-label">Longitude</span>
-              <input
-                class="field-control"
-                type="text"
-                inputmode="decimal"
-                placeholder="-46.906306"
-                autocomplete="off"
-                data-availability-longitude
-              />
-            </label>
+          <div class="availability-preview__coordinate-card">
+            <div class="availability-preview__coordinate-copy">
+              <p class="section-kicker">Alternativa técnica</p>
+              <p>
+                Cole as coordenadas do ponto da casa, sede, sítio ou fazenda.
+              </p>
+            </div>
+            <div class="availability-preview__coordinates">
+              <label>
+                <span class="field-label">Latitude</span>
+                <input
+                  class="field-control"
+                  type="text"
+                  inputmode="decimal"
+                  placeholder="-16.448694"
+                  autocomplete="off"
+                  data-availability-latitude
+                />
+              </label>
+              <label>
+                <span class="field-label">Longitude</span>
+                <input
+                  class="field-control"
+                  type="text"
+                  inputmode="decimal"
+                  placeholder="-46.906306"
+                  autocomplete="off"
+                  data-availability-longitude
+                />
+              </label>
+            </div>
           </div>
         </div>
 
@@ -190,10 +233,11 @@ const iconLabels = {
         </div>
         <div class="availability-preview__map-copy">
           <p class="section-kicker">Mapa sob demanda</p>
-          <h3>Ponto da propriedade, não infraestrutura.</h3>
+          <h3>Ponto informado, sem infraestrutura exposta.</h3>
           <p>
-            O mapa entra em uma próxima etapa e não é carregado agora. Nesta
-            onda, use localização do navegador, coordenadas ou WhatsApp.
+            O Google Maps não carrega na abertura. Nesta onda, a pré-análise
+            funciona por GPS do navegador, coordenadas ou atendimento pelo
+            WhatsApp.
           </p>
           <a
             href={`https://wa.me/${site.whatsapp.digits}?text=${encodeURIComponent("Olá! Quero verificar a disponibilidade da Rural Conecta e posso informar minha localização pelo WhatsApp.")}`}
@@ -213,6 +257,43 @@ const iconLabels = {
 </script>
 
 <style>
+  .availability-preview__path {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem;
+    margin: 0 0 1rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .availability-preview__path li {
+    display: flex;
+    min-height: 3.8rem;
+    align-items: center;
+    gap: 0.55rem;
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-card);
+    background: rgba(245, 247, 243, 0.035);
+    color: var(--color-text-secondary);
+    font-size: 0.86rem;
+    font-weight: 760;
+    line-height: 1.25;
+    padding: 0.7rem;
+  }
+
+  .availability-preview__path span {
+    display: grid;
+    width: 1.75rem;
+    height: 1.75rem;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 999px;
+    background: var(--color-green-soft);
+    color: var(--color-green-300);
+    font-size: 0.78rem;
+    font-weight: 950;
+  }
+
   .availability-preview__grid {
     display: grid;
     gap: 1rem;
@@ -220,18 +301,44 @@ const iconLabels = {
 
   .availability-preview__panel {
     display: grid;
-    gap: 1rem;
+    gap: 0.9rem;
+  }
+
+  .availability-preview__panel-header {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .availability-preview__panel-header h3 {
+    font-size: clamp(1.35rem, 6vw, 2rem);
+    line-height: 1.08;
+  }
+
+  .availability-preview__panel-header p:not(.section-kicker) {
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+    line-height: 1.45;
+  }
+
+  .availability-preview__block {
+    display: grid;
+    gap: 0.75rem;
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-card);
+    background: rgba(2, 11, 12, 0.24);
+    padding: 0.85rem;
   }
 
   .availability-preview__selected {
     display: flex;
-    gap: 0.75rem;
+    gap: 0.65rem;
     align-items: flex-start;
     border: 1px solid var(--color-border-green);
-    border-radius: var(--radius-card);
+    border-radius: var(--radius-control);
     background: var(--color-green-soft);
     color: var(--color-text-secondary);
-    padding: 0.85rem;
+    font-size: 0.9rem;
+    padding: 0.72rem;
   }
 
   .availability-preview__selected p {
@@ -239,33 +346,33 @@ const iconLabels = {
   }
 
   .availability-preview__selected span {
-    width: 0.8rem;
-    height: 0.8rem;
+    width: 0.72rem;
+    height: 0.72rem;
     flex: 0 0 auto;
     margin-top: 0.42rem;
     border-radius: 999px;
     background: var(--color-green-300);
-    box-shadow: 0 0 0 0.35rem rgba(161, 242, 124, 0.12);
+    box-shadow: 0 0 0 0.32rem rgba(161, 242, 124, 0.12);
   }
 
   .availability-preview__methods {
     display: grid;
-    gap: 0.72rem;
+    gap: 0.62rem;
   }
 
   .method-card {
     display: grid;
     width: 100%;
-    min-height: 4.9rem;
+    min-height: 4.4rem;
     grid-template-columns: auto 1fr;
-    gap: 0.75rem;
+    gap: 0.72rem;
     align-items: center;
     border: 1px solid var(--color-border-subtle);
     border-radius: var(--radius-card);
-    background: rgba(2, 11, 12, 0.36);
+    background: rgba(2, 11, 12, 0.34);
     color: var(--color-text-primary);
     cursor: pointer;
-    padding: 0.85rem;
+    padding: 0.78rem;
     text-align: left;
     transition: var(--transition-interactive);
   }
@@ -277,15 +384,19 @@ const iconLabels = {
     background: rgba(99, 212, 59, 0.09);
   }
 
+  .method-card--active {
+    box-shadow: 0 0 0 1px rgba(99, 212, 59, 0.08);
+  }
+
   .method-card__icon {
     display: grid;
-    min-width: 3.2rem;
-    min-height: 3.2rem;
+    min-width: 2.9rem;
+    min-height: 2.9rem;
     place-items: center;
     border: 1px solid var(--color-border-green);
-    border-radius: 1rem;
+    border-radius: 0.9rem;
     color: var(--color-green-300);
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     font-weight: 900;
     line-height: 1;
   }
@@ -297,15 +408,35 @@ const iconLabels = {
 
   .method-card small {
     color: var(--color-text-muted);
-    font-size: 0.88rem;
-    line-height: 1.35;
-    margin-top: 0.15rem;
+    font-size: 0.85rem;
+    line-height: 1.33;
+    margin-top: 0.12rem;
   }
 
   .availability-preview__manual,
-  .availability-preview__coordinates {
+  .availability-preview__coordinates,
+  .availability-preview__search-box,
+  .availability-preview__coordinate-card {
     display: grid;
     gap: 0.75rem;
+  }
+
+  .availability-preview__coordinate-card {
+    border: 1px solid rgba(216, 155, 95, 0.32);
+    border-radius: var(--radius-card);
+    background: rgba(216, 155, 95, 0.06);
+    padding: 0.85rem;
+  }
+
+  .availability-preview__coordinate-copy {
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .availability-preview__coordinate-copy p:not(.section-kicker) {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    line-height: 1.4;
   }
 
   .field-hint,
@@ -320,13 +451,13 @@ const iconLabels = {
     border: 1px solid var(--color-border-subtle);
     border-radius: var(--radius-control);
     background: rgba(2, 11, 12, 0.3);
-    padding: 0.85rem;
+    padding: 0.82rem;
   }
 
   .availability-submit {
     min-height: var(--button-height-large);
     border: 1px solid var(--color-primary-hover);
-    border-radius: 1.1rem;
+    border-radius: 1.05rem;
     background: var(--gradient-primary);
     color: var(--color-text-inverse);
     cursor: pointer;
@@ -403,7 +534,7 @@ const iconLabels = {
 
   .availability-preview__map {
     display: grid;
-    min-height: 31rem;
+    min-height: 27rem;
     overflow: hidden;
     padding: 0;
   }
@@ -411,11 +542,11 @@ const iconLabels = {
   .availability-preview__map-copy {
     display: grid;
     gap: 0.65rem;
-    padding: 1.25rem;
+    padding: 1.15rem;
   }
 
   .availability-preview__map-copy h3 {
-    font-size: clamp(1.45rem, 7vw, 2.25rem);
+    font-size: clamp(1.35rem, 7vw, 2.15rem);
     line-height: 1.08;
   }
 
@@ -430,6 +561,10 @@ const iconLabels = {
   }
 
   @media (min-width: 42rem) {
+    .availability-preview__path {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
     .availability-preview__coordinates {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -437,7 +572,7 @@ const iconLabels = {
 
   @media (min-width: 60rem) {
     .availability-preview__grid {
-      grid-template-columns: minmax(0, 0.94fr) minmax(26rem, 1.06fr);
+      grid-template-columns: minmax(0, 0.9fr) minmax(26rem, 1.1fr);
       align-items: stretch;
       gap: 1.25rem;
     }

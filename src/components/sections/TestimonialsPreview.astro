@@ -9,21 +9,25 @@ import { testimonyPlaceholders } from "../../data/site";
 >
   <div class="container">
     <div class="section-heading section-heading--inverted">
-      <p class="section-kicker">Prova social</p>
+      <p class="section-kicker">Confiança sem invenção</p>
       <h2 id="depoimentos-title" class="section-title">
-        Relatos em validação, sem nomes fictícios.
+        Compromissos até termos relatos autorizados.
       </h2>
       <p class="section-lede">
-        A Onda 1 não publica depoimentos como se fossem reais. Este bloco mostra
-        o espaço visual e o tipo de confiança que será preenchido depois.
+        Como ainda não há depoimentos reais aprovados para publicação, este
+        bloco mostra o que a equipe acompanha no atendimento sem criar nomes,
+        fazendas ou falas fictícias.
       </p>
     </div>
 
-    <div class="testimonials-preview__cards" aria-label="Cards placeholder">
+    <div
+      class="testimonials-preview__cards"
+      aria-label="Compromissos de atendimento"
+    >
       {
         testimonyPlaceholders.map((item) => (
           <article class="testimonial-card">
-            <span>Placeholder explícito</span>
+            <span>Compromisso público</span>
             <h3>{item.title}</h3>
             <p>{item.description}</p>
           </article>

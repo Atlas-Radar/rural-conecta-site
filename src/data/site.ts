@@ -28,22 +28,22 @@ export const availabilityRegions = [
 export const locationMethods = [
   {
     title: "Usar minha localização",
-    description: "Ideal no celular, quando o GPS estiver disponível.",
+    description: "Caminho mais simples no celular para iniciar a pré-análise.",
     icon: "gps",
   },
   {
     title: "Buscar fazenda ou local",
-    description: "Use uma referência, comunidade, estrada ou propriedade.",
+    description: "Use uma referência local e depois confirme por coordenadas.",
     icon: "search",
   },
   {
     title: "Escolher no mapa",
-    description: "O mapa será carregado apenas quando você pedir.",
+    description: "Próximo passo sob demanda, sem carregar Maps na abertura.",
     icon: "map",
   },
   {
     title: "Informar coordenadas",
-    description: "Cole latitude e longitude quando já tiver o ponto.",
+    description: "Alternativa técnica quando você já tem o ponto em mãos.",
     icon: "pin",
   },
 ] as const;
@@ -52,17 +52,17 @@ export const howItWorksSteps = [
   {
     title: "Escolha sua região",
     description:
-      "Comece por uma localidade principal para orientar a análise comercial.",
+      "Use uma possível região/localidade para orientar o primeiro atendimento.",
   },
   {
     title: "Marque sua localização",
     description:
-      "Informe o ponto da propriedade por GPS, busca, mapa ou coordenadas.",
+      "Informe o ponto da propriedade por GPS ou coordenadas em decimal.",
   },
   {
     title: "Fale com nossa equipe",
     description:
-      "A resposta automática será simples, e a conversa final segue com atendimento humano.",
+      "A pré-análise mostra um indício de viabilidade e a confirmação segue pelo WhatsApp.",
   },
 ] as const;
 
@@ -70,79 +70,79 @@ export const technologies = [
   {
     title: "Fibra óptica",
     description:
-      "Indicada quando a rede disponível permite uma conexão cabeada até a propriedade.",
+      "Pode ser indicada quando a análise local confirma condição adequada para conexão cabeada.",
   },
   {
     title: "Internet via rádio",
     description:
-      "Alternativa para locais onde a análise técnica aponta melhor atendimento sem fibra.",
+      "Solução relevante para o campo, avaliada caso a caso sem tratar como opção inferior.",
   },
   {
     title: "Link dedicado",
     description:
-      "Projeto consultivo para operações rurais e empresas que precisam de atendimento sob medida.",
+      "Projeto consultivo para empresas, fazendas e operações que precisam de desenho sob medida.",
   },
 ] as const;
 
 export const planPreviews = [
   {
-    name: "Plano Rural Essencial",
-    audience: "Casa, sítio ou rotina básica",
+    name: "Casa rural",
+    audience: "Para moradia no campo e uso familiar",
     speed: "Velocidade sob consulta",
     price: "Valor sob consulta",
     features: [
-      "Navegação do dia a dia",
-      "Atendimento humano",
-      "Instalação sob análise",
+      "Estudo, chamadas e navegação diária",
+      "Atendimento humano pelo WhatsApp",
+      "Recomendação após pré-análise do ponto",
     ],
   },
   {
-    name: "Plano Rural Família",
-    audience: "Residência com mais dispositivos",
+    name: "Sítio ou fazenda",
+    audience: "Para rotina rural com mais dispositivos",
     speed: "Velocidade sob consulta",
     price: "Valor sob consulta",
     features: [
-      "Chamadas de vídeo",
-      "Aulas online",
-      "Uso simultâneo sob análise",
+      "Câmeras, comunicação e rotina produtiva",
+      "Uso simultâneo avaliado conforme o local",
+      "Instalação confirmada depois da análise",
     ],
   },
   {
-    name: "Plano Rural Empresa",
-    audience: "Fazendas e empresas rurais",
+    name: "Empresa rural",
+    audience: "Para propriedade produtiva e operação",
     speed: "Projeto sob consulta",
     price: "Valor sob consulta",
     features: [
-      "Operação remota",
-      "Gestão da propriedade",
-      "Projeto personalizado",
+      "Gestão, vendas, compras e sistemas",
+      "Atendimento consultivo para a operação",
+      "Projeto personalizado quando necessário",
     ],
   },
 ] as const;
 
 export const localServiceHighlights = [
-  "Atendimento por gente da região",
-  "Análise de propriedades rurais",
-  "WhatsApp como conversa humana",
-  "Instalação confirmada caso a caso",
+  "Equipe acostumada com referências rurais",
+  "Avaliação manual quando a pré-análise não basta",
+  "WhatsApp oficial com conversa humana",
+  "Instalação confirmada caso a caso, sem promessa automática",
 ] as const;
 
 export const everydayBenefits = [
-  "Aulas online",
-  "Chamadas de vídeo",
-  "Streaming sem logos de terceiros",
-  "Trabalho remoto",
-  "Segurança da propriedade",
-  "Gestão rural",
-  "Comunicação familiar",
-  "Atendimento comercial",
+  "Aulas e estudo em casa",
+  "Chamadas com família e equipe",
+  "Filmes e entretenimento sem marcas citadas",
+  "Trabalho remoto quando a análise permitir",
+  "Câmeras e segurança da propriedade",
+  "Rotina produtiva da fazenda",
+  "Comunicação com fornecedores",
+  "Atendimento comercial pelo celular",
 ] as const;
 
 export const enterpriseCards = [
   {
     title: "Fazendas",
     description:
-      "Conectividade para sede, escritório, câmera, automação leve e rotina administrativa.",
+      "Conectividade para sede, escritório, câmeras e rotinas administrativas da propriedade.",
   },
   {
     title: "Empresas rurais",
@@ -150,9 +150,9 @@ export const enterpriseCards = [
       "Análise consultiva para operações que dependem de internet para vender, comprar e gerir.",
   },
   {
-    title: "Comunidades",
+    title: "Sítios e comunidades",
     description:
-      "Atendimento regional para localidades onde endereço formal nem sempre resolve o ponto real.",
+      "Atendimento regional para locais onde endereço formal nem sempre representa o ponto real.",
   },
   {
     title: "Projetos personalizados",
@@ -163,47 +163,57 @@ export const enterpriseCards = [
 
 export const testimonyPlaceholders = [
   {
-    title: "Relatos em validação",
+    title: "Sem depoimentos inventados",
     description:
-      "Depoimentos reais entrarão somente depois de autorização dos clientes.",
+      "Relatos reais entram somente depois de autorização dos clientes e validação do conteúdo.",
   },
   {
-    title: "O que clientes costumam buscar",
+    title: "O que a equipe acompanha",
     description:
-      "Estabilidade para estudar, trabalhar, falar com a família e cuidar da propriedade.",
+      "Necessidade de estudo, trabalho, câmeras, comunicação familiar e rotina produtiva.",
   },
   {
-    title: "Atendimento antes da promessa",
+    title: "Conversa antes da promessa",
     description:
-      "A conversa pelo WhatsApp ajuda a entender caminho, referência e necessidade do local.",
+      "O WhatsApp ajuda a entender caminho, referência, uso esperado e possibilidade de avaliação manual.",
   },
 ] as const;
 
 export const faqItems = [
   {
-    question: "Preciso informar CPF para consultar?",
-    answer:
-      "Não. A pré-análise de viabilidade não pede CPF, nome, telefone ou e-mail. Nesta etapa, a consulta automática usa apenas coordenadas.",
-  },
-  {
     question: "A consulta garante instalação?",
     answer:
-      "Não. A resposta automática orienta o atendimento, mas a equipe ainda confirma condições de instalação e disponibilidade no ponto.",
+      "Não. A pré-análise mostra um indício de viabilidade. A equipe ainda confirma condições de atendimento, instalação e melhor solução para o ponto.",
   },
   {
-    question: "O mapa carrega assim que abro o site?",
+    question: "Preciso informar telefone ou CPF?",
     answer:
-      "Não. O Google Maps deve carregar somente quando a pessoa escolher usar o mapa ou busca de local.",
+      "Não. A consulta no site não pede nome, telefone, e-mail ou CPF. Nesta etapa, ela usa apenas latitude e longitude.",
   },
   {
-    question: "Posso falar direto pelo WhatsApp?",
+    question: "Por que vocês pedem localização?",
     answer:
-      "Sim. Os CTAs contextuais levam ao WhatsApp oficial para atendimento humano.",
+      "Porque na zona rural o endereço nem sempre indica o ponto exato da casa, sede, sítio ou fazenda. A coordenada ajuda a orientar a avaliação.",
   },
   {
-    question: "Atende fazendas e comunidades?",
+    question: "E se a pré-análise não encontrar disponibilidade?",
     answer:
-      "Sim, a Rural Conecta atende casas, fazendas, comunidades e empresas rurais, sempre dependendo da coordenada exata.",
+      "Você ainda pode solicitar avaliação manual pelo WhatsApp. A equipe verifica alternativas, expansão ou necessidade de análise personalizada.",
+  },
+  {
+    question: "Vocês atendem fazendas, sítios e empresas rurais?",
+    answer:
+      "Sim. O atendimento pode envolver casas no campo, sítios, fazendas, comunidades e pequenas empresas rurais, sempre dependendo do ponto informado.",
+  },
+  {
+    question: "O mapa já está disponível?",
+    answer:
+      "Ainda não nesta onda. O Google Maps será carregado somente sob demanda em uma etapa futura, sem pesar a abertura inicial da landing.",
+  },
+  {
+    question: "Posso continuar pelo WhatsApp?",
+    answer:
+      "Sim. Depois da pré-análise, ou se a consulta não funcionar, os CTAs levam ao WhatsApp oficial da Rural Conecta.",
   },
 ] as const;
 
@@ -211,6 +221,7 @@ export const quickLinks = [
   { label: "Disponibilidade", href: "#disponibilidade" },
   { label: "Como funciona", href: "#como-funciona" },
   { label: "Planos", href: "#planos" },
+  { label: "Regiões", href: "#regioes" },
   { label: "FAQ", href: "#faq" },
 ] as const;
 export function createWhatsAppUrl(

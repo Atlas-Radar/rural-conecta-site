@@ -1,28 +1,44 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Page, type Route } from "@playwright/test";
 
-const atlasApiBaseUrl = (
+const configuredAtlasApiBaseUrl = (
   (globalThis as { process?: { env?: Record<string, string | undefined> } })
     .process?.env?.PUBLIC_ATLAS_API_BASE_URL ?? "https://atlassoftware.ia.br"
 ).replace(/\/+$/, "");
-const regionsUrl = `${atlasApiBaseUrl}/api/public/regioes`;
+const defaultAtlasApiBaseUrl = "https://atlassoftware.ia.br";
+const regionUrlPatterns = Array.from(
+  new Set([
+    `${configuredAtlasApiBaseUrl}/api/public/regioes`,
+    `${defaultAtlasApiBaseUrl}/api/public/regioes`,
+    "**/api/public/regioes",
+  ]),
+);
+
+async function routeRegions(
+  page: Page,
+  handler: (route: Route) => Promise<void>,
+): Promise<void> {
+  for (const pattern of regionUrlPatterns) {
+    await page.route(pattern, handler);
+  }
+}
 
 const sectionHeadings = [
   /Internet de verdade para quem vive no campo\./,
-  /Verifique a disponibilidade na sua região\./,
+  /Faça uma pré-análise do ponto da propriedade\./,
   /Três passos claros para sair da dúvida\./,
-  /Soluções rurais sem prometer antes da análise\./,
-  /Opções comerciais em mock, prontas para edição\./,
+  /A solução certa vem depois da análise local\./,
+  /Categorias para cada rotina no campo\./,
   /Aqui você fala com gente da região\./,
-  /Internet para a rotina real de quem vive no campo\./,
-  /Principais localidades para o mock da Onda 1\./,
-  /Projetos rurais pedem conversa consultiva\./,
-  /Relatos em validação, sem nomes fictícios\./,
-  /Dúvidas objetivas antes da consulta\./,
+  /Conexão para estudar, produzir e cuidar do que importa\./,
+  /A lista ajuda a começar; a coordenada confirma o ponto\./,
+  /Propriedades produtivas precisam de análise própria\./,
+  /Compromissos até termos relatos autorizados\./,
+  /Dúvidas comuns antes de chamar a equipe\./,
   /Pronto para conectar sua casa, fazenda ou empresa\?/,
 ];
 
 async function mockRegions(page: Page): Promise<void> {
-  await page.route(regionsUrl, async (route) => {
+  await routeRegions(page, async (route) => {
     await route.fulfill({
       contentType: "application/json",
       body: JSON.stringify({
@@ -36,8 +52,8 @@ async function mockRegions(page: Page): Promise<void> {
   });
 }
 
-test.describe("Landing Onda 1", () => {
-  test("renders the complete visual mock with safe placeholder content", async ({
+test.describe("Landing Onda 3", () => {
+  test("renders the refined landing with safe commercial content", async ({
     page,
   }) => {
     await mockRegions(page);
@@ -51,12 +67,12 @@ test.describe("Landing Onda 1", () => {
 
     await expect(page.getByText("Velocidade sob consulta")).toHaveCount(2);
     await expect(page.getByText("Valor sob consulta")).toHaveCount(3);
-    await expect(page.getByText("Placeholder explícito")).toHaveCount(3);
+    await expect(page.getByText("Compromisso público")).toHaveCount(3);
     await expect(
       page.locator("#regioes").getByText("Novo Barreiro"),
     ).toBeVisible();
     await expect(
-      page.locator("#regioes").getByText("Região Mundo Novo"),
+      page.locator("#regioes").getByText("Outras localidades pela API pública"),
     ).toBeVisible();
   });
 
