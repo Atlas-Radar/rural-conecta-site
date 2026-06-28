@@ -86,6 +86,7 @@ Quando o usuário trouxer output do Codex UI, Hermes deve sempre auditar o resul
 
 - pnpm dev
 - pnpm format:check
+- pnpm lint
 - pnpm check
 - pnpm test
 - pnpm build

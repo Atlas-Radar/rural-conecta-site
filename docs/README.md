@@ -9,7 +9,7 @@ Estado técnico atual:
 - scaffold Astro static-first criado manualmente;
 - `package.json`, `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `astro.config.mjs`, `tsconfig.json`, `src/` e `tests/unit/` criados;
 - dependências instaladas dentro do escopo aprovado;
-- validações passaram via `corepack pnpm`: `format:check`, `check`, `test` e `build`;
+- validações passaram via `corepack pnpm`: `format:check`, `lint`, `check`, `test` e `build`;
 - build final sem JavaScript inicial, sem Google Maps, sem scripts de terceiros e sem imagens;
 - `dist/index.html` tem aproximadamente 4.8 KB e o CSS gerado aproximadamente 6.4 KB.
 

@@ -7,6 +7,7 @@ Scaffold técnico inicial contém teste unitário mínimo em `tests/unit/site.te
 Validações já executadas via `corepack pnpm`:
 
 - `pnpm format:check`;
+- `pnpm lint`;
 - `pnpm check`;
 - `pnpm test`;
 - `pnpm build`.
@@ -14,11 +15,14 @@ Validações já executadas via `corepack pnpm`:
 Resultado atual:
 
 - `format:check` passou;
+- `lint` passou;
 - `check` passou sem erros, warnings ou hints;
 - `test` passou com 1 arquivo e 2 testes;
 - `build` passou e gerou site estático.
 
 Playwright/E2E foi configurado para orientar TDD visual conforme o projeto evoluir.
+
+ESLint foi configurado para qualidade estática de JavaScript/TypeScript/Astro via `corepack pnpm lint`.
 
 ## Unitários
 

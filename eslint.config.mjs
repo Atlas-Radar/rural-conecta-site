@@ -1,0 +1,38 @@
+import js from "@eslint/js";
+import astro from "eslint-plugin-astro";
+import globals from "globals";
+import tseslint from "typescript-eslint";
+
+const ignores = [
+  ".astro/**",
+  "coverage/**",
+  "dist/**",
+  "node_modules/**",
+  "playwright-report/**",
+  "test-results/**",
+];
+
+export default tseslint.config(
+  { ignores },
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
+  ...astro.configs.recommended,
+  {
+    files: ["**/*.{js,mjs,ts,astro}"],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+      },
+    },
+    rules: {
+      "no-console": "warn",
+    },
+  },
+  {
+    files: ["tests/**/*.ts", "playwright.config.ts"],
+    rules: {
+      "no-console": "off",
+    },
+  },
+);
