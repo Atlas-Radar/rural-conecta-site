@@ -18,7 +18,7 @@ Resultado atual:
 - `test` passou com 1 arquivo e 2 testes;
 - `build` passou e gerou site estático.
 
-Playwright/E2E ainda não foi instalado por decisão de escopo.
+Playwright/E2E foi configurado para orientar TDD visual conforme o projeto evoluir.
 
 ## Unitários
 
@@ -41,10 +41,30 @@ Implementado nesta base inicial:
 - timeout e erro normalizado
 - cache de regiões
 
+## E2E com Playwright
+
+Comandos:
+
+- `corepack pnpm test:e2e` roda a suíte headless.
+- `corepack pnpm test:e2e:ui` abre o modo interativo para depuração visual.
+
+Política permanente:
+
+- Toda etapa visual implementada via Codex UI deve criar ou ajustar pelo menos um teste Playwright quando alterar comportamento, navegação, responsividade, menu, CTA ou fluxo de interação.
+- O teste deve priorizar mobile 390 px e depois desktop 1440 px.
+- O teste deve confirmar que Google Maps e scripts de terceiros continuam ausentes da carga inicial quando a etapa não autorizar integrações.
+- Screenshots podem ser usados como evidência de auditoria, mas não substituem asserts de acessibilidade, presença de CTA e ausência de scripts proibidos.
+- Ao auditar output do Codex UI, Hermes deve verificar se os testes Playwright relevantes foram atualizados junto da mudança visual.
+
+Cobertura inicial:
+
+- header mobile-first com marca, menu acessível e CTA principal do hero visível;
+- header desktop com navegação e CTAs;
+- ausência de Maps/scripts proibidos na carga inicial.
+
 ## E2E futuro
 
 - landing abre sem Maps
-- menu mobile
 - GPS permitido e negado
 - coordenadas manuais
 - Maps sob demanda

@@ -9,10 +9,12 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "format": "prettier --plugin prettier-plugin-astro --write \"package.json\" \"pnpm-workspace.yaml\" \"astro.config.mjs\" \"tsconfig.json\" \"src/**/*.{astro,css,ts}\" \"tests/**/*.ts\"",
-    "format:check": "prettier --plugin prettier-plugin-astro --check \"package.json\" \"pnpm-workspace.yaml\" \"astro.config.mjs\" \"tsconfig.json\" \"src/**/*.{astro,css,ts}\" \"tests/**/*.ts\"",
+    "format": "prettier --plugin prettier-plugin-astro --write \"package.json\" \"pnpm-workspace.yaml\" \"astro.config.mjs\" \"playwright.config.ts\" \"tsconfig.json\" \"src/**/*.{astro,css,ts}\" \"tests/**/*.ts\"",
+    "format:check": "prettier --plugin prettier-plugin-astro --check \"package.json\" \"pnpm-workspace.yaml\" \"astro.config.mjs\" \"playwright.config.ts\" \"tsconfig.json\" \"src/**/*.{astro,css,ts}\" \"tests/**/*.ts\"",
     "check": "astro check",
-    "test": "vitest run --coverage",
+    "test": "vitest run tests/unit --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
     "build": "astro build"
   },
   "dependencies": {
@@ -20,6 +22,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
+    "@playwright/test": "^1.61.1",
     "@vitest/coverage-v8": "^4.1.9",
     "prettier": "^3.8.4",
     "prettier-plugin-astro": "^0.14.1",

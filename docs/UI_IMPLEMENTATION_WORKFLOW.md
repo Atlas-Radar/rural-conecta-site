@@ -31,6 +31,7 @@ Este documento define o fluxo permanente para transformar o conceito visual da R
    - Hermes lê o diff/arquivos e roda validações disponíveis.
    - Quando houver UI, Hermes deve pedir/usar evidência visual: screenshots, Playwright, browser local ou saída verificável do Codex UI.
    - Hermes confere mobile-first, rede lenta, acessibilidade, performance e aderência visual.
+   - Quando a etapa alterar navegação, menu, CTA, responsividade ou interação visual, Hermes deve exigir teste Playwright novo ou atualizado.
    - Se não houver bloqueador, Hermes já devolve o próximo Grill-me recomendado do roadmap visual.
 
 6. **Usuário faz commit e push manualmente**
@@ -114,3 +115,4 @@ Commit sugerido para o usuário, sem executar commit
 - Não carrega Maps, API real ou scripts de terceiros sem autorização específica.
 - Mantém WhatsApp acessível.
 - Passa em `corepack pnpm format:check`, `corepack pnpm check`, `corepack pnpm test` e `corepack pnpm build`, quando o escopo envolver código.
+- Atualiza e passa `corepack pnpm test:e2e` quando a etapa alterar comportamento visual navegável, menu, CTA ou responsividade.
