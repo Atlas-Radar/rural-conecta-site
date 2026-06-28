@@ -42,9 +42,21 @@ Parcialmente concluída: contexto, documentação, skills, templates de governan
 
 ## Fase 2 — Landing estática mobile-first
 
-Header, hero, seções institucionais, FAQ, rodapé e imagens otimizadas.
+Landing institucional completa, visualmente premium, mobile-first e ultraleve.
 
-Execução deve seguir `docs/INITIAL_UI_ROADMAP.md`: roadmap visual/técnico → Grill-me → prompt Codex UI com imagens de referência → implementação → auditoria Hermes → commit/push manual do usuário.
+Execução atualizada: em vez de microetapas por seção, seguir `docs/INITIAL_UI_ROADMAP.md` no modo acelerado. Primeiro construir um mock visual completo da landing com todas as seções principais; depois refinar visual, textos, dados reais, iconização, animações leves e integrações.
+
+Ondas atuais:
+
+1. Mock visual completo da landing, incluindo hero premium com imagem otimizada, consulta visual sem integração, seções institucionais, FAQ, CTA final e rodapé.
+2. Viabilidade funcional com API real, usando os dados/endpoints confirmados pelo projeto.
+3. Refino visual e conteúdo após avaliação da página inteira e da base funcional.
+4. Localização sem Maps e preparação para mapa.
+5. Google Maps sob demanda.
+6. Animações, iconização avançada e polimento.
+7. Qualidade final e produção.
+
+Prompts podem ser mais longos e usar subagentes/execuções paralelas para assets, performance, testes e auditoria, desde que respeitem os limites do projeto e não façam commit/push sem autorização.
 
 ## Fase 3 — Viabilidade sem Maps
 

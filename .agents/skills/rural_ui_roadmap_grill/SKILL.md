@@ -14,7 +14,7 @@ metadata:
 
 ## Overview
 
-Use this skill to plan the Rural Conecta landing visually and technically before implementation. It keeps Hermes in the planning role: roadmap first, Grill-me second, implementation prompt only after the user approves the answers.
+Use this skill to plan the Rural Conecta landing visually and technically before implementation. It keeps Hermes in the planning role: roadmap first, Grill-me second, implementation prompt only after the user approves the answers. The current preferred mode is accelerated: build a complete visual mock of the landing first, then refine sections, copy, data, animation, iconography and integrations.
 
 ## When to Use
 
@@ -35,10 +35,10 @@ Use this skill to plan the Rural Conecta landing visually and technically before
 
 1. Read `AGENTS.md` and all relevant docs.
 2. Prioritize mobile 360-430 px.
-3. Keep the first implementation waves visual and static.
-4. Split work by section: header/hero, viability placeholder, how it works, technologies, plans, local service, regions, enterprise/farms, testimonials/FAQ/CTA.
-5. Keep Google Maps, API real, Worker/BFF and deploy out of visual slices unless explicitly authorized.
-6. For each step, list objective, files, reference images needed, risks and acceptance criteria.
+3. Keep the first implementation wave focused on a complete visual/static mock of the whole landing, not on excessive micro-slices.
+4. Merge related sections when the goal is speed: header/hero, viability placeholder, how it works, technologies, plans, local service, regions, enterprise/farms, testimonials/FAQ/CTA can be implemented together as a bounded mock wave.
+5. Keep Google Maps, Worker/BFF and deploy out of visual slices unless explicitly authorized. API real can be moved into its own larger functional wave when the user confirms endpoints/data are available.
+6. For each wave, list objective, files, reference images needed, risks, acceptance criteria and which subagents/parallel checks are useful.
 
 ## Grill-me Procedure
 
@@ -90,7 +90,7 @@ Pronto para prompt Codex UI: sim/não
 ## Verification Checklist
 
 - [ ] Roadmap or Grill-me references the correct docs.
-- [ ] Scope is small enough for Codex UI and Hermes audit.
+- [ ] Scope is bounded enough for Codex UI and Hermes audit, even when a larger accelerated wave is intentional.
 - [ ] Visual references are required for visual work.
 - [ ] No implementation is performed by this skill.
 - [ ] No commit/push is requested from Codex UI.

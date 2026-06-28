@@ -7,7 +7,8 @@ Este documento define o fluxo permanente para transformar o conceito visual da R
 ## Fluxo oficial
 
 1. **Hermes gera roadmap visual/técnico**
-   - Divide a landing em etapas e seções pequenas.
+   - Divide a landing em ondas de implementação proporcionais ao objetivo atual.
+   - Para a fase de mock, prioriza uma onda maior que constrói a landing inteira antes de refinamentos finos.
    - Mantém prioridade mobile-first e rede abaixo de 1 Mbps.
    - Separa design visual, HTML/CSS, componentes Astro, conteúdo, acessibilidade e performance.
    - Não autoriza implementação automática.
@@ -22,6 +23,8 @@ Este documento define o fluxo permanente para transformar o conceito visual da R
    - O prompt deve citar AGENTS.md, docs relevantes e skills do projeto.
    - O prompt deve exigir uso das imagens anexadas como referência visual, não como assets grandes do site.
    - O prompt deve listar os comandos de validação, sempre incluindo `corepack pnpm test` como testes unitários obrigatórios.
+   - Quando o objetivo for acelerar a visão completa do site, o prompt pode cobrir várias seções em uma única onda, desde que mantenha limites claros de produto, performance, testes e integrações proibidas.
+   - Prompts maiores podem orientar uso de subagentes/execuções paralelas para implementação, assets/performance e testes/auditoria.
 
 4. **Codex UI implementa**
    - Codex UI usa as imagens de referência anexadas para direção visual.
@@ -48,6 +51,7 @@ Este documento define o fluxo permanente para transformar o conceito visual da R
 - Codex UI sempre recebe imagens de referência quando a tarefa for visual.
 - Imagens de referência orientam direção visual; não devem virar imagens grandes no site.
 - O site deve ser reconstruído em HTML, CSS nativo e Astro Components.
+- Na fase acelerada, construir primeiro o mock visual completo da landing e refinar depois textos, dados reais, iconização, animações e integrações.
 - Não usar React.
 - Não usar Tailwind.
 - Não usar biblioteca de UI.

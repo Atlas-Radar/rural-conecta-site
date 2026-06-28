@@ -1,157 +1,279 @@
-# Roadmap inicial de UI
+# Roadmap acelerado de UI
 
-Este roadmap organiza a implementação visual/técnica da landing Rural Conecta em etapas pequenas para o fluxo Hermes → Grill-me → Codex UI → Auditoria Hermes → commit manual do usuário.
+Este roadmap substitui o fluxo visual inicial muito fragmentado por uma abordagem mais rápida: construir primeiro um mock visual completo da landing, com todas as seções principais, e depois refinar visual, textos, dados reais, animações, iconização e integrações.
 
-## Princípios
+O objetivo é sair rapidamente de uma base parcial para uma página inteira navegável, ainda respeitando as regras do projeto: mobile-first, baixo peso, Astro estático, CSS nativo, sem framework client-side e sem Google Maps no carregamento inicial.
+
+## Estratégia nova
+
+1. **Mock visual completo primeiro**
+   - Implementar a landing inteira em uma onda maior.
+   - Construir todas as seções principais com conteúdo provisório seguro.
+   - Usar imagens de referência para direção visual.
+   - Usar a imagem real aprovada no hero, otimizada.
+   - Evitar perfeccionismo seção por seção nesta fase.
+
+2. **Request da API funcional logo depois da base visual**
+   - Depois do mock completo, avançar rapidamente a request da API de regiões/viabilidade com os dados reais disponíveis.
+   - Deixar o fluxo sem Maps funcionando primeiro: região, localização/coordenadas, chamada da API, estados e WhatsApp contextual.
+   - Manter Google Maps sob demanda em etapa própria.
+
+3. **Refino iterativo depois**
+   - Ajustar visual do que não agradar.
+   - Trocar textos provisórios por textos finais.
+   - Adicionar dados reais de regiões, planos e depoimentos.
+   - Melhorar iconização.
+   - Adicionar microinterações/animações leves.
+   - Refinar acessibilidade e performance.
+
+4. **Prompts maiores e subagentes**
+   - Preferir ondas maiores com vários blocos relacionados.
+   - Usar subagentes/execuções paralelas para auditoria, assets, testes e implementação isolada quando seguro.
+   - Evitar microetapas excessivas que atrasem a visão completa do site.
+
+## Princípios permanentes
 
 - Mobile-first antes de desktop.
 - Rede abaixo de 1 Mbps como restrição real.
 - Visual moderno, premium e rural-tech.
-- Usar imagens de referência como direção visual, não como assets grandes.
 - Astro Components + HTML semântico + CSS nativo.
 - Sem React, Tailwind, biblioteca de UI ou biblioteca de animação.
-- Google Maps, API real e fluxo completo de viabilidade ficam para etapas posteriores autorizadas.
+- Não instalar dependências sem autorização explícita.
+- Google Maps, Places e API real não devem carregar na abertura inicial.
+- Não coletar nome, telefone, e-mail ou CPF na consulta de viabilidade.
+- Não expor torres, CTOs, rotas, capacidade, distância até equipamentos ou tecnologia provável.
+- Resultado público da viabilidade continua simples: atende/não atende + WhatsApp.
 
-## Etapa 0 — Preparação visual e tokens
+## Onda 1 — Mock visual completo da landing
 
-Objetivo: transformar direção visual em tokens e regras de UI sem implementar a landing inteira.
+**Status:** próxima execução recomendada.
 
-Escopo provável:
+**Objetivo:** montar a landing inteira visualmente, de ponta a ponta, com todas as seções principais em qualidade de mock implementável, sem exigir refinamento final de cada detalhe.
 
-- revisar `src/styles/tokens.css`;
-- consolidar cores, spacing, radius, sombras e tipografia;
-- documentar uso no `docs/DESIGN_SYSTEM.md`, se necessário.
+**Escopo principal:**
 
-Grill-me obrigatório:
+- Header ajustado:
+  - manter logo oficial;
+  - manter CTA de disponibilidade;
+  - remover WhatsApp do header/menu como CTA destacado.
+- Hero premium:
+  - criar `src/components/sections/Hero.astro`;
+  - usar a imagem real do técnico no hero, otimizada;
+  - seguir referências desktop/mobile aprovadas;
+  - CTA primário de disponibilidade;
+  - CTA secundário de WhatsApp;
+  - chips/benefícios abaixo dos CTAs.
+- Consulta de viabilidade visual:
+  - criar seção estática/mockada;
+  - seletor visual de região;
+  - métodos de localização;
+  - microtexto de privacidade;
+  - sem API real nesta onda, salvo se explicitamente incluído no prompt.
+- Como funciona:
+  - três passos claros.
+- Tecnologias:
+  - fibra, rádio e link dedicado;
+  - sem prometer tecnologia no resultado.
+- Planos/benefícios:
+  - conteúdo provisório seguro, sem preços/velocidades falsas;
+  - marcar placeholders quando necessário.
+- Atendimento local:
+  - seção humana/regional;
+  - WhatsApp contextual.
+- Benefícios de streaming/uso cotidiano:
+  - linguagem segura, sem logos não autorizados.
+- Regiões atendidas institucional:
+  - chips/cards;
+  - disponibilidade exata depende da coordenada;
+  - sem mapa técnico.
+- Empresas e fazendas:
+  - abordagem consultiva;
+  - sem SLA/IP/preços não confirmados.
+- Depoimentos:
+  - reais se existirem; caso contrário placeholders explícitos ou bloco alternativo.
+- FAQ:
+  - `<details>` nativo preferencialmente.
+- CTA final e rodapé:
+  - fechamento com disponibilidade + WhatsApp;
+  - dados confirmados apenas.
 
-- confirmar intensidade do dark premium;
-- confirmar uso de seções claras;
-- confirmar se haverá fonte local ou system font inicialmente;
-- confirmar como as imagens de referência devem influenciar tokens.
+**Arquivos prováveis:**
 
-## Etapa 1 — Header e Hero mobile-first
-
-Objetivo: criar a primeira dobra com proposta clara, CTA de disponibilidade e WhatsApp.
-
-Escopo provável:
-
-- `src/components/layout/Header.astro`;
 - `src/pages/index.astro`;
-- estilos globais ou componentes específicos.
+- `src/components/layout/Header.astro`;
+- `src/components/layout/Footer.astro`;
+- `src/components/sections/*.astro`;
+- `src/components/ui/Button.astro`, se necessário;
+- `src/data/site.ts`, se fizer sentido concentrar conteúdo;
+- `src/styles/global.css`;
+- `src/styles/tokens.css`, apenas ajustes pequenos;
+- assets otimizados em `src/assets/` ou `public/`;
+- testes em `tests/e2e/` e `tests/unit/` quando aplicável.
 
-Critérios:
+**Referências aprovadas para o hero:**
 
-- CTA principal visível em 390 × 844 sem rolagem excessiva;
-- sem imagem pesada obrigatória;
-- visual alinhado às referências;
-- desktop apenas expande o layout.
+- Desktop: `D:\projects\exemplos landing page rural\atualizado\rural-conecta-01-hero-internet-rural-campo.png.png`
+- Mobile: `D:\projects\exemplos landing page rural\atualizado\mobile atualizado\rural-conecta-mobile-01-hero-internet-rural-campo.png.png`
+- Imagem real do hero: `D:\projects\exemplos landing page rural\atualizado\full-image-técnico.png`
 
-## Etapa 2 — Bloco de consulta de viabilidade sem integração
+**Critérios de aceite:**
 
-Objetivo: desenhar UI estática/placeholder da consulta sem API real e sem Maps.
+- Página completa navegável em mobile e desktop.
+- Mobile 360–430 px priorizado.
+- Em 390 × 844, hero tem CTA principal acessível sem rolagem excessiva.
+- WhatsApp removido do header como CTA destacado e recolocado nos CTAs contextuais.
+- Todas as seções principais existem, mesmo com conteúdo provisório seguro.
+- Sem API real obrigatória nesta onda, a menos que o prompt especifique.
+- Sem Google Maps inicial.
+- Sem scripts de terceiros.
+- Sem dependências novas.
+- Imagem do hero otimizada e reportada.
+- Dist auditado para JS inicial, Maps e assets.
+- Playwright atualizado para cobrir navegação/CTAs/responsividade da landing completa.
 
-Escopo provável:
+**Validações obrigatórias:**
 
-- componente de seção de viabilidade;
-- seletor visual de região desabilitado/mockado;
-- métodos de localização como estados visuais não funcionais, se autorizado.
+- `corepack pnpm format:check`
+- `corepack pnpm lint`
+- `corepack pnpm check`
+- `corepack pnpm test`
+- `corepack pnpm test:e2e`
+- `corepack pnpm build`
 
-Critérios:
+## Onda 2 — Viabilidade funcional com API real
 
-- não pedir nome/telefone;
-- deixar claro que API real está pendente;
+**Objetivo:** deixar regiões e request de viabilidade funcionais usando os dados/API que o projeto já possui, mantendo privacidade e resposta simples.
+
+**Escopo esperado:**
+
+- Definir estratégia de chamada direta ou Worker/BFF conforme segredos, CORS, rate limit e proteção da API.
+- Implementar `GET /api/regions` ou endpoint real equivalente.
+- Implementar `POST /api/viability` ou endpoint real equivalente.
+- Normalizar resposta para `atende`/`não atende`.
+- Criar estados de loading, sucesso, não atende e erro.
+- Montar WhatsApp contextual sem expor dado sensível.
+- Validar coordenadas e região.
+- Não pedir nome, telefone, e-mail ou CPF.
+- Não expor tecnologia provável.
+
+**Testes:**
+
+- unitários para payload, validação, normalização e WhatsApp;
+- E2E do fluxo sem Google Maps;
+- tratamento de API lenta/erro.
+
+## Onda 3 — Refino visual e conteúdo
+
+**Objetivo:** corrigir rapidamente o que não agradar após ver a página inteira e após a base de request da API estar encaminhada.
+
+**Escopo típico:**
+
+- Ajustes de layout mobile/desktop.
+- Hierarquia visual.
+- Espaçamentos.
+- Cores e contraste.
+- Troca de textos provisórios.
+- Reordenação ou remoção de seções.
+- Ajustes de imagens.
+- Melhor tratamento de cards/chips.
+- Melhorias no footer.
+- Dados comerciais reais de regiões, planos e depoimentos quando forem enviados.
+
+## Onda 4 — Localização sem Maps e preparação para Maps
+
+**Objetivo:** completar métodos de localização leves antes do Google Maps completo.
+
+**Escopo:**
+
+- Geolocalização em duas etapas.
+- Entrada manual de coordenadas.
+- Estado de ponto selecionado.
+- Fallback WhatsApp.
+- Preparar contrato visual para abrir mapa sob demanda.
+
+## Onda 5 — Google Maps sob demanda
+
+**Objetivo:** adicionar mapa somente após ação explícita do usuário.
+
+**Escopo:**
+
+- Loader sob demanda do Maps.
+- Places somente quando houver busca.
+- Marcador/toque/arraste.
+- Confirmar ponto.
+- Fallback para Maps lento ou indisponível.
+
+**Critérios:**
+
+- Maps inicial continua 0 KB.
+- Nada de torres, CTOs, rotas ou cobertura técnica pública.
+- O mapa serve apenas para escolher ponto; a API decide disponibilidade.
+
+## Onda 6 — Animações, iconização avançada e polimento
+
+**Objetivo:** adicionar qualidade visual final sem pesar a página.
+
+**Escopo:**
+
+- Ícones SVG melhores e consistentes.
+- Microinterações leves.
+- Animações CSS discretas.
+- `prefers-reduced-motion` obrigatório.
+- Ajustes finos de foco/hover/active.
+- Melhorias de detalhes visuais.
+
+**Fora de escopo por padrão:** bibliotecas de animação, pacotes grandes de ícones, efeitos permanentes pesados.
+
+## Onda 7 — Qualidade final e produção
+
+**Objetivo:** preparar o site para publicação.
+
+**Escopo:**
+
+- Auditoria completa de performance.
+- Acessibilidade.
+- SEO/meta/social cards.
+- Política de privacidade final.
+- 404.
+- Sitemap/robots se aplicável.
+- CI/GitHub workflows, se aprovado.
+- Deploy/Cloudflare/domínio, se aprovado.
+- Runbook.
+
+## Modelo de execução com subagentes
+
+Para prompts maiores, a divisão recomendada é:
+
+1. **Agente principal de implementação**
+   - Aplica o mock completo ou a onda funcional.
+   - Mantém escopo e arquivos.
+
+2. **Subagente de assets/performance**
+   - Otimiza imagens.
+   - Verifica pesos.
+   - Audita `dist`.
+
+3. **Subagente de testes/auditoria**
+   - Atualiza Playwright/Vitest quando necessário.
+   - Roda validações.
+   - Confere ausência de Maps/scripts proibidos.
+
+4. **Hermes auditor final**
+   - Não confia só no relatório do Codex.
+   - Verifica git status, diff, arquivos, testes, screenshots e dist.
+   - Retorna READY/NOT READY.
+
+## Próximo prompt recomendado
+
+Gerar um prompt único para a **Onda 1 — Mock visual completo da landing**, incorporando a Etapa 1B do hero e as seções restantes em versão mock segura.
+
+O prompt deve ser maior que os anteriores, mas ainda com limites claros:
+
+- implementar landing visual inteira;
+- não integrar API real ainda, a menos que explicitamente alterado;
 - não carregar Maps;
-- não expor tecnologia provável.
-
-## Etapa 3 — Como funciona em três passos
-
-Objetivo: explicar fluxo região → localização → WhatsApp humano.
-
-Critérios:
-
-- três passos compactos;
-- leitura rápida em mobile;
-- baixo custo visual;
-- sem animação pesada.
-
-## Etapa 4 — Tecnologias oferecidas
-
-Objetivo: apresentar fibra, rádio e dedicado sem prometer tecnologia na resposta da API.
-
-Critérios:
-
-- cards leves;
-- sem especificações não confirmadas;
-- CTA único para consultar disponibilidade;
-- ícones SVG leves quando houver autorização.
-
-## Etapa 5 — Planos e benefícios
-
-Objetivo: criar seção de planos com placeholders seguros ou conteúdo confirmado.
-
-Critérios:
-
-- não inventar velocidades/preços como final;
-- marcar placeholders claramente;
-- evitar três cards densos no mobile.
-
-## Etapa 6 — Atendimento local
-
-Objetivo: reforçar confiança humana e regional.
-
-Critérios:
-
-- visual caloroso;
-- WhatsApp como CTA;
-- imagens apenas se otimizadas e autorizadas.
-
-## Etapa 7 — Regiões atendidas institucional
-
-Objetivo: mostrar regiões como conteúdo institucional, sem Google Maps público inicial.
-
-Critérios:
-
-- chips/cards leves;
-- deixar claro que disponibilidade depende da coordenada;
-- sem mapa técnico de infraestrutura.
-
-## Etapa 8 — Empresas e fazendas
-
-Objetivo: apresentar soluções dedicadas sem abrir fluxo de contratação complexa.
-
-Critérios:
-
-- linguagem consultiva;
-- sem SLA ou IP válido se não confirmado;
-- CTA WhatsApp.
-
-## Etapa 9 — Depoimentos, FAQ e CTA final
-
-Objetivo: fechar a landing com prova social segura, dúvidas e ação final.
-
-Critérios:
-
-- depoimentos reais ou marcados como placeholder;
-- FAQ acessível;
-- CTA final simples.
-
-## Etapa 10 — Revisão visual integrada
-
-Objetivo: auditar a página inteira em mobile e desktop antes de avançar para interatividade real.
-
-Critérios:
-
-- screenshots mobile e desktop;
-- orçamento de performance;
-- sem JS/Maps inicial inesperado;
-- acessibilidade básica;
-- relatório READY/NOT READY para commit manual.
-
-## Etapas futuras fora deste roadmap visual inicial
-
-- Viabilidade interativa sem Maps.
-- Google Maps sob demanda.
-- API real.
-- Worker/BFF.
-- Deploy/Cloudflare.
-- CI/GitHub Actions.
+- não instalar dependências;
+- usar imagens de referência do hero;
+- otimizar imagem do técnico;
+- remover WhatsApp do header;
+- entregar screenshots, testes e auditoria de dist.
