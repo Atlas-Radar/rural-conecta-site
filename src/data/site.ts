@@ -183,7 +183,7 @@ export const faqItems = [
   {
     question: "Preciso informar CPF para consultar?",
     answer:
-      "Não. A consulta de viabilidade não deve pedir CPF, nome, telefone ou e-mail. A Onda 1 é visual e não envia dados.",
+      "Não. A pré-análise de viabilidade não pede CPF, nome, telefone ou e-mail. Nesta etapa, a consulta automática usa apenas coordenadas.",
   },
   {
     question: "A consulta garante instalação?",

@@ -1,13 +1,5 @@
 ---
-import {
-  availabilityRegions,
-  createWhatsAppUrl,
-  locationMethods,
-} from "../../data/site";
-
-const whatsappHref = createWhatsAppUrl(
-  "Olá! Quero verificar a disponibilidade da Rural Conecta e posso informar minha localização pelo WhatsApp.",
-);
+import { availabilityRegions, locationMethods, site } from "../../data/site";
 
 const iconLabels = {
   gps: "GPS",
@@ -24,23 +16,31 @@ const iconLabels = {
 >
   <div class="container">
     <div class="section-heading section-heading--centered">
-      <p class="section-kicker">Consulta visual mockada</p>
+      <p class="section-kicker">Pré-análise de disponibilidade</p>
       <h2 id="disponibilidade-title" class="section-title">
         Verifique a disponibilidade na sua região.
       </h2>
       <p class="section-lede">
-        Selecione uma localidade principal e escolha como informar o ponto da
-        propriedade. Nesta onda, a tela é estática e não chama API, Maps ou
-        Places.
+        Selecione uma possível localidade e informe o ponto da propriedade. A
+        consulta usa coordenadas, não exige cadastro e não garante a instalação
+        final sem confirmação da equipe.
       </p>
     </div>
 
-    <div class="availability-preview__grid">
+    <div
+      class="availability-preview__grid"
+      data-availability-root
+      data-whatsapp-digits={site.whatsapp.digits}
+    >
       <div class="visual-card availability-preview__panel">
         <label class="field-label" for="availability-region">
-          Escolha uma região
+          Possível região/localidade
         </label>
-        <select id="availability-region" class="field-control">
+        <select
+          id="availability-region"
+          class="field-control"
+          data-availability-region
+        >
           {
             availabilityRegions.map((region) => (
               <option value={region} selected={region === "Novo Barreiro"}>
@@ -50,12 +50,13 @@ const iconLabels = {
           }
         </select>
 
-        <div class="availability-preview__selected" aria-live="polite">
+        <div
+          class="availability-preview__selected"
+          aria-live="polite"
+          data-availability-region-status
+        >
           <span aria-hidden="true"></span>
-          <p>
-            Região em demonstração: <strong>Novo Barreiro</strong>. A lista
-            completa será revisada antes de virar conteúdo final.
-          </p>
+          <p>Carregando possíveis regiões...</p>
         </div>
 
         <div
@@ -75,6 +76,7 @@ const iconLabels = {
                 ]}
                 type="button"
                 aria-pressed={index === 0 ? "true" : "false"}
+                data-availability-method={method.icon}
               >
                 <span class="method-card__icon" aria-hidden="true">
                   {iconLabels[method.icon]}
@@ -88,7 +90,10 @@ const iconLabels = {
           }
         </div>
 
-        <div class="availability-preview__manual" aria-label="Campos mockados">
+        <div
+          class="availability-preview__manual"
+          aria-label="Campos de coordenadas"
+        >
           <label class="field-label" for="availability-search">
             Buscar fazenda, estrada ou referência
           </label>
@@ -96,9 +101,14 @@ const iconLabels = {
             id="availability-search"
             class="field-control"
             type="search"
-            placeholder="Ex.: Fazenda Santa Rosa, estrada, comunidade"
+            placeholder="Ex.: Fazenda Santa Rosa, estrada ou comunidade"
             autocomplete="off"
+            data-availability-search
           />
+          <p class="field-hint">
+            Nesta versão, a busca por fazenda ou referência é apenas apoio. A
+            consulta automática precisa de latitude e longitude.
+          </p>
 
           <div class="availability-preview__coordinates">
             <label>
@@ -107,7 +117,9 @@ const iconLabels = {
                 class="field-control"
                 type="text"
                 inputmode="decimal"
-                placeholder="-17.000000"
+                placeholder="-16.448694"
+                autocomplete="off"
+                data-availability-latitude
               />
             </label>
             <label>
@@ -116,18 +128,53 @@ const iconLabels = {
                 class="field-control"
                 type="text"
                 inputmode="decimal"
-                placeholder="-46.000000"
+                placeholder="-46.906306"
+                autocomplete="off"
+                data-availability-longitude
               />
             </label>
           </div>
         </div>
 
-        <button class="mock-submit" type="button">
-          Verificar disponibilidade
+        <p class="availability-preview__helper" data-availability-helper>
+          Use sua localização ou preencha latitude e longitude para consultar a
+          pré-análise.
+        </p>
+
+        <button
+          class="availability-submit"
+          type="button"
+          data-availability-submit
+          disabled
+        >
+          Consultar pré-análise
         </button>
+
+        <div
+          class="availability-result"
+          data-availability-result
+          aria-live="polite"
+          hidden
+        >
+          <p class="availability-result__eyebrow">Resultado da pré-análise</p>
+          <h3 data-availability-result-title>Pré-análise</h3>
+          <p data-availability-result-message>
+            A resposta aparecerá aqui depois da consulta.
+          </p>
+          <a
+            class="availability-result__whatsapp"
+            href={`https://wa.me/${site.whatsapp.digits}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-availability-whatsapp
+          >
+            Continuar pelo WhatsApp
+          </a>
+        </div>
+
         <p class="privacy-note">
-          Sem cadastro nesta etapa. Não pedimos nome, telefone, e-mail ou CPF. A
-          consulta real entra na Onda 2 com dados mínimos e resposta simples.
+          Sem cadastro. Não pedimos nome, telefone, e-mail ou CPF. A pré-análise
+          usa apenas coordenadas para indicar um sinal inicial de viabilidade.
         </p>
       </div>
 
@@ -145,10 +192,14 @@ const iconLabels = {
           <p class="section-kicker">Mapa sob demanda</p>
           <h3>Ponto da propriedade, não infraestrutura.</h3>
           <p>
-            Esta prévia representa apenas a escolha do local. Não há torres,
-            rotas, CTOs, distância até equipamentos ou tecnologia provável.
+            O mapa entra em uma próxima etapa e não é carregado agora. Nesta
+            onda, use localização do navegador, coordenadas ou WhatsApp.
           </p>
-          <a href={whatsappHref} target="_blank" rel="noopener noreferrer">
+          <a
+            href={`https://wa.me/${site.whatsapp.digits}?text=${encodeURIComponent("Olá! Quero verificar a disponibilidade da Rural Conecta e posso informar minha localização pelo WhatsApp.")}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Enviar localização pelo WhatsApp
           </a>
         </div>
@@ -156,6 +207,10 @@ const iconLabels = {
     </div>
   </div>
 </section>
+
+<script>
+  import "../../scripts/availability";
+</script>
 
 <style>
   .availability-preview__grid {
@@ -177,6 +232,10 @@ const iconLabels = {
     background: var(--color-green-soft);
     color: var(--color-text-secondary);
     padding: 0.85rem;
+  }
+
+  .availability-preview__selected p {
+    margin: 0;
   }
 
   .availability-preview__selected span {
@@ -249,7 +308,22 @@ const iconLabels = {
     gap: 0.75rem;
   }
 
-  .mock-submit {
+  .field-hint,
+  .availability-preview__helper {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    line-height: 1.45;
+    margin: 0;
+  }
+
+  .availability-preview__helper {
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-control);
+    background: rgba(2, 11, 12, 0.3);
+    padding: 0.85rem;
+  }
+
+  .availability-submit {
     min-height: var(--button-height-large);
     border: 1px solid var(--color-primary-hover);
     border-radius: 1.1rem;
@@ -258,6 +332,73 @@ const iconLabels = {
     cursor: pointer;
     font-weight: 900;
     padding: 0.95rem 1.2rem;
+  }
+
+  .availability-submit:disabled {
+    border-color: var(--color-border-subtle);
+    background: rgba(245, 247, 243, 0.08);
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+  }
+
+  .availability-result {
+    display: grid;
+    gap: 0.65rem;
+    border: 1px solid var(--color-border-green);
+    border-radius: var(--radius-card);
+    background: rgba(2, 11, 12, 0.42);
+    padding: 1rem;
+  }
+
+  .availability-result[hidden] {
+    display: none;
+  }
+
+  .availability-result__eyebrow {
+    color: var(--color-green-300);
+    font-size: 0.75rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .availability-result h3 {
+    color: var(--color-text-primary);
+    font-size: 1.25rem;
+    line-height: 1.15;
+    margin: 0;
+  }
+
+  .availability-result p:not(.availability-result__eyebrow) {
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  .availability-result__whatsapp {
+    display: inline-flex;
+    min-height: var(--touch-target-min);
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-control);
+    background: var(--gradient-primary);
+    color: var(--color-text-inverse);
+    font-weight: 900;
+    padding: 0.8rem 1rem;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .availability-result[data-status="sem_viabilidade_automatica"],
+  .availability-result[data-status="necessita_confirmacao"] {
+    border-color: rgba(216, 155, 95, 0.5);
+  }
+
+  .availability-result[data-status="entrada_invalida"],
+  .availability-result[data-status="limite_excedido"],
+  .availability-result[data-status="erro_temporario"],
+  .availability-result[data-status="falha_rede"] {
+    border-color: rgba(241, 120, 107, 0.58);
   }
 
   .availability-preview__map {

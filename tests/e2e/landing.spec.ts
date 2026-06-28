@@ -1,4 +1,6 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
+
+const regionsUrl = "https://atlassoftware.ia.br/api/public/regioes";
 
 const sectionHeadings = [
   /Internet de verdade para quem vive no campo\./,
@@ -15,10 +17,26 @@ const sectionHeadings = [
   /Pronto para conectar sua casa, fazenda ou empresa\?/,
 ];
 
+async function mockRegions(page: Page): Promise<void> {
+  await page.route(regionsUrl, async (route) => {
+    await route.fulfill({
+      contentType: "application/json",
+      body: JSON.stringify({
+        total: 2,
+        regioes: [
+          { nome: "Novo Barreiro", fontes: ["fibra"] },
+          { nome: "Região Mundo Novo", fontes: ["radio"] },
+        ],
+      }),
+    });
+  });
+}
+
 test.describe("Landing Onda 1", () => {
   test("renders the complete visual mock with safe placeholder content", async ({
     page,
   }) => {
+    await mockRegions(page);
     await page.goto("/");
 
     await expect(page.locator("main h1")).toHaveCount(1);
@@ -38,7 +56,7 @@ test.describe("Landing Onda 1", () => {
     ).toBeVisible();
   });
 
-  test("keeps viability as a static mock without personal data fields", async ({
+  test("keeps viability without personal data fields or Google integrations", async ({
     page,
   }) => {
     const forbiddenRequests: string[] = [];
@@ -48,18 +66,19 @@ test.describe("Landing Onda 1", () => {
         url.includes("maps.googleapis") ||
         url.includes("google.maps") ||
         url.includes("googletagmanager") ||
-        url.includes("/api/")
+        url.includes("viabilidade-basica")
       ) {
         forbiddenRequests.push(url);
       }
     });
 
+    await mockRegions(page);
     await page.goto("/");
 
     const availability = page.locator("#disponibilidade");
-    await expect(availability.getByLabel("Escolha uma região")).toContainText(
-      "Novo Barreiro",
-    );
+    await expect(
+      availability.getByLabel("Possível região/localidade"),
+    ).toContainText("Novo Barreiro");
     await expect(
       availability.getByRole("button", { name: /Usar minha localização/ }),
     ).toBeVisible();
@@ -73,21 +92,22 @@ test.describe("Landing Onda 1", () => {
       availability.getByRole("button", { name: /Informar coordenadas/ }),
     ).toBeVisible();
     await expect(
-      availability.getByRole("button", { name: "Verificar disponibilidade" }),
-    ).toBeVisible();
+      availability.getByRole("button", { name: "Consultar pré-análise" }),
+    ).toBeDisabled();
 
     await expect(page.getByLabel(/^Nome$/i)).toHaveCount(0);
     await expect(page.getByLabel(/^Telefone$/i)).toHaveCount(0);
     await expect(page.getByLabel(/^E-mail$/i)).toHaveCount(0);
     await expect(page.getByLabel(/^CPF$/i)).toHaveCount(0);
     await expect(page.locator("input[name], textarea[name]")).toHaveCount(0);
-    await expect(page.locator("script")).toHaveCount(0);
+    await expect(page.locator('script[src*="maps.googleapis"]')).toHaveCount(0);
     expect(forbiddenRequests).toEqual([]);
   });
 
   test("supports basic navigation and contextual WhatsApp CTAs", async ({
     page,
   }) => {
+    await mockRegions(page);
     await page.goto("/");
 
     await page

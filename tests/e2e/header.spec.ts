@@ -1,4 +1,18 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
+
+const regionsUrl = "https://atlassoftware.ia.br/api/public/regioes";
+
+async function mockRegions(page: Page): Promise<void> {
+  await page.route(regionsUrl, async (route) => {
+    await route.fulfill({
+      contentType: "application/json",
+      body: JSON.stringify({
+        total: 1,
+        regioes: [{ nome: "Novo Barreiro", fontes: ["fibra"] }],
+      }),
+    });
+  });
+}
 
 test.describe("Header mobile-first", () => {
   test("mobile keeps brand, menu, hero CTAs, and no header WhatsApp", async ({
@@ -6,6 +20,7 @@ test.describe("Header mobile-first", () => {
   }, testInfo) => {
     test.skip(!testInfo.project.name.includes("mobile"), "mobile-only check");
 
+    await mockRegions(page);
     await page.goto("/");
 
     await expect(
@@ -48,7 +63,7 @@ test.describe("Header mobile-first", () => {
     ).toHaveAttribute("href", /https:\/\/wa\.me\/553897402599/);
   });
 
-  test("desktop shows navigation and hero WhatsApp without loading Maps or scripts", async ({
+  test("desktop shows navigation and hero WhatsApp without loading Maps or third-party scripts", async ({
     page,
   }, testInfo) => {
     test.skip(!testInfo.project.name.includes("desktop"), "desktop-only check");
@@ -56,11 +71,16 @@ test.describe("Header mobile-first", () => {
     const scriptRequests: string[] = [];
     page.on("request", (request) => {
       const url = request.url();
-      if (url.includes("maps.googleapis") || url.includes("google.maps")) {
+      if (
+        url.includes("maps.googleapis") ||
+        url.includes("google.maps") ||
+        url.includes("googletagmanager")
+      ) {
         scriptRequests.push(url);
       }
     });
 
+    await mockRegions(page);
     await page.goto("/");
 
     await expect(
@@ -85,6 +105,9 @@ test.describe("Header mobile-first", () => {
     ).toHaveAttribute("href", /https:\/\/wa\.me\/553897402599/);
 
     expect(scriptRequests).toEqual([]);
-    await expect(page.locator("script")).toHaveCount(0);
+    await expect(page.locator('script[src*="maps.googleapis"]')).toHaveCount(0);
+    await expect(page.locator('script[src*="googletagmanager"]')).toHaveCount(
+      0,
+    );
   });
 });
