@@ -6,7 +6,29 @@ Este documento orienta a integração do site externo `https://ruralconectamg.co
 
 O Atlas não cria, hospeda nem versiona a landing page. O site externo apenas consome a API pública já publicada.
 
-## 2. Endpoints
+## 2. Base URL configurável
+
+A landing usa produção por padrão:
+
+```text
+https://atlassoftware.ia.br
+```
+
+Para desenvolvimento local, é possível configurar a variável pública opcional:
+
+```dotenv
+PUBLIC_ATLAS_API_BASE_URL=http://localhost:3001
+```
+
+ou, quando o Atlas estiver via compose:
+
+```dotenv
+PUBLIC_ATLAS_API_BASE_URL=http://localhost:3101
+```
+
+Essa variável não é segredo e não deve conter token. Se não for definida, os endpoints continuam apontando para produção.
+
+## 3. Endpoints
 
 ### Pré-viabilidade
 
@@ -29,7 +51,7 @@ Este endpoint lista nomes públicos que a landing pode usar como possível local
 
 Nomes iguais entre Fibra e Rádio não são duplicados. Quando o mesmo nome existir nas duas bases, o item retorna as duas fontes.
 
-## 3. Payload por coordenadas
+## 4. Payload por coordenadas
 
 ```json
 {
@@ -40,7 +62,7 @@ Nomes iguais entre Fibra e Rádio não são duplicados. Quando o mesmo nome exis
 
 Nesta versão, a consulta por endereço digitado não faz geocoding server-side. Envie coordenadas válidas.
 
-## 4. Resposta positiva
+## 5. Resposta positiva
 
 ```json
 {
@@ -50,7 +72,7 @@ Nesta versão, a consulta por endereço digitado não faz geocoding server-side.
 }
 ```
 
-## 5. Resposta negativa
+## 6. Resposta negativa
 
 ```json
 {
@@ -60,7 +82,7 @@ Nesta versão, a consulta por endereço digitado não faz geocoding server-side.
 }
 ```
 
-## 6. Erros esperados
+## 7. Erros esperados
 
 - `400 entrada_invalida`: coordenadas ausentes, inválidas ou endereço sem suporte nesta versão.
 - `429`: limite de consultas excedido.
@@ -70,7 +92,7 @@ Nesta versão, a consulta por endereço digitado não faz geocoding server-side.
 
 Mesmo em erro, a API não retorna torres completas, CTOs completas, IDs, coordenadas, perfil de elevação, obstruções, portas, distâncias técnicas, stack trace, lead ou histórico.
 
-## 7. CORS
+## 8. CORS
 
 Produção permite:
 
@@ -78,103 +100,120 @@ Produção permite:
 https://ruralconectamg.com.br
 ```
 
-Não usar wildcard (`*`).
+Desenvolvimento local com a landing permite:
 
-Para teste local chamando produção, pode ser necessário configurar `PUBLIC_API_CORS_ORIGINS` em etapa separada e controlada. A alternativa recomendada para desenvolvimento local é usar mock local ou Atlas local, evitando depender do CORS de produção durante a construção da landing externa.
+```text
+http://localhost:4321
+http://127.0.0.1:4321
+```
 
-## 8. Exemplo de fetch ultraleve
+Não usar wildcard (`*`). Para desenvolvimento local, preferir `PUBLIC_ATLAS_API_BASE_URL` apontando para o Atlas local ou mocks nos testes E2E.
+
+## 9. Exemplo de fetch ultraleve
 
 Exemplo em JavaScript puro, sem framework, sem Google Maps JS, sem token e sem salvar lead.
 
 ```js
-const API_URL = 'https://atlassoftware.ia.br/api/public/viabilidade-basica'
+const API_URL = "https://atlassoftware.ia.br/api/public/viabilidade-basica";
 
-const botao = document.querySelector('#consultar-viabilidade')
-const resultado = document.querySelector('#resultado-viabilidade')
+const botao = document.querySelector("#consultar-viabilidade");
+const resultado = document.querySelector("#resultado-viabilidade");
 
 function mostrarMensagem(texto) {
-  resultado.textContent = texto
+  resultado.textContent = texto;
 }
 
 async function consultarPreViabilidade(latitude, longitude) {
   const response = await fetch(API_URL, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify({ latitude, longitude })
-  })
+    body: JSON.stringify({ latitude, longitude }),
+  });
 
-  let data = null
+  let data = null;
   try {
-    data = await response.json()
+    data = await response.json();
   } catch (_) {
-    data = null
+    data = null;
   }
 
   if (!response.ok) {
     if (response.status === 429) {
-      throw new Error('Muitas consultas em sequência. Tente novamente em alguns minutos.')
+      throw new Error(
+        "Muitas consultas em sequência. Tente novamente em alguns minutos.",
+      );
     }
-    throw new Error(data?.mensagem || 'Não foi possível consultar a pré-análise agora.')
+    throw new Error(
+      data?.mensagem || "Não foi possível consultar a pré-análise agora.",
+    );
   }
 
-  return data
+  return data;
 }
 
-botao.addEventListener('click', () => {
+botao.addEventListener("click", () => {
   if (!navigator.geolocation) {
-    mostrarMensagem('Seu navegador não informou a localização. Nossa equipe pode avaliar manualmente.')
-    return
+    mostrarMensagem(
+      "Seu navegador não informou a localização. Nossa equipe pode avaliar manualmente.",
+    );
+    return;
   }
 
-  botao.disabled = true
-  mostrarMensagem('Consultando pré-análise...')
+  botao.disabled = true;
+  mostrarMensagem("Consultando pré-análise...");
 
   navigator.geolocation.getCurrentPosition(
-    async position => {
+    async (position) => {
       try {
-        const { latitude, longitude } = position.coords
-        const data = await consultarPreViabilidade(latitude, longitude)
-        mostrarMensagem(data.mensagem)
+        const { latitude, longitude } = position.coords;
+        const data = await consultarPreViabilidade(latitude, longitude);
+        mostrarMensagem(data.mensagem);
       } catch (error) {
-        mostrarMensagem(error.message || 'Não foi possível consultar a pré-análise agora.')
+        mostrarMensagem(
+          error.message || "Não foi possível consultar a pré-análise agora.",
+        );
       } finally {
-        botao.disabled = false
+        botao.disabled = false;
       }
     },
     () => {
-      mostrarMensagem('Não foi possível acessar sua localização. Nossa equipe pode avaliar manualmente.')
-      botao.disabled = false
+      mostrarMensagem(
+        "Não foi possível acessar sua localização. Nossa equipe pode avaliar manualmente.",
+      );
+      botao.disabled = false;
     },
     {
       enableHighAccuracy: false,
       timeout: 10000,
-      maximumAge: 300000
-    }
-  )
-})
+      maximumAge: 300000,
+    },
+  );
+});
 ```
 
-## 9. Exemplo de fetch para regiões
+## 10. Exemplo de fetch para regiões
 
 ```js
-const REGIOES_URL = 'https://atlassoftware.ia.br/api/public/regioes'
+const REGIOES_URL = "https://atlassoftware.ia.br/api/public/regioes";
 
 async function carregarRegioes() {
   const response = await fetch(REGIOES_URL, {
-    method: 'GET',
+    method: "GET",
     headers: {
-      Accept: 'application/json'
-    }
-  })
+      Accept: "application/json",
+    },
+  });
 
-  const data = await response.json()
+  const data = await response.json();
   if (!response.ok) {
-    throw new Error(data?.mensagem || 'Não foi possível carregar as regiões agora.')
+    throw new Error(
+      data?.mensagem || "Não foi possível carregar as regiões agora.",
+    );
   }
 
-  return data.regioes
+  return data.regioes;
 }
 ```
 
@@ -202,7 +241,7 @@ Resposta esperada:
 
 Use `nome` como texto exibido na landing. `fontes` indica se a localidade veio de Fibra, Rádio ou ambas. A API não retorna coordenadas, IDs, torres completas, CTOs completas, portas ou distância técnica.
 
-## 10. Guia simples para Postman ou Insomnia
+## 11. Guia simples para Postman ou Insomnia
 
 ### Pré-viabilidade
 
@@ -240,7 +279,7 @@ Use `nome` como texto exibido na landing. `fontes` indica se a localidade veio d
 
 Observação: Postman e Insomnia não aplicam CORS como o navegador. Para validar CORS de verdade, teste também a chamada pela landing no domínio permitido.
 
-## 11. Textos recomendados para UX
+## 12. Textos recomendados para UX
 
 - Use "pré-análise".
 - Use "indício de viabilidade".
@@ -249,7 +288,7 @@ Observação: Postman e Insomnia não aplicam CORS como o navegador. Para valida
 - Para resultado negativo, ofereça avaliação manual pela equipe.
 - Ao mostrar região/localidade, use linguagem aproximada como "possível região/localidade".
 
-## 12. Não-objetivos
+## 13. Não-objetivos
 
 - Não criar landing page.
 - Não criar arquivos HTML/CSS do site externo.

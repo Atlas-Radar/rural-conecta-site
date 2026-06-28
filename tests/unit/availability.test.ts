@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { buildViabilityPayload } from "../../src/lib/availability/api";
+import {
+  DEFAULT_API_BASE_URL,
+  buildViabilityPayload,
+  createAvailabilityEndpoints,
+  normalizeAtlasApiBaseUrl,
+} from "../../src/lib/availability/api";
 import {
   isValidLatitude,
   isValidLongitude,
@@ -69,6 +74,22 @@ describe("availability API normalization", () => {
     expect(JSON.stringify(regions)).not.toContain("distancia");
   });
 
+  it("uses production as fallback and builds local Atlas endpoints when configured", () => {
+    expect(normalizeAtlasApiBaseUrl(undefined)).toBe(DEFAULT_API_BASE_URL);
+    expect(normalizeAtlasApiBaseUrl("")).toBe(DEFAULT_API_BASE_URL);
+    expect(normalizeAtlasApiBaseUrl(" http://localhost:3001/ ")).toBe(
+      "http://localhost:3001",
+    );
+
+    expect(createAvailabilityEndpoints()).toEqual({
+      regionsEndpoint: `${DEFAULT_API_BASE_URL}/api/public/regioes`,
+      viabilityEndpoint: `${DEFAULT_API_BASE_URL}/api/public/viabilidade-basica`,
+    });
+    expect(createAvailabilityEndpoints("http://localhost:3001")).toEqual({
+      regionsEndpoint: "http://localhost:3001/api/public/regioes",
+      viabilityEndpoint: "http://localhost:3001/api/public/viabilidade-basica",
+    });
+  });
   it("builds a viability payload with only latitude and longitude", () => {
     expect(
       buildViabilityPayload({

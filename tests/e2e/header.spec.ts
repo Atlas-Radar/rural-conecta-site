@@ -1,6 +1,10 @@
 import { expect, test, type Page } from "@playwright/test";
 
-const regionsUrl = "https://atlassoftware.ia.br/api/public/regioes";
+const atlasApiBaseUrl = (
+  (globalThis as { process?: { env?: Record<string, string | undefined> } })
+    .process?.env?.PUBLIC_ATLAS_API_BASE_URL ?? "https://atlassoftware.ia.br"
+).replace(/\/+$/, "");
+const regionsUrl = `${atlasApiBaseUrl}/api/public/regioes`;
 
 async function mockRegions(page: Page): Promise<void> {
   await page.route(regionsUrl, async (route) => {
