@@ -12,6 +12,14 @@ import {
   parseManualCoordinates,
 } from "../../src/lib/availability/coordinates";
 import {
+  GOOGLE_MAPS_SCRIPT_ID,
+  createGoogleMapsConfig,
+  createGoogleMapsScriptUrl,
+  hasGoogleMapsRuntime,
+  loadGoogleMaps,
+} from "../../src/lib/availability/maps";
+import type { GoogleMapsGlobal } from "../../src/lib/availability/maps";
+import {
   normalizeRegionsResponse,
   normalizeViabilityError,
   normalizeViabilityResponse,
@@ -228,5 +236,122 @@ describe("availability WhatsApp", () => {
     expect(decodeURIComponent(url)).toContain(
       "Quero continuar o atendimento com a equipe.",
     );
+  });
+});
+describe("availability Google Maps", () => {
+  function createFakeGoogleMaps(): GoogleMapsGlobal {
+    class FakeMap {
+      setCenter(): void {}
+      panTo(): void {}
+      setZoom(): void {}
+      addListener(): { remove(): void } {
+        return { remove: () => {} };
+      }
+    }
+
+    class FakeMarker {
+      setMap(): void {}
+      setPosition(): void {}
+      addListener(): { remove(): void } {
+        return { remove: () => {} };
+      }
+    }
+
+    return {
+      maps: {
+        Map: FakeMap,
+        Marker: FakeMarker,
+      },
+    };
+  }
+
+  function createFakeDocument() {
+    const scripts: Array<Record<string, unknown>> = [];
+
+    return {
+      scripts,
+      document: {
+        getElementById: (id: string) =>
+          scripts.find((script) => script.id === id) ?? null,
+        createElement: (tagName: string) => ({ tagName }),
+        head: {
+          append: (script: Record<string, unknown>) => {
+            scripts.push(script);
+          },
+        },
+      } as unknown as Document,
+    };
+  }
+
+  it("creates a safe public Maps config and reports missing API key", () => {
+    expect(createGoogleMapsConfig(undefined)).toEqual({
+      available: false,
+      reason: "missing-api-key",
+    });
+    expect(createGoogleMapsConfig("  ")).toEqual({
+      available: false,
+      reason: "missing-api-key",
+    });
+    expect(createGoogleMapsConfig(" public-key ", " map-id ")).toEqual({
+      available: true,
+      config: {
+        apiKey: "public-key",
+        mapId: "map-id",
+        language: "pt-BR",
+        region: "BR",
+      },
+    });
+  });
+
+  it("builds the Maps script URL with only the approved lazy libraries", () => {
+    const url = new URL(
+      createGoogleMapsScriptUrl({
+        apiKey: "public-key",
+        language: "pt-BR",
+        region: "BR",
+      }),
+    );
+
+    expect(url.origin).toBe("https://maps.googleapis.com");
+    expect(url.pathname).toBe("/maps/api/js");
+    expect(url.searchParams.get("key")).toBe("public-key");
+    expect(url.searchParams.get("libraries")).toBe("places,marker");
+    expect(url.searchParams.get("loading")).toBe("async");
+    expect(url.searchParams.get("callback")).toBe(
+      "__ruralConectaGoogleMapsReady",
+    );
+  });
+
+  it("detects a mocked Google Maps runtime", () => {
+    expect(hasGoogleMapsRuntime({} as Window)).toBe(false);
+    expect(
+      hasGoogleMapsRuntime({ google: createFakeGoogleMaps() } as Window),
+    ).toBe(true);
+  });
+
+  it("loads Google Maps idempotently without inserting duplicate scripts", async () => {
+    const { document, scripts } = createFakeDocument();
+    const win = {} as Window;
+    const config = {
+      apiKey: "public-key",
+      language: "pt-BR" as const,
+      region: "BR" as const,
+    };
+
+    const firstLoad = loadGoogleMaps(config, document, win);
+    const secondLoad = loadGoogleMaps(config, document, win);
+
+    expect(firstLoad).toBe(secondLoad);
+    expect(scripts).toHaveLength(1);
+    expect(scripts[0]?.id).toBe(GOOGLE_MAPS_SCRIPT_ID);
+
+    win.google = createFakeGoogleMaps();
+    win.__ruralConectaGoogleMapsReady?.();
+
+    await expect(firstLoad).resolves.toBe(win.google);
+    await expect(loadGoogleMaps(config, document, win)).resolves.toBe(
+      win.google,
+    );
+    expect(scripts).toHaveLength(1);
   });
 });

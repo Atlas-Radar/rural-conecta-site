@@ -52,3 +52,12 @@
 - Pergunta: Cloudflare Pages/Workers, domínio e ambientes?
 - Status: pendente.
 - Bloqueia: produção e GitHub settings finais.
+
+## D007 — Google Maps público no modal
+
+- Decisão da Onda 5: usar `PUBLIC_GOOGLE_MAPS_API_KEY` como chave pública do Google Maps JavaScript API, carregada somente após abertura do modal de pré-análise.
+- `PUBLIC_GOOGLE_MAP_ID` é opcional; quando ausente, o mapa usa configuração padrão.
+- Places é usado no mesmo fluxo sob demanda para pesquisa textual rural dentro do modal.
+- A ausência de chave ou falha do Maps mostra fallback e preserva GPS, coordenadas manuais e WhatsApp.
+- Status: resolvido para implementação local; pendente validação manual com chave real restrita por domínio e APIs permitidas antes de produção.
+

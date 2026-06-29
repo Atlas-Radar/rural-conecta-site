@@ -204,15 +204,17 @@ O objetivo é sair rapidamente de uma base parcial para uma página inteira nave
 
 ## Onda 5 — Google Maps sob demanda + iconização/animações/polimento
 
+**Status:** concluída localmente em 2026-06-28, com fallback e testes mockados. Pendente validação manual com `PUBLIC_GOOGLE_MAPS_API_KEY` real restrita por domínio.
+
 **Objetivo:** adicionar mapa somente após ação explícita do usuário e aplicar iconização, microinterações e polimento visual sem pesar a página.
 
 **Escopo:**
 
-- Loader sob demanda do Maps.
-- Places somente quando houver busca.
-- Marcador/toque/arraste.
-- Confirmar ponto.
-- Fallback para Maps lento ou indisponível.
+- Loader sob demanda do Maps, iniciado apenas depois da abertura do modal de pré-análise.
+- Places carregado junto do fluxo sob demanda para pesquisa textual no modal.
+- Marcador/toque/arraste implementados com confirmação explícita do ponto.
+- Confirmar ponto preenche o campo/estado de coordenadas existente e habilita a consulta.
+- Fallback para chave ausente, Maps lento ou indisponível, mantendo GPS, coordenadas e WhatsApp.
 - Ícones SVG inline consistentes para modal, métodos, CTAs, cards e estados.
 - Microinterações leves para abrir/fechar modal, seleção de método, resultado e CTAs.
 - Animações CSS discretas com `prefers-reduced-motion` obrigatório.
@@ -278,3 +280,4 @@ O prompt deve ser maior que os anteriores, mas ainda com limites claros:
 - otimizar imagem do técnico;
 - remover WhatsApp do header;
 - entregar screenshots, testes e auditoria de dist.
+

@@ -154,7 +154,7 @@ const routeSteps = [
               </span>
               <span>
                 <strong>Buscar fazenda ou local</strong>
-                <small>Use uma referência e confirme por coordenadas.</small>
+                <small>Pesquise uma referência e confirme no mapa.</small>
               </span>
               <svg
                 class="availability-action__arrow"
@@ -179,7 +179,7 @@ const routeSteps = [
               </span>
               <span>
                 <strong>Escolher no mapa</strong>
-                <small>Mapa real entra na próxima onda, sob demanda.</small>
+                <small>Clique ou toque para marcar o ponto.</small>
               </span>
               <svg
                 class="availability-action__arrow"
@@ -262,45 +262,105 @@ const routeSteps = [
 
         <aside
           class="availability-modal__map"
-          aria-label="Mapa de referência sem Google Maps"
-          data-availability-map-placeholder
+          aria-label="Mapa para escolher o ponto da propriedade"
+          data-availability-map-panel
         >
-          <div class="availability-map-art" aria-hidden="true">
-            <span class="availability-map-art__badge">Mapa de referência</span>
-            <span
-              class="availability-map-art__road availability-map-art__road--one"
-            ></span>
-            <span
-              class="availability-map-art__road availability-map-art__road--two"
-            ></span>
-            <span
-              class="availability-map-art__road availability-map-art__road--three"
-            ></span>
-            <span
-              class="availability-map-art__ring availability-map-art__ring--outer"
-            ></span>
-            <span
-              class="availability-map-art__ring availability-map-art__ring--inner"
-            ></span>
-            <span class="availability-map-art__point"></span>
-            <span class="availability-map-art__scale">500 m</span>
-            <span
-              class="availability-map-art__control availability-map-art__control--plus"
-              >+</span
-            >
-            <span
-              class="availability-map-art__control availability-map-art__control--minus"
-              >−</span
-            >
+          <div class="availability-map-search">
+            <label class="field-label" for="availability-map-search">
+              Buscar fazenda, comunidade ou referência
+            </label>
+            <div class="availability-map-search__row">
+              <input
+                id="availability-map-search"
+                class="field-control"
+                type="search"
+                autocomplete="off"
+                placeholder="Ex.: fazenda tal paracatu"
+                data-availability-map-search
+              />
+              <button
+                class="availability-map-search__button"
+                type="button"
+                data-availability-map-search-button
+              >
+                Buscar
+              </button>
+            </div>
+            <p class="availability-map-status" data-availability-map-status>
+              O mapa carrega somente depois que a pré-análise é aberta.
+            </p>
           </div>
 
-          <div class="availability-map-copy">
-            <p class="section-kicker">Ponto informado</p>
-            <h3>Sem infraestrutura exposta.</h3>
-            <p>
-              Mock visual leve. Nenhum Google Maps ou Places é carregado nesta
-              onda.
-            </p>
+          <div class="availability-map-stage">
+            <div
+              class="availability-map-canvas"
+              role="application"
+              aria-label="Mapa interativo para selecionar a localização"
+              data-availability-map-canvas
+            >
+            </div>
+
+            <div
+              class="availability-map-fallback"
+              data-availability-map-fallback
+              hidden
+            >
+              <span class="availability-map-fallback__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                  <path d="M12 21s6-5.4 6-10a6 6 0 1 0-12 0c0 4.6 6 10 6 10Z"
+                  ></path>
+                  <path d="m9.5 9.5 5 5"></path>
+                  <path d="m14.5 9.5-5 5"></path>
+                </svg>
+              </span>
+              <h3>Mapa indisponível agora</h3>
+              <p data-availability-map-fallback-message>
+                Use GPS, coordenadas manuais ou WhatsApp para continuar.
+              </p>
+              <div class="availability-map-fallback__actions">
+                <button type="button" data-availability-map-retry>
+                  Tentar novamente
+                </button>
+                <button type="button" data-availability-map-use-gps>
+                  Usar GPS
+                </button>
+                <button type="button" data-availability-map-use-coordinates>
+                  Informar coordenadas
+                </button>
+                <a
+                  href={`https://wa.me/${site.whatsapp.digits}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  WhatsApp
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="availability-map-selection">
+            <div>
+              <p class="section-kicker">Ponto selecionado</p>
+              <strong data-availability-map-selected-title>
+                Toque no mapa para marcar
+              </strong>
+              <span data-availability-map-selected-coordinates>
+                Nenhum ponto confirmado ainda.
+              </span>
+            </div>
+            <button
+              class="availability-map-confirm"
+              type="button"
+              data-availability-map-confirm
+              disabled
+            >
+              <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24">
+                <path d="M12 21s6-5.4 6-10a6 6 0 1 0-12 0c0 4.6 6 10 6 10Z"
+                ></path>
+                <circle cx="12" cy="11" r="2"></circle>
+              </svg>
+              Confirmar este ponto
+            </button>
           </div>
 
           <div
@@ -527,6 +587,220 @@ const routeSteps = [
   .availability-region-card,
   .availability-coordinate-card,
   .availability-modal__map,
+  .availability-map-search {
+    display: grid;
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+
+  .availability-map-search__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.45rem;
+    align-items: stretch;
+  }
+
+  .availability-map-search__button,
+  .availability-map-confirm,
+  .availability-map-fallback__actions button,
+  .availability-map-fallback__actions a {
+    min-height: var(--touch-target-min);
+    border-radius: var(--radius-control);
+    font-weight: 900;
+  }
+
+  .availability-map-search__button {
+    border: 1px solid var(--color-primary-hover);
+    background: var(--gradient-primary);
+    color: var(--color-text-inverse);
+    cursor: pointer;
+    padding-inline: 0.85rem;
+  }
+
+  .availability-map-search__button:disabled {
+    border-color: var(--color-border-subtle);
+    background: rgba(245, 247, 243, 0.08);
+    color: var(--color-text-muted);
+    cursor: progress;
+  }
+
+  .availability-map-status {
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+    line-height: 1.35;
+    margin: 0;
+  }
+
+  .availability-map-stage {
+    position: relative;
+    min-height: 16rem;
+    overflow: hidden;
+    border-block: 1px solid var(--color-border-subtle);
+    background:
+      linear-gradient(90deg, rgba(245, 247, 243, 0.045) 1px, transparent 1px),
+      linear-gradient(0deg, rgba(245, 247, 243, 0.045) 1px, transparent 1px),
+      radial-gradient(
+        circle at 50% 52%,
+        rgba(99, 212, 59, 0.22),
+        transparent 5rem
+      ),
+      linear-gradient(145deg, rgba(5, 25, 22, 0.98), rgba(2, 11, 12, 0.94));
+    background-size:
+      2rem 2rem,
+      2rem 2rem,
+      auto,
+      auto;
+  }
+
+  .availability-map-canvas {
+    width: 100%;
+    min-height: 16rem;
+    height: 100%;
+  }
+
+  .availability-map-canvas:empty::before {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    padding: 1rem;
+    text-align: center;
+    content: "Carregando mapa...";
+  }
+
+  .availability-map-fallback {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    gap: 0.65rem;
+    padding: 1rem;
+    background: rgba(2, 11, 12, 0.9);
+    text-align: center;
+  }
+
+  .availability-map-fallback[hidden] {
+    display: none;
+  }
+
+  .availability-map-fallback__icon {
+    display: grid;
+    width: 3.2rem;
+    height: 3.2rem;
+    place-items: center;
+    border: 1px solid rgba(241, 120, 107, 0.48);
+    border-radius: 999px;
+    background: rgba(241, 120, 107, 0.1);
+    color: var(--color-error);
+  }
+
+  .availability-map-fallback__icon svg,
+  .availability-map-confirm svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .availability-map-fallback__icon svg {
+    width: 1.75rem;
+    height: 1.75rem;
+    stroke-width: 2.1;
+  }
+
+  .availability-map-fallback h3 {
+    font-size: 1.15rem;
+    line-height: 1.15;
+    margin: 0;
+  }
+
+  .availability-map-fallback p {
+    max-width: 25rem;
+    color: var(--color-text-secondary);
+    font-size: 0.88rem;
+    line-height: 1.42;
+    margin: 0;
+  }
+
+  .availability-map-fallback__actions {
+    display: grid;
+    width: min(100%, 24rem);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.45rem;
+  }
+
+  .availability-map-fallback__actions button,
+  .availability-map-fallback__actions a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-border-subtle);
+    background: rgba(245, 247, 243, 0.05);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    font-size: 0.84rem;
+    padding: 0.68rem 0.7rem;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .availability-map-fallback__actions a {
+    border-color: var(--color-border-green);
+    color: var(--color-green-300);
+  }
+
+  .availability-map-selection {
+    display: grid;
+    gap: 0.65rem;
+    padding: 0.75rem;
+  }
+
+  .availability-map-selection strong,
+  .availability-map-selection span {
+    display: block;
+  }
+
+  .availability-map-selection strong {
+    font-size: 1rem;
+    line-height: 1.2;
+  }
+
+  .availability-map-selection span {
+    color: var(--color-text-muted);
+    font-size: 0.84rem;
+    line-height: 1.35;
+    margin-top: 0.16rem;
+  }
+
+  .availability-map-confirm {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    border: 1px solid var(--color-primary-hover);
+    background: var(--gradient-primary);
+    color: var(--color-text-inverse);
+    cursor: pointer;
+    padding: 0.8rem 0.95rem;
+  }
+
+  .availability-map-confirm:disabled {
+    border-color: var(--color-border-subtle);
+    background: rgba(245, 247, 243, 0.08);
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+  }
+
+  .availability-map-confirm svg {
+    width: 1.12rem;
+    height: 1.12rem;
+    stroke-width: 2.2;
+  }
+
   .availability-result {
     border: 1px solid var(--color-border-subtle);
     border-radius: var(--radius-card);
@@ -785,158 +1059,6 @@ const routeSteps = [
     padding: 0;
   }
 
-  .availability-map-art {
-    position: relative;
-    min-height: 10.5rem;
-    overflow: hidden;
-    border-bottom: 1px solid var(--color-border-subtle);
-    background:
-      linear-gradient(90deg, rgba(245, 247, 243, 0.045) 1px, transparent 1px),
-      linear-gradient(0deg, rgba(245, 247, 243, 0.045) 1px, transparent 1px),
-      radial-gradient(
-        circle at 50% 52%,
-        rgba(99, 212, 59, 0.22),
-        transparent 5rem
-      ),
-      linear-gradient(145deg, rgba(5, 25, 22, 0.98), rgba(2, 11, 12, 0.94));
-    background-size:
-      2rem 2rem,
-      2rem 2rem,
-      auto,
-      auto;
-  }
-
-  .availability-map-art__badge,
-  .availability-map-art__scale,
-  .availability-map-art__control {
-    position: absolute;
-    z-index: 2;
-    border: 1px solid var(--color-border-subtle);
-    background: rgba(2, 11, 12, 0.72);
-    color: var(--color-text-secondary);
-    font-size: 0.72rem;
-    font-weight: 800;
-  }
-
-  .availability-map-art__badge {
-    top: 0.75rem;
-    left: 0.75rem;
-    border-radius: var(--radius-control);
-    padding: 0.42rem 0.62rem;
-  }
-
-  .availability-map-art__scale {
-    right: 1rem;
-    bottom: 1rem;
-    border-width: 0 0 2px;
-    background: transparent;
-    padding-inline: 0.75rem;
-  }
-
-  .availability-map-art__control {
-    right: 0.75rem;
-    display: grid;
-    width: 2rem;
-    height: 2rem;
-    place-items: center;
-    border-radius: 0.55rem;
-    color: var(--color-text-primary);
-    font-size: 1.15rem;
-  }
-
-  .availability-map-art__control--plus {
-    top: 0.75rem;
-  }
-
-  .availability-map-art__control--minus {
-    top: 2.9rem;
-  }
-
-  .availability-map-art__road {
-    position: absolute;
-    height: 0.18rem;
-    border-radius: 999px;
-    background: rgba(216, 155, 95, 0.32);
-    opacity: 0.7;
-  }
-
-  .availability-map-art__road--one {
-    top: 42%;
-    left: -8%;
-    width: 62%;
-    transform: rotate(-15deg);
-  }
-
-  .availability-map-art__road--two {
-    right: -6%;
-    bottom: 28%;
-    width: 72%;
-    transform: rotate(21deg);
-  }
-
-  .availability-map-art__road--three {
-    top: 24%;
-    right: 16%;
-    width: 38%;
-    transform: rotate(8deg);
-  }
-
-  .availability-map-art__ring,
-  .availability-map-art__point {
-    position: absolute;
-    top: 52%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-
-  .availability-map-art__ring {
-    border: 1px dashed rgba(161, 242, 124, 0.42);
-    border-radius: 999px;
-  }
-
-  .availability-map-art__ring--outer {
-    width: 8.5rem;
-    height: 8.5rem;
-  }
-
-  .availability-map-art__ring--inner {
-    width: 4rem;
-    height: 4rem;
-    border-style: solid;
-    background: rgba(99, 212, 59, 0.07);
-  }
-
-  .availability-map-art__point {
-    z-index: 3;
-    width: 1rem;
-    height: 1rem;
-    border: 3px solid var(--color-background-main);
-    border-radius: 999px;
-    background: var(--color-green-300);
-    box-shadow:
-      0 0 0 0.55rem rgba(161, 242, 124, 0.18),
-      0 0 2rem rgba(99, 212, 59, 0.34);
-  }
-
-  .availability-map-copy {
-    display: grid;
-    gap: 0.35rem;
-    padding: 0.85rem;
-  }
-
-  .availability-map-copy h3 {
-    font-size: 1.25rem;
-    line-height: 1.1;
-    margin: 0;
-  }
-
-  .availability-map-copy p:not(.section-kicker) {
-    color: var(--color-text-muted);
-    font-size: 0.84rem;
-    line-height: 1.35;
-    margin: 0;
-  }
-
   .availability-result {
     display: grid;
     gap: 0.65rem;
@@ -1135,8 +1257,7 @@ const routeSteps = [
     }
   }
   @media (max-width: 24rem) {
-    .availability-action small,
-    .availability-map-copy {
+    .availability-action small {
       display: none;
     }
   }
@@ -1204,21 +1325,6 @@ const routeSteps = [
 
     .availability-modal__map {
       min-height: 0;
-    }
-
-    .availability-map-art {
-      min-height: 100%;
-      border-bottom: 0;
-    }
-
-    .availability-map-copy {
-      position: absolute;
-      top: 1rem;
-      left: 1rem;
-      max-width: 18rem;
-      border: 1px solid var(--color-border-subtle);
-      border-radius: var(--radius-control);
-      background: rgba(2, 11, 12, 0.7);
     }
 
     .availability-result {

@@ -27,6 +27,21 @@ type ViabilityPayload = {
   longitude: number;
 };
 
+type MockMapsWindow = Window & {
+  __mapsMock?: {
+    maps: Array<{
+      center: { lat: number; lng: number };
+      zoom: number;
+      click(lat: number, lng: number): void;
+    }>;
+    markers: Array<{
+      position: { lat: number; lng: number };
+      dragEnd(lat: number, lng: number): void;
+    }>;
+    searches: Array<{ query: string }>;
+  };
+};
+
 async function routeApi(
   page: Page,
   patterns: string[],
@@ -151,8 +166,148 @@ async function getGeolocationCalls(page: Page): Promise<number> {
     () => (window as Window & { __geoCalls?: number }).__geoCalls ?? 0,
   );
 }
+async function mockGoogleMapsRuntime(page: Page): Promise<void> {
+  await page.addInitScript(() => {
+    const win = window as MockMapsWindow;
 
-test.describe("Disponibilidade Onda 4", () => {
+    class MockLatLng {
+      constructor(
+        private readonly latitude: number,
+        private readonly longitude: number,
+      ) {}
+
+      lat(): number {
+        return this.latitude;
+      }
+
+      lng(): number {
+        return this.longitude;
+      }
+    }
+
+    class MockMap {
+      center: { lat: number; lng: number };
+      zoom: number;
+      private readonly listeners: Record<string, (event: unknown) => void> = {};
+
+      constructor(_element: HTMLElement, options: Record<string, unknown>) {
+        this.center = options.center as { lat: number; lng: number };
+        this.zoom = Number(options.zoom ?? 12);
+        win.__mapsMock?.maps.push(this);
+      }
+
+      setCenter(position: MockLatLng | { lat: number; lng: number }): void {
+        this.center = readLatLng(position);
+      }
+
+      panTo(position: MockLatLng | { lat: number; lng: number }): void {
+        this.center = readLatLng(position);
+      }
+
+      setZoom(zoom: number): void {
+        this.zoom = zoom;
+      }
+
+      addListener(
+        eventName: string,
+        handler: (event: unknown) => void,
+      ): { remove(): void } {
+        this.listeners[eventName] = handler;
+        return { remove: () => delete this.listeners[eventName] };
+      }
+
+      click(lat: number, lng: number): void {
+        this.listeners.click?.({ latLng: new MockLatLng(lat, lng) });
+      }
+    }
+
+    class MockMarker {
+      position: { lat: number; lng: number };
+      private readonly listeners: Record<string, (event: unknown) => void> = {};
+
+      constructor(options: Record<string, unknown>) {
+        this.position = options.position as { lat: number; lng: number };
+        win.__mapsMock?.markers.push(this);
+      }
+
+      setMap(): void {}
+
+      setPosition(position: { lat: number; lng: number }): void {
+        this.position = position;
+      }
+
+      addListener(
+        eventName: string,
+        handler: (event: unknown) => void,
+      ): { remove(): void } {
+        this.listeners[eventName] = handler;
+        return { remove: () => delete this.listeners[eventName] };
+      }
+
+      dragEnd(lat: number, lng: number): void {
+        this.listeners.dragend?.({ latLng: new MockLatLng(lat, lng) });
+      }
+    }
+
+    class MockPlacesService {
+      textSearch(
+        request: { query: string },
+        callback: (
+          results: Array<{ geometry: { location: MockLatLng } }>,
+          status: string,
+        ) => void,
+      ): void {
+        win.__mapsMock?.searches.push({ query: request.query });
+        callback(
+          [{ geometry: { location: new MockLatLng(-16.521111, -46.812222) } }],
+          "OK",
+        );
+      }
+    }
+
+    function readLatLng(position: MockLatLng | { lat: number; lng: number }): {
+      lat: number;
+      lng: number;
+    } {
+      if (position instanceof MockLatLng) {
+        return { lat: position.lat(), lng: position.lng() };
+      }
+
+      return position;
+    }
+
+    win.__mapsMock = { maps: [], markers: [], searches: [] };
+    const mapsRuntime = {
+      maps: {
+        Map: MockMap,
+        Marker: MockMarker,
+        Point: class {},
+        Size: class {},
+        places: {
+          PlacesService: MockPlacesService,
+          PlacesServiceStatus: { OK: "OK", ZERO_RESULTS: "ZERO_RESULTS" },
+        },
+      },
+    };
+    win.google = mapsRuntime as unknown as typeof win.google;
+  });
+}
+
+async function clickMockMap(
+  page: Page,
+  latitude: number,
+  longitude: number,
+): Promise<void> {
+  await page.evaluate(
+    ([lat, lng]) => {
+      const win = window as MockMapsWindow;
+      win.__mapsMock?.maps.at(-1)?.click(lat, lng);
+    },
+    [latitude, longitude],
+  );
+}
+
+test.describe("Disponibilidade Onda 5", () => {
   test("página carrega com modal fechado e abre por CTA do hero", async ({
     page,
   }) => {
@@ -474,13 +629,16 @@ test.describe("Disponibilidade Onda 4", () => {
   }) => {
     await mockRegions(page);
     await page.goto("/");
-    await openAvailabilityModal(page);
+    const { modal } = await openAvailabilityModal(page);
 
     await expect(page.getByLabel(/^Nome$/i)).toHaveCount(0);
     await expect(page.getByLabel(/^Telefone$/i)).toHaveCount(0);
     await expect(page.getByLabel(/^E-mail$/i)).toHaveCount(0);
     await expect(page.getByLabel(/^CPF$/i)).toHaveCount(0);
     await expect(page.locator("input[name], textarea[name]")).toHaveCount(0);
+    await expect(modal).not.toContainText(
+      /torre|CTO|rota|tecnologia provável/i,
+    );
     await expect(
       page.locator(".site-header").getByRole("link", {
         name: /WhatsApp|Falar no WhatsApp/,
@@ -488,7 +646,7 @@ test.describe("Disponibilidade Onda 4", () => {
     ).toHaveCount(0);
   });
 
-  test("não carrega Maps, Places ou GTM, inclusive ao clicar em escolher no mapa", async ({
+  test("landing inicial não carrega Maps e fallback aparece sem chave pública", async ({
     page,
   }) => {
     const forbiddenRequests: string[] = [];
@@ -497,8 +655,7 @@ test.describe("Disponibilidade Onda 4", () => {
       if (
         url.includes("maps.googleapis") ||
         url.includes("google.maps") ||
-        url.includes("googletagmanager") ||
-        url.toLowerCase().includes("places")
+        url.includes("googletagmanager")
       ) {
         forbiddenRequests.push(url);
       }
@@ -506,19 +663,87 @@ test.describe("Disponibilidade Onda 4", () => {
 
     await mockRegions(page);
     await page.goto("/");
-    const { modal } = await openAvailabilityModal(page);
-    await modal.getByRole("button", { name: /Escolher no mapa/ }).click();
 
+    await expect(page.locator('script[src*="maps.googleapis"]')).toHaveCount(0);
+    expect(forbiddenRequests).toEqual([]);
+
+    const { modal } = await openAvailabilityModal(page);
+    await expect(modal.getByLabel(/Buscar fazenda/)).toBeVisible();
+    await expect(modal.getByText("Mapa indisponível agora")).toBeVisible();
     await expect(
-      modal.getByText(/Nenhum Google Maps foi carregado/),
+      modal.getByText(/PUBLIC_GOOGLE_MAPS_API_KEY não está configurada/),
+    ).toBeVisible();
+    await expect(modal.getByLabel("Coordenadas do ponto")).toBeVisible();
+    await expect(
+      modal.getByRole("button", { name: /Pegar localização em tempo real/ }),
     ).toBeVisible();
     await expect(page.locator('script[src*="maps.googleapis"]')).toHaveCount(0);
-    await expect(page.locator('script[src*="googletagmanager"]')).toHaveCount(
-      0,
-    );
     expect(forbiddenRequests).toEqual([]);
   });
 
+  test("mock de pesquisa centraliza resultado e confirma coordenadas", async ({
+    page,
+  }) => {
+    await mockGoogleMapsRuntime(page);
+    await mockRegions(page);
+    await page.goto("/");
+
+    const { modal } = await openAvailabilityModal(page);
+    await expect(modal.getByText(/Mapa pronto/)).toBeVisible();
+
+    await modal.getByLabel(/Buscar fazenda/).fill("fazenda tal paracatu");
+    await modal.getByRole("button", { name: "Buscar", exact: true }).click();
+
+    await expect(modal.getByText("Resultado localizado no mapa")).toBeVisible();
+    await expect(modal.getByText("-16.521111, -46.812222")).toBeVisible();
+
+    await modal.getByRole("button", { name: "Confirmar este ponto" }).click();
+    await expect(modal.getByLabel("Coordenadas do ponto")).toHaveValue(
+      "-16.521111, -46.812222",
+    );
+    await expect(
+      modal.getByRole("button", { name: /Consultar pré-análise/ }),
+    ).toBeEnabled();
+  });
+
+  test("clique no mapa reposiciona marcador e consulta envia somente latitude e longitude", async ({
+    page,
+  }) => {
+    await mockGoogleMapsRuntime(page);
+    await mockRegions(page);
+
+    let postedPayload: unknown = null;
+    await mockViability(page, async (route) => {
+      postedPayload = route.request().postDataJSON();
+      await route.fulfill({
+        contentType: "application/json",
+        body: JSON.stringify({
+          viavel: true,
+          status: "pre_viavel",
+          mensagem: "Encontramos indício de viabilidade para este endereço.",
+        }),
+      });
+    });
+
+    await page.goto("/");
+    const { modal } = await openAvailabilityModal(page);
+    await expect(modal.getByText(/Mapa pronto/)).toBeVisible();
+
+    await clickMockMap(page, -16.61, -46.91);
+    await expect(modal.getByText("Ponto marcado no mapa")).toBeVisible();
+    await expect(modal.getByText("-16.610000, -46.910000")).toBeVisible();
+
+    await clickMockMap(page, -16.62, -46.92);
+    await expect(modal.getByText("-16.620000, -46.920000")).toBeVisible();
+
+    await modal.getByRole("button", { name: "Confirmar este ponto" }).click();
+    await expect(modal.getByLabel("Coordenadas do ponto")).toHaveValue(
+      "-16.620000, -46.920000",
+    );
+    await submitCoordinates(page);
+
+    expect(postedPayload).toEqual({ latitude: -16.62, longitude: -46.92 });
+  });
   test("CTAs de disponibilidade abrem o mesmo modal", async ({ page }) => {
     await mockRegions(page);
     await page.goto("/");
