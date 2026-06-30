@@ -38,7 +38,7 @@ export const locationMethods = [
   },
   {
     title: "Escolher no mapa",
-    description: "Próximo passo sob demanda, sem carregar Maps na abertura.",
+    description: "Abre sob demanda, sem carregar Maps na abertura.",
     icon: "map",
   },
   {
@@ -208,7 +208,7 @@ export const faqItems = [
   {
     question: "O mapa já está disponível?",
     answer:
-      "Ainda não nesta onda. O Google Maps será carregado somente sob demanda em uma etapa futura, sem pesar a abertura inicial da landing.",
+      "Sim. O Google Maps abre somente sob demanda, depois de uma ação explícita no modal, sem pesar a abertura inicial da landing.",
   },
   {
     question: "Posso continuar pelo WhatsApp?",

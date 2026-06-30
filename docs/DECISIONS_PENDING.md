@@ -59,5 +59,13 @@
 - `PUBLIC_GOOGLE_MAP_ID` é opcional; quando ausente, o mapa usa configuração padrão.
 - Places é usado no mesmo fluxo sob demanda para pesquisa textual rural dentro do modal.
 - A ausência de chave ou falha do Maps mostra fallback e preserva GPS, coordenadas manuais e WhatsApp.
-- Status: resolvido para implementação local; pendente validação manual com chave real restrita por domínio e APIs permitidas antes de produção.
+- Formato seguro documentado em `docs/MAPS_KEYS_VALIDATION.md`: chaves públicas separadas por ambiente, restritas por HTTP referrers e limitadas a Maps JavaScript API + Places API.
+- Status: implementação local com fallback resolvida; validação manual com chave real restrita ainda bloqueia a Onda 6.
+
+## D008 — Simplificação visual do modal de pré-análise
+
+- Problema: o modal atual ficou funcional, mas visualmente poluído no mobile por juntar região, GPS, coordenadas, mapa, busca, status, resultado e textos auxiliares na mesma superfície.
+- Decisão: antes da Onda 6, criar uma Onda 5.1 para simplificar a tela com menos texto, mais iconografia, hierarquia de escolha clara e disclosure progressivo dos métodos avançados.
+- Restrições: manter acessibilidade, foco, teclado, fallback sem Maps, GPS, coordenadas DD/DMS, busca/seleção no mapa sob demanda e zero Maps na carga inicial.
+- Status: implementada localmente em 2026-06-29; aguarda aprovação visual final e validação manual com chave real restrita antes da qualidade final/produção.
 

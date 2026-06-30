@@ -1,12 +1,7 @@
 ---
 import { availabilityRegions, site } from "../../data/site";
 
-const routeSteps = [
-  "Região",
-  "Localização",
-  "Pré-análise",
-  "WhatsApp",
-] as const;
+const routeSteps = ["Região", "Ponto", "Resultado"] as const;
 ---
 
 <section
@@ -42,7 +37,7 @@ const routeSteps = [
               Pré-análise de disponibilidade
             </h2>
             <p id="availability-modal-description">
-              Verificação rápida de viabilidade para o ponto informado.
+              Escolha a região e marque o ponto.
             </p>
           </div>
         </div>
@@ -81,8 +76,7 @@ const routeSteps = [
                 <circle cx="12" cy="11" r="2"></circle>
               </svg>
               <div>
-                <h3>1. Escolha a região ou localidade</h3>
-                <p>Informe onde deseja verificar a disponibilidade.</p>
+                <h3>Região ou localidade</h3>
               </div>
             </div>
 
@@ -125,15 +119,13 @@ const routeSteps = [
                 <circle cx="12" cy="12" r="1.7"></circle>
               </svg>
             </span>
-            <span data-availability-realtime-label>
-              Pegar localização em tempo real
-            </span>
+            <span data-availability-realtime-label> Usar GPS agora </span>
             <small>GPS</small>
           </button>
 
-          <div class="availability-modal__divider">
+          <div class="availability-modal__divider" aria-hidden="true">
             <span></span>
-            <strong>Outras formas de informar</strong>
+            <strong>outras opções</strong>
             <span></span>
           </div>
 
@@ -153,8 +145,8 @@ const routeSteps = [
                 </svg>
               </span>
               <span>
-                <strong>Buscar fazenda ou local</strong>
-                <small>Pesquise uma referência e confirme no mapa.</small>
+                <strong>Busca ou mapa</strong>
+                <small>Pesquisar, tocar no mapa ou arrastar marcador.</small>
               </span>
               <svg
                 class="availability-action__arrow"
@@ -179,7 +171,7 @@ const routeSteps = [
               </span>
               <span>
                 <strong>Escolher no mapa</strong>
-                <small>Clique ou toque para marcar o ponto.</small>
+                <small>Abrir mapa para marcar o ponto.</small>
               </span>
               <svg
                 class="availability-action__arrow"
@@ -218,7 +210,11 @@ const routeSteps = [
             </button>
           </div>
 
-          <div class="availability-coordinate-card">
+          <div
+            class="availability-coordinate-card"
+            data-availability-coordinate-panel
+            hidden
+          >
             <div class="availability-coordinate-card__heading">
               <label class="field-label" for="availability-coordinates">
                 Coordenadas do ponto
@@ -234,12 +230,11 @@ const routeSteps = [
               autocomplete="off"
               data-availability-coordinates
             />
-            <p class="field-hint">Aceita DD, DMS ou lat,lng no mesmo campo.</p>
+            <p class="field-hint">Aceita DD, DMS ou lat,lng.</p>
           </div>
 
           <p class="availability-modal__helper" data-availability-helper>
-            Informe o ponto da propriedade. Use localização em tempo real ou
-            coordenadas.
+            Use o GPS ou abra uma opção para informar o ponto.
           </p>
 
           <button
@@ -256,14 +251,45 @@ const routeSteps = [
           </button>
 
           <p class="privacy-note availability-modal__privacy">
-            Sem cadastro. Não pedimos nome, telefone, e-mail ou CPF.
+            Sem cadastro ou dados pessoais.
           </p>
+          <div
+            class="availability-result"
+            data-availability-result
+            aria-live="polite"
+            hidden
+          >
+            <p class="availability-result__eyebrow">Resultado da pré-análise</p>
+            <h3 data-availability-result-title>Pré-análise</h3>
+            <p data-availability-result-message>
+              A resposta aparecerá aqui depois da consulta.
+            </p>
+            <div class="availability-result__actions">
+              <a
+                class="availability-result__whatsapp"
+                href={`https://wa.me/${site.whatsapp.digits}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-availability-whatsapp
+              >
+                Continuar pelo WhatsApp
+              </a>
+              <button
+                class="availability-result__edit"
+                type="button"
+                data-availability-edit
+              >
+                Editar coordenadas
+              </button>
+            </div>
+          </div>
         </div>
 
         <aside
           class="availability-modal__map"
           aria-label="Mapa para escolher o ponto da propriedade"
           data-availability-map-panel
+          hidden
         >
           <div class="availability-map-search">
             <label class="field-label" for="availability-map-search">
@@ -287,7 +313,7 @@ const routeSteps = [
               </button>
             </div>
             <p class="availability-map-status" data-availability-map-status>
-              O mapa carrega somente depois que a pré-análise é aberta.
+              O mapa carrega somente depois de escolher busca ou mapa.
             </p>
           </div>
 
@@ -361,37 +387,6 @@ const routeSteps = [
               </svg>
               Confirmar este ponto
             </button>
-          </div>
-
-          <div
-            class="availability-result"
-            data-availability-result
-            aria-live="polite"
-            hidden
-          >
-            <p class="availability-result__eyebrow">Resultado da pré-análise</p>
-            <h3 data-availability-result-title>Pré-análise</h3>
-            <p data-availability-result-message>
-              A resposta aparecerá aqui depois da consulta.
-            </p>
-            <div class="availability-result__actions">
-              <a
-                class="availability-result__whatsapp"
-                href={`https://wa.me/${site.whatsapp.digits}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                data-availability-whatsapp
-              >
-                Continuar pelo WhatsApp
-              </a>
-              <button
-                class="availability-result__edit"
-                type="button"
-                data-availability-edit
-              >
-                Editar coordenadas
-              </button>
-            </div>
           </div>
         </aside>
       </div>
@@ -521,7 +516,7 @@ const routeSteps = [
 
   .availability-modal__stepper {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0.35rem;
     margin: 0;
     padding: 0 0.85rem 0.65rem;
@@ -591,6 +586,11 @@ const routeSteps = [
     display: grid;
     gap: 0.5rem;
     padding: 0.75rem;
+  }
+
+  .availability-coordinate-card[hidden],
+  .availability-modal__map[hidden] {
+    display: none;
   }
 
   .availability-map-search__row {
@@ -1062,7 +1062,7 @@ const routeSteps = [
   .availability-result {
     display: grid;
     gap: 0.65rem;
-    margin: 0.85rem;
+    margin: 0;
     padding: 0.9rem;
     box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.28);
   }
@@ -1310,6 +1310,11 @@ const routeSteps = [
       padding: 0 1.35rem 1.35rem;
     }
 
+    .availability-modal__body:has(.availability-modal__map[hidden]) {
+      grid-template-columns: minmax(0, 42rem);
+      justify-content: center;
+    }
+
     .availability-modal__controls,
     .availability-modal__map {
       min-height: 0;
@@ -1328,13 +1333,8 @@ const routeSteps = [
     }
 
     .availability-result {
-      position: absolute;
-      right: 1rem;
-      bottom: 1rem;
-      left: 18%;
-      margin: 0;
-      padding: 1.2rem;
-      background: rgba(3, 16, 15, 0.92);
+      padding: 1rem;
+      background: rgba(3, 16, 15, 0.72);
     }
 
     .availability-result__actions {

@@ -204,7 +204,7 @@ O objetivo é sair rapidamente de uma base parcial para uma página inteira nave
 
 ## Onda 5 — Google Maps sob demanda + iconização/animações/polimento
 
-**Status:** concluída localmente em 2026-06-28, com fallback e testes mockados. Pendente validação manual com `PUBLIC_GOOGLE_MAPS_API_KEY` real restrita por domínio.
+**Status:** concluída localmente em 2026-06-28, com fallback e testes mockados. A validação manual com `PUBLIC_GOOGLE_MAPS_API_KEY` real restrita por domínio foi movida para a Onda 5.1 bloqueadora.
 
 **Objetivo:** adicionar mapa somente após ação explícita do usuário e aplicar iconização, microinterações e polimento visual sem pesar a página.
 
@@ -227,7 +227,40 @@ O objetivo é sair rapidamente de uma base parcial para uma página inteira nave
 - O mapa serve apenas para escolher ponto; a API decide disponibilidade.
 - Sem bibliotecas de animação, pacotes grandes de ícones, efeitos permanentes pesados ou scripts de terceiros fora do Maps sob demanda aprovado.
 
+## Onda 5.1 — Desbloqueio Maps real + simplificação do modal
+
+**Status:** implementada localmente em 2026-06-29; validação manual com chave real restrita ainda pendente antes da Onda 6.
+
+**Objetivo:** resolver os dois bloqueios detectados após a Onda 5: validação real das chaves públicas restritas do Google Maps e redução da poluição visual do modal de pré-análise no mobile.
+
+**Escopo:**
+
+- Usar `docs/MAPS_KEYS_VALIDATION.md` como guia de formatação segura das variáveis `PUBLIC_GOOGLE_MAPS_API_KEY` e `PUBLIC_GOOGLE_MAP_ID`.
+- Manter chaves reais fora do Git; usar `.env.local` ou `.env` local ignorado para validação.
+- Validar localmente com chave restrita a `localhost`/`127.0.0.1` somente na porta 4321, que é a origem local permitida pela API/CORS.
+- Preparar instrução de produção com chave pública separada ou restrita a `ruralconectamg.com.br` e `www.ruralconectamg.com.br`.
+- Redesenhar o modal para uma experiência mais limpa:
+  - menos parágrafos e microcopy sempre visível;
+  - cards de método mais compactos e iconográficos;
+  - GPS como ação principal;
+  - mapa/busca e coordenadas como opções progressivas;
+  - resultado e confirmação com hierarquia clara;
+  - CTA principal sempre fácil de encontrar.
+- Não remover funcionalidades existentes: GPS, DD/DMS, busca Places, clique/toque, marcador arrastável, confirmar ponto, fallback sem Maps e WhatsApp.
+
+**Critérios:**
+
+- Maps continua 0 KB na carga inicial.
+- O script do Google Maps só aparece depois de ação explícita do usuário.
+- Chaves reais não aparecem em arquivos versionados, docs, logs ou prompts.
+- `dist/index.html` não contém `maps.googleapis.com`.
+- Mobile 390 px fica menos poluído visualmente, com menos texto simultâneo e melhor hierarquia.
+- Acessibilidade do modal continua válida: foco, Escape/fechar, teclado e labels úteis.
+- Playwright/E2E cobre abertura do modal, fallback sem chave, fluxo com mock de Maps e ausência de Maps inicial.
+
 ## Onda 6 — Qualidade final e produção
+
+**Status:** bloqueada até validar chave real restrita e aprovar a Onda 5.1 implementada localmente.
 
 **Objetivo:** preparar o site para publicação.
 

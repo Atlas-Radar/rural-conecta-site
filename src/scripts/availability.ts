@@ -307,6 +307,14 @@ function initAvailability(root: HTMLElement): void {
     realtimeButton,
     "[data-availability-realtime-label]",
   );
+  const coordinatePanel = queryRequired<HTMLElement>(
+    root,
+    "[data-availability-coordinate-panel]",
+  );
+  const mapPanel = queryRequired<HTMLElement>(
+    root,
+    "[data-availability-map-panel]",
+  );
   const mapCanvas = queryRequired<HTMLElement>(
     root,
     "[data-availability-map-canvas]",
@@ -396,6 +404,17 @@ function initAvailability(root: HTMLElement): void {
   let pendingMapCoordinates: Coordinates | null = null;
   let mapLoadPromise: Promise<void> | null = null;
 
+  function showCoordinatePanel(shouldFocus = false): void {
+    coordinatePanel.hidden = false;
+    if (shouldFocus) {
+      coordinatesInput.focus();
+    }
+  }
+
+  function showMapPanel(): void {
+    mapPanel.hidden = false;
+  }
+
   function syncCoordinatesFromInput(): void {
     coordinates = parseManualCoordinates(coordinatesInput.value);
     updateSubmitState(
@@ -408,6 +427,7 @@ function initAvailability(root: HTMLElement): void {
   }
 
   function fillCoordinates(nextCoordinates: Coordinates): void {
+    showCoordinatePanel();
     coordinatesInput.value = formatMapCoordinates(nextCoordinates);
     coordinates = nextCoordinates;
     updateSubmitState(
@@ -429,6 +449,7 @@ function initAvailability(root: HTMLElement): void {
   }
 
   function setMapLoading(): void {
+    showMapPanel();
     mapState = "loading";
     mapCanvas.hidden = false;
     mapFallback.hidden = true;
@@ -437,6 +458,7 @@ function initAvailability(root: HTMLElement): void {
   }
 
   function setMapReady(message: string): void {
+    showMapPanel();
     mapState = "ready";
     mapCanvas.hidden = false;
     mapFallback.hidden = true;
@@ -445,6 +467,7 @@ function initAvailability(root: HTMLElement): void {
   }
 
   function setMapUnavailable(message: string): void {
+    showMapPanel();
     mapState = "unavailable";
     mapCanvas.hidden = true;
     mapFallback.hidden = false;
@@ -702,7 +725,6 @@ function initAvailability(root: HTMLElement): void {
 
     document.body.classList.add("availability-modal-is-open");
     ensureRegionsLoaded();
-    void ensureMapLoaded();
     window.setTimeout(() => modal.focus({ preventScroll: true }), 0);
   }
 
@@ -825,6 +847,7 @@ function initAvailability(root: HTMLElement): void {
       const actionName = action.dataset.availabilityAction;
 
       if (actionName === "search") {
+        showMapPanel();
         void ensureMapLoaded().then(() => {
           mapSearchInput.focus();
           setText(
@@ -836,6 +859,7 @@ function initAvailability(root: HTMLElement): void {
       }
 
       if (actionName === "map") {
+        showMapPanel();
         void ensureMapLoaded().then(() => {
           mapCanvas.focus({ preventScroll: true });
           setText(
@@ -846,7 +870,7 @@ function initAvailability(root: HTMLElement): void {
         return;
       }
 
-      coordinatesInput.focus();
+      showCoordinatePanel(true);
       setText(helper, "Informe DD ou DMS no campo de coordenadas.");
     });
   }
@@ -880,13 +904,13 @@ function initAvailability(root: HTMLElement): void {
     realtimeButton.click();
   });
   mapUseCoordinatesButton.addEventListener("click", () => {
-    coordinatesInput.focus();
+    showCoordinatePanel(true);
     setText(helper, "Informe DD ou DMS no campo de coordenadas.");
   });
 
   editButton.addEventListener("click", () => {
     resultPanel.hidden = true;
-    coordinatesInput.focus();
+    showCoordinatePanel(true);
     setText(helper, "Edite as coordenadas e consulte outro ponto.");
   });
 

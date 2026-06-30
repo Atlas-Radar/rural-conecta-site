@@ -93,7 +93,11 @@ async function fillCoordinates(page: Page, coordinates: string) {
   const modal = page.getByRole("dialog", {
     name: "Pré-análise de disponibilidade",
   });
-  await modal.getByLabel("Coordenadas do ponto").fill(coordinates);
+  const field = modal.getByLabel("Coordenadas do ponto");
+  if (!(await field.isVisible())) {
+    await modal.getByRole("button", { name: /Informar coordenadas/ }).click();
+  }
+  await field.fill(coordinates);
   return modal;
 }
 
@@ -564,7 +568,9 @@ test.describe("Disponibilidade Onda 5", () => {
     expect(await getGeolocationCalls(page)).toBe(0);
 
     await modal
-      .getByRole("button", { name: /Pegar localização em tempo real/ })
+      .getByRole("button", {
+        name: /Usar GPS agora|Pegar localização em tempo real/,
+      })
       .click();
 
     expect(await getGeolocationCalls(page)).toBe(1);
@@ -593,7 +599,9 @@ test.describe("Disponibilidade Onda 5", () => {
     await page.goto("/");
     const { modal } = await openAvailabilityModal(page);
     await modal
-      .getByRole("button", { name: /Pegar localização em tempo real/ })
+      .getByRole("button", {
+        name: /Usar GPS agora|Pegar localização em tempo real/,
+      })
       .click();
 
     await expect(modal.getByText(/Permissão negada/)).toBeVisible();
@@ -668,14 +676,22 @@ test.describe("Disponibilidade Onda 5", () => {
     expect(forbiddenRequests).toEqual([]);
 
     const { modal } = await openAvailabilityModal(page);
+    await expect(modal.getByLabel(/Buscar fazenda/)).toBeHidden();
+    await expect(modal.getByText("Mapa indisponível agora")).toBeHidden();
+    await expect(modal.getByLabel("Coordenadas do ponto")).toBeHidden();
+    await expect(
+      modal.getByRole("button", {
+        name: /Usar GPS agora|Pegar localização em tempo real/,
+      }),
+    ).toBeVisible();
+    await expect(page.locator('script[src*="maps.googleapis"]')).toHaveCount(0);
+    expect(forbiddenRequests).toEqual([]);
+
+    await modal.getByRole("button", { name: /Busca ou mapa/ }).click();
     await expect(modal.getByLabel(/Buscar fazenda/)).toBeVisible();
     await expect(modal.getByText("Mapa indisponível agora")).toBeVisible();
     await expect(
       modal.getByText(/PUBLIC_GOOGLE_MAPS_API_KEY não está configurada/),
-    ).toBeVisible();
-    await expect(modal.getByLabel("Coordenadas do ponto")).toBeVisible();
-    await expect(
-      modal.getByRole("button", { name: /Pegar localização em tempo real/ }),
     ).toBeVisible();
     await expect(page.locator('script[src*="maps.googleapis"]')).toHaveCount(0);
     expect(forbiddenRequests).toEqual([]);
@@ -689,6 +705,8 @@ test.describe("Disponibilidade Onda 5", () => {
     await page.goto("/");
 
     const { modal } = await openAvailabilityModal(page);
+    await expect(modal.getByText(/Mapa pronto/)).toBeHidden();
+    await modal.getByRole("button", { name: /Busca ou mapa/ }).click();
     await expect(modal.getByText(/Mapa pronto/)).toBeVisible();
 
     await modal.getByLabel(/Buscar fazenda/).fill("fazenda tal paracatu");
@@ -727,6 +745,8 @@ test.describe("Disponibilidade Onda 5", () => {
 
     await page.goto("/");
     const { modal } = await openAvailabilityModal(page);
+    await expect(modal.getByText(/Mapa pronto/)).toBeHidden();
+    await modal.getByRole("button", { name: /^Escolher no mapa/ }).click();
     await expect(modal.getByText(/Mapa pronto/)).toBeVisible();
 
     await clickMockMap(page, -16.61, -46.91);

@@ -8,7 +8,7 @@
     "node": ">=24.16.0"
   },
   "scripts": {
-    "dev": "astro dev",
+    "dev": "node scripts/dev-fixed-port.mjs",
     "format": "prettier --plugin prettier-plugin-astro --write \"package.json\" \"pnpm-workspace.yaml\" \"astro.config.mjs\" \"eslint.config.mjs\" \"playwright.config.ts\" \"tsconfig.json\" \"src/**/*.{astro,css,ts}\" \"tests/**/*.ts\"",
     "format:check": "prettier --plugin prettier-plugin-astro --check \"package.json\" \"pnpm-workspace.yaml\" \"astro.config.mjs\" \"eslint.config.mjs\" \"playwright.config.ts\" \"tsconfig.json\" \"src/**/*.{astro,css,ts}\" \"tests/**/*.ts\"",
     "lint": "eslint .",

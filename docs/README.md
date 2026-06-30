@@ -15,6 +15,16 @@ Estado técnico atual:
 
 Git local/remoto e Playwright local já foram configurados. CI/GitHub workflows, GitHub settings/rulesets, Cloudflare e Superpowers ficam para etapas futuras autorizadas.
 
+## Desenvolvimento local
+
+A landing local deve subir somente em `http://127.0.0.1:4321/`, porque essa é a origem permitida pela API/CORS local do Atlas. Use:
+
+```bash
+corepack pnpm dev
+```
+
+O script `pnpm dev` valida a disponibilidade da porta 4321 e falha em vez de subir em outra porta.
+
 Use `ROADMAP.md` para status de fases e `DECISIONS_PENDING.md` para decisões abertas antes da implementação técnica.
 
 | Documento             | Finalidade                                  | Quando atualizar                                   |
@@ -29,6 +39,7 @@ Use `ROADMAP.md` para status de fases e `DECISIONS_PENDING.md` para decisões ab
 | ACCESSIBILITY.md      | WCAG, teclado, toque e dialog               | Quando componente interativo mudar                 |
 | PRIVACY_DATA.md       | Dados coletados, retenção, logs e analytics | Antes de produção e quando dados mudarem           |
 | TEST_STRATEGY.md      | Unitários, integração, E2E e performance    | Quando estratégia de validação mudar               |
+| MAPS_KEYS_VALIDATION.md | Chaves públicas restritas do Google Maps e checklist local/prod | Antes de validar Maps real ou produção |
 | ROADMAP.md            | Marcos do projeto                           | Quando fases forem concluídas ou replanejadas      |
 | DECISIONS_PENDING.md  | Decisões abertas                            | Sempre que uma decisão for aberta ou fechada       |
 | AI_WORKFLOW.md        | Uso de Hermes, Codex, AGENTS e skills       | Quando governança de agentes mudar                 |

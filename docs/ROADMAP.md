@@ -46,7 +46,7 @@ Landing institucional completa, visualmente premium, mobile-first e ultraleve.
 
 Execução atualizada: em vez de microetapas por seção, seguir `docs/INITIAL_UI_ROADMAP.md` no modo acelerado. Primeiro construir um mock visual completo da landing com todas as seções principais; depois refinar visual, textos, dados reais, iconização, animações leves e integrações.
 
-Status em 2026-06-28: Ondas 1, 2, 3, 4 e 5 concluídas localmente. A landing já tem mock completo, pré-viabilidade funcional, base local configurável para API Atlas, refino visual/copy comercial seguro, pré-análise modal-only aberta por CTAs, campo único DD/DMS, geolocalização explícita, Google Maps sob demanda dentro do modal, busca por local com Places, clique/toque no mapa, marcador arrastável e fallback sem chave. Próximo foco recomendado: Onda 6, qualidade final e preparação de produção.
+Status em 2026-06-29: Ondas 1, 2, 3, 4 e 5 concluídas localmente, com Onda 5.1 implementada localmente para simplificar o modal e documentar/testar chaves públicas restritas do Maps. A landing já tem mock completo, pré-viabilidade funcional, base local configurável para API Atlas, refino visual/copy comercial seguro, pré-análise modal-only aberta por CTAs, campo único DD/DMS, geolocalização explícita, Google Maps sob demanda dentro do modal, busca por local com Places, clique/toque no mapa, marcador arrastável e fallback sem chave. Próximo foco recomendado: validação manual com chave real restrita via `docs/MAPS_KEYS_VALIDATION.md`; depois Onda 6.
 
 Ondas atuais:
 
@@ -54,8 +54,9 @@ Ondas atuais:
 2. **Concluída** — Viabilidade funcional com API real sem Maps, usando `docs/LANDING_API_INTEGRATION.md`: regiões públicas, geolocalização/coordenadas, request de pré-viabilidade, estados de retorno, WhatsApp contextual e base local configurável via `PUBLIC_ATLAS_API_BASE_URL`.
 3. **Concluída** — Refino visual e conteúdo após avaliação da página inteira e da base funcional: disponibilidade menos densa, planos/regiões/FAQ/copy comercial segura e prova social sem depoimentos fictícios.
 4. **Concluída** — Modal fullscreen de pré-análise aberto somente por CTA, sem seção visível na página principal, localização sem Maps, campo único DD/DMS, geolocalização explícita e preparação visual para mapa.
-5. **Concluída localmente em 2026-06-28** — Google Maps sob demanda no modal de pré-análise, com loader idempotente, Places mockado em E2E, busca por local, clique/toque para marcar ponto, marcador arrastável, confirmação explícita, fallback quando `PUBLIC_GOOGLE_MAPS_API_KEY` está ausente e Maps inicial 0 KB. Pendente apenas validação manual com chave pública real restrita por domínio.
-6. **Pendente** — Qualidade final e produção.
+5. **Concluída localmente em 2026-06-28** — Google Maps sob demanda no modal de pré-análise, com loader idempotente, Places mockado em E2E, busca por local, clique/toque para marcar ponto, marcador arrastável, confirmação explícita, fallback quando `PUBLIC_GOOGLE_MAPS_API_KEY` está ausente e Maps inicial 0 KB.
+5.1. **Implementada localmente em 2026-06-29; validação real pendente** — Fluxo documentado/testável para chave pública restrita do Google Maps e modal de pré-análise simplificado. Antes da Onda 6, validar manualmente chave real local/prod via `docs/MAPS_KEYS_VALIDATION.md` sem inserir valores reais no Git.
+6. **Pendente após validação real da 5.1** — Qualidade final e produção.
 
 Prompts podem ser mais longos e usar subagentes/execuções paralelas para assets, performance, testes e auditoria, desde que respeitem os limites do projeto e não façam commit/push sem autorização.
 
